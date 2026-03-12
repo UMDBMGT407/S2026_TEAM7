@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./css/checkout.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    a { text-decoration: none; }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+  <div class="checkout-page">
+    <nav class="navbar navbar-expand-lg gt-nav">
+      <div class="container">
+        <a class="navbar-brand" href="./index.html">
+          <img src="./images/logo.png" alt="Logo" class="nav-logo"/>
+        </a>
+
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto nav-links-row">
+            <li class="nav-item">
+              <a class="nav-link" href="./online_ordering.html">Order Online</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./event_inquiry.html">Event Inquiry</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./loyalty_status.html">Loyalty Status</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./become_a_member.html">Become a Member</a>
+            </li>
+          </ul>
+
+
+          <ul class="navbar-nav auth-nav">
+            <li class="nav-item account-actions">
+              <a class="sign-in-btn active-signin" id="navAccountButton" href="./login.html">Sign In</a>
+              <a class="sign-out-btn" id="navSignOutButton" href="#" hidden>Sign Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <main class="checkout-page">
+      <div class="checkout-container">
+        <h1 class="checkout-title">CHECKOUT</h1>
+
+        <div class="checkout-layout">
+          <section class="checkout-form-section">
+            <form class="checkout-form">
+              <div class="form-group full-width">
+                <label class="checkout-label" for="email">EMAIL</label>
+                <input class="checkout-input" id="email" type="email" name="email" />
+              </div>
+
+              <div class="form-row two-col">
+                <div class="form-group">
+                  <label class="checkout-label" for="firstName">FIRST NAME</label>
+                  <input class="checkout-input" id="firstName" type="text" name="firstName" />
+                </div>
+
+                <div class="form-group">
+                  <label class="checkout-label" for="lastName">LAST NAME</label>
+                  <input class="checkout-input" id="lastName" type="text" name="lastName" />
+                </div>
+              </div>
+
+              <div class="form-row card-row">
+                <div class="form-group card-number-group">
+                  <label class="checkout-label" for="cardNumber">CREDIT CARD NUMBER</label>
+                  <input class="checkout-input" id="cardNumber" type="text" name="cardNumber" />
+                </div>
+
+                <div class="form-group exp-group">
+                  <label class="checkout-label" for="exp">EXP</label>
+                  <input
+                    class="checkout-input"
+                    id="exp"
+                    type="text"
+                    name="exp"
+                    placeholder="MM/YY"
+                    maxlength="5"
+                  />
+                </div>
+
+                <div class="form-group cvc-group">
+                  <label class="checkout-label" for="cvc">CVC</label>
+                  <input class="checkout-input" id="cvc" type="text" name="cvc" />
+                </div>
+              </div>
+
+              <div class="form-row address-row">
+                <div class="form-group address-group">
+                  <label class="checkout-label" for="address">ADDRESS</label>
+                  <input class="checkout-input" id="address" type="text" name="address" />
+                </div>
+
+                <div class="form-group state-group">
+                  <label class="checkout-label" for="state">STATE</label>
+                  <input class="checkout-input" id="state" type="text" name="state" />
+                </div>
+
+                <div class="form-group zip-group">
+                  <label class="checkout-label" for="zipCode">ZIP CODE</label>
+                  <input class="checkout-input" id="zipCode" type="text" name="zipCode" />
+                </div>
+              </div>
+
+              <div class="pay-button-wrap">
+                <button class="back-to-cart-btn" type="button" onclick="window.location.href='./cart.html'">
+                  Go Back to Cart
+                </button>
+
+                <button class="finish-pay-btn" type="button">
+                  Finish and Pay
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <aside class="checkout-summary">
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span id="checkoutSubtotal">$0.00</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Taxes and Fees</span>
+              <span id="checkoutTax">$0.00</span>
+            </div>
+
+            <div class="summary-row loyalty-row">
+              <span>Loyalty Points Available</span>
+              <div class="loyalty-inline">
+                <span id="loyaltyAvailable">$5.00</span>
+                <button class="apply-btn" type="button">Apply</button>
+              </div>
+            </div>
+
+            <div class="summary-row">
+              <span>Loyalty Points Applied</span>
+              <span id="loyaltyApplied">-$0.00</span>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            <div class="summary-row total-row">
+              <span>TOTAL</span>
+              <span id="checkoutTotal">$0.00</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div> 
+<script>
+  const subtotalEl = document.getElementById("checkoutSubtotal");
+  const taxEl = document.getElementById("checkoutTax");
+  const totalEl = document.getElementById("checkoutTotal");
+  const loyaltyAvailableEl = document.getElementById("loyaltyAvailable");
+  const loyaltyAppliedEl = document.getElementById("loyaltyApplied");
+  const applyBtn = document.querySelector(".apply-btn");
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const subtotal = cart.reduce((sum, item) => {
+    return sum + (item.price * item.quantity);
+  }, 0);
+
+  const tax = subtotal * 0.06;
+
+  let loyaltyAvailable = 5.00;
+  let loyaltyApplied = 0;
+
+  function renderTotals() {
+    subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    taxEl.textContent = `$${tax.toFixed(2)}`;
+    loyaltyAvailableEl.textContent = `$${loyaltyAvailable.toFixed(2)}`;
+    loyaltyAppliedEl.textContent = `-$${loyaltyApplied.toFixed(2)}`;
+
+    const total = Math.max(0, subtotal + tax - loyaltyApplied);
+    totalEl.textContent = `$${total.toFixed(2)}`;
+  }
+
+  applyBtn.addEventListener("click", function () {
+    if (loyaltyApplied === 0) {
+      loyaltyApplied = Math.min(loyaltyAvailable, subtotal + tax);
+    } else {
+      loyaltyApplied = 0;
+    }
+
+    renderTotals();
+  });
+
+  renderTotals();
+</script>
+  <script>
+  const finishPayBtn = document.querySelector(".finish-pay-btn");
+
+  const emailInput = document.getElementById("email");
+  const firstNameInput = document.getElementById("firstName");
+  const lastNameInput = document.getElementById("lastName");
+  const cardNumberInput = document.getElementById("cardNumber");
+  const expInput = document.getElementById("exp");
+  const cvcInput = document.getElementById("cvc");
+  const addressInput = document.getElementById("address");
+  const stateInput = document.getElementById("state");
+  const zipCodeInput = document.getElementById("zipCode");
+
+  
+  expInput.addEventListener("input", function () {
+    let value = this.value.replace(/\D/g, "");
+
+    if (value.length > 4) {
+      value = value.slice(0, 4);
+    }
+
+    if (value.length >= 3) {
+      value = value.slice(0, 2) + "/" + value.slice(2);
+    }
+
+    this.value = value;
+  });
+
+  function clearCheckoutForm() {
+    emailInput.value = "";
+    firstNameInput.value = "";
+    lastNameInput.value = "";
+    cardNumberInput.value = "";
+    expInput.value = "";
+    cvcInput.value = "";
+    addressInput.value = "";
+    stateInput.value = "";
+    zipCodeInput.value = "";
+  }
+
+  finishPayBtn.addEventListener("click", function () {
+    if (
+      !emailInput.value.trim() ||
+      !firstNameInput.value.trim() ||
+      !lastNameInput.value.trim() ||
+      !cardNumberInput.value.trim() ||
+      !expInput.value.trim() ||
+      !cvcInput.value.trim() ||
+      !addressInput.value.trim() ||
+      !stateInput.value.trim() ||
+      !zipCodeInput.value.trim()
+    ) {
+      alert("Please fill out all checkout fields.");
+      return;
+    }
+
+    alert("Payment successful");
+
+    clearCheckoutForm();
+
+    localStorage.removeItem("cart");
+    localStorage.setItem("cart", JSON.stringify([]));
+
+    window.location.href = "./online_ordering.html";
+  });
+</script>
+<script>
+  const navAccountButton = document.getElementById("navAccountButton");
+  const navSignOutButton = document.getElementById("navSignOutButton");
+  const userRole = localStorage.getItem("userRole");
+
+  if (navAccountButton && userRole === "customer") {
+    navAccountButton.href = "./loyalty_status.html";
+    navAccountButton.classList.add("account-icon-btn");
+    navAccountButton.classList.remove("active-signin");
+    navAccountButton.innerHTML = '<img src="./images/profile_head.png" alt="Profile" class="account-icon-image">';
+    navAccountButton.setAttribute("aria-label", "Loyalty account");
+    navAccountButton.setAttribute("title", "Loyalty account");
+
+    if (navSignOutButton) {
+      navSignOutButton.hidden = false;
+
+      navSignOutButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("username");
+        window.location.replace("./login.html");
+      });
+    }
+  } else if (navAccountButton) {
+    navAccountButton.href = "./login.html";
+    navAccountButton.classList.remove("account-icon-btn");
+    navAccountButton.classList.add("active-signin");
+    navAccountButton.innerHTML = "Sign In";
+    navAccountButton.setAttribute("aria-label", "Sign In");
+    navAccountButton.setAttribute("title", "Sign In");
+
+    if (navSignOutButton) {
+      navSignOutButton.hidden = true;
+    }
+  }
+</script>
+</body>
+</html>

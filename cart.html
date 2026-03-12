@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./css/cart.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    a { text-decoration: none; }
+  </style>
+  <title>Document</title>
+</head>
+<body>
+<div class="cart">
+  <nav class="navbar navbar-expand-lg gt-nav">
+      <div class="container">
+        <a class="navbar-brand" href="./index.html">
+          <img src="./images/logo.png" alt="Logo" class="nav-logo"/>
+        </a>
+
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto nav-links-row">
+            <li class="nav-item">
+              <a class="nav-link" href="./online_ordering.html">Order Online</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./event_inquiry.html">Event Inquiry</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./loyalty_status.html">Loyalty Status</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./become_a_member.html">Become a Member</a>
+            </li>
+          </ul>
+
+
+          <ul class="navbar-nav auth-nav">
+            <li class="nav-item account-actions">
+              <a class="sign-in-btn active-signin" id="navAccountButton" href="./login.html">Sign In</a>
+              <a class="sign-out-btn" id="navSignOutButton" href="#" hidden>Sign Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  <div class="cart-content">
+    <div class="cart-header">
+      <div class="cart-bag-icon">
+        <img class="cart-bag-image" src="./images/bagbutton0.png" alt="Bag" />
+      </div>
+      <h1 class="your-order">Your Order</h1>
+    </div>
+
+    <div id="cartItemList" class="cart-item-list"></div>
+
+    <div class="add-item-wrap">
+      <button
+        class="add-item-btn"
+        type="button"
+        onclick="window.location.href='./online_ordering.html'"
+      >
+        + Add Item
+      </button>
+    </div>
+
+    <div class="cart-summary">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <span id="subtotalAmount">$0.00</span>
+      </div>
+      <div class="summary-row">
+        <span>Taxes and Fees</span>
+        <span id="taxAmount">$0.00</span>
+      </div>
+    </div>
+
+    <div class="checkout-wrap">
+      <button
+        class="checkout-btn"
+        type="button"
+        onclick="window.location.href='./checkout.html'"
+      >
+        Continue Checking Out
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+  const navAccountButton = document.getElementById("navAccountButton");
+  const navSignOutButton = document.getElementById("navSignOutButton");
+  const userRole = localStorage.getItem("userRole");
+
+  if (navAccountButton && userRole === "customer") {
+    navAccountButton.href = "./loyalty_status.html";
+    navAccountButton.classList.add("account-icon-btn");
+    navAccountButton.classList.remove("active-signin");
+    navAccountButton.innerHTML = '<img src="./images/profile_head.png" alt="Profile" class="account-icon-image">';
+    navAccountButton.setAttribute("aria-label", "Loyalty account");
+    navAccountButton.setAttribute("title", "Loyalty account");
+
+    if (navSignOutButton) {
+      navSignOutButton.hidden = false;
+
+      navSignOutButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("username");
+        window.location.replace("./login.html");
+      });
+    }
+  } else if (navAccountButton) {
+    navAccountButton.href = "./login.html";
+    navAccountButton.classList.remove("account-icon-btn");
+    navAccountButton.classList.add("active-signin");
+    navAccountButton.innerHTML = "Sign In";
+    navAccountButton.setAttribute("aria-label", "Sign In");
+    navAccountButton.setAttribute("title", "Sign In");
+
+    if (navSignOutButton) {
+      navSignOutButton.hidden = true;
+    }
+  }
+</script>
+<script>
+  const cartItemList = document.getElementById("cartItemList");
+  const subtotalAmount = document.getElementById("subtotalAmount");
+  const taxAmount = document.getElementById("taxAmount");
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function renderCart() {
+    cartItemList.innerHTML = "";
+
+    let subtotal = 0;
+
+    if (cart.length === 0) {
+      cartItemList.innerHTML = `
+        <div class="cart-empty-message">Your cart is empty.</div>
+      `;
+      subtotalAmount.textContent = "$0.00";
+      taxAmount.textContent = "$0.00";
+      return;
+    }
+
+    cart.forEach((item, index) => {
+      const lineTotal = item.price * item.quantity;
+      subtotal += lineTotal;
+
+      const itemRow = document.createElement("div");
+      itemRow.className = "cart-item-row";
+
+      itemRow.innerHTML = `
+        <div class="item-left">
+          <span class="item-qty">${item.quantity}</span>
+          <div class="item-info">
+            <div class="item-name">${item.name}</div>
+            <button class="remove-btn" type="button" data-index="${index}">Remove</button>
+          </div>
+        </div>
+        <div class="item-price">$${lineTotal.toFixed(2)}</div>
+      `;
+
+      cartItemList.appendChild(itemRow);
+    });
+
+    const tax = subtotal * 0.06;
+
+    subtotalAmount.textContent = `$${subtotal.toFixed(2)}`;
+    taxAmount.textContent = `$${tax.toFixed(2)}`;
+
+    const removeButtons = document.querySelectorAll(".remove-btn");
+    removeButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const index = Number(this.dataset.index);
+        cart.splice(index, 1);
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+      });
+    });
+  }
+
+  renderCart();
+</script>
+</body>
+</html>
