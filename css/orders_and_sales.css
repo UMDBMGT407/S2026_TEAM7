@@ -1,0 +1,363 @@
+.orders-sales,
+.orders-sales * {
+  box-sizing: border-box;
+}
+.orders-sales {
+  background: #36845a;
+  height: 1024px;
+  position: relative;
+  overflow: hidden;
+}
+.frame-18 {
+  display: flex;
+  flex-direction: row;
+  gap: 38px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: absolute;
+  left: 15px;
+  top: 95px;
+}
+.weekly-orders {
+  background: #ffffff;
+  padding: 12px 18px 34px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 234px;
+  height: 205px;
+  position: relative;
+}
+.weekly-orders2 {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  position: relative;
+  width: 176px;
+}
+.line-1 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  flex-shrink: 0;
+  width: 200.77px;
+  height: 0px;
+  position: relative;
+  transform-origin: 0 0;
+  transform: rotate(0.258deg) scale(1, 1);
+}
+._167 {
+  color: #618e2d;
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 64px;
+  font-weight: 400;
+  position: relative;
+  width: 125px;
+  height: 73px;
+}
+.this-is-12-orders-higher-than-last-week {
+  color: #000000;
+  text-align: center;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  width: 170px;
+  height: 31px;
+}
+.weekly-sales {
+  background: #ffffff;
+  padding: 17px 7px 25px 19px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 227px;
+  height: 202px;
+  position: relative;
+}
+.weekly-sales2 {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  position: relative;
+  width: 176px;
+  height: 29px;
+}
+._2-8-k {
+  color: #de5353;
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 64px;
+  font-weight: 400;
+  position: relative;
+  width: 178px;
+  height: 73px;
+}
+.this-is-379-23-lower-than-last-week {
+  color: #000000;
+  text-align: center;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  width: 170px;
+  height: 31px;
+}
+.weekly-profit {
+  background: #ffffff;
+  padding: 15px 9px 36px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  width: 227px;
+  height: 202px;
+  position: relative;
+}
+.weekly-profit2 {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  position: relative;
+  width: 170px;
+  height: 29px;
+}
+._1-2-k {
+  color: #de5353;
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 64px;
+  font-weight: 400;
+  position: relative;
+  width: 193px;
+  height: 73px;
+}
+.this-is-162-56-lower-than-last-week {
+  color: #000000;
+  text-align: center;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  width: 170px;
+  height: 31px;
+}
+.frame-19 {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  width: 764px;
+  position: absolute;
+  left: 15px;
+  top: 360px;
+}
+.sales-targets-resulst {
+  background: #ffffff;
+  padding: 91px 84px 17px 85px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 231px;
+  position: relative;
+}
+.orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k {
+  text-align: center;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  position: relative;
+  width: 593px;
+  height: 123px;
+}
+.orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span {
+  color: #000000;
+}
+.orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span2 {
+  color: #618e2d;
+}
+.orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span3 {
+  color: #de5353;
+}
+.targets-results {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 58px;
+  font-weight: 400;
+  position: absolute;
+  left: 75px;
+  top: 13px;
+  width: 603px;
+  height: 38px;
+}
+.line-12 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  flex-shrink: 0;
+  width: 690.29px;
+  height: 0px;
+  position: absolute;
+  left: 14px;
+  top: 85.09px;
+  transform-origin: 0 0;
+  transform: rotate(-0.007deg) scale(1, 1);
+}
+.order-goals-kp-is {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-self: stretch;
+}
+.line-13 {
+  border-top: 1px solid #000000;
+  width: 596px;
+  height: 0;
+  position: absolute;
+  left: 50px;
+  top: 68px;
+}
+.rectangle-7 {
+  background: #ffffff;
+  align-self: stretch;
+  height: 330px;
+  position: relative;
+}
+.current-goals-kp-is {
+  color: #204631;
+  text-align: left;
+  font-family: "Passion One", sans-serif;
+  font-size: 48px;
+  font-weight: 400;
+  position: absolute;
+  left: 92px;
+  top: 20px;
+  width: 587px;
+}
+
+.food-cost-percentage-labor-cost-percentage-website-conversion-rate-order-fulfillment-time-average-order-value {
+  text-align: left;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  position: absolute;
+  left: 51px;
+  top: 90px;
+  width: 595px;
+  height: 156px;
+}
+
+.food-cost-percentage-labor-cost-percentage-website-conversion-rate-order-fulfillment-time-average-order-value-span {
+  color: #000000;
+}
+.food-cost-percentage-labor-cost-percentage-website-conversion-rate-order-fulfillment-time-average-order-value-span2 {
+  color: #204631;
+}
+._30-25-2-5-10-min-18 {
+  text-align: right;
+  font-family: "Inter-Regular", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  position: absolute;
+  left: 493px;
+  top: 90px;
+  width: 124px;
+  height: 141px;
+}
+._30-25-2-5-10-min-18-span {
+  color: #000000;
+}
+._30-25-2-5-10-min-18-span2 {
+  color: #204631;
+}
+.line-4 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px 0 0 0;
+  flex-shrink: 0;
+  width: 596px;
+  height: 0px;
+  position: absolute;
+  left: 50px;
+  top: 347px;
+  transform-origin: 0 0;
+  transform: rotate(-0.192deg) scale(1, 1);
+}
+.monthly-revenue-and-profits {
+  flex-shrink: 0;
+  width: 643px;
+  height: 425px;
+  position: absolute;
+  left: 800px;
+  top: -270px;
+}
+.daily-average-order-frequency {
+  flex-shrink: 0;
+  width: 643px;
+  height: 400px;
+  position: absolute;
+  left: 800px;
+  top: 180px;
+}
+.navbar {
+  background-color: #204631 !important;
+  padding: 12px 24px;
+}
+.navbar .navbar-brand img {
+  height: 46px;
+}
+.navbar .nav-link {
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  color: #ffffff !important;
+  padding: 8px 14px;
+}
+.navbar .nav-link:hover {
+  color: #a8d5b5 !important;
+}
+.navbar .dropdown-menu {
+  background-color: #204631;
+  border: 1px solid #36845a;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.navbar .dropdown-item {
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  color: #ffffff;
+  padding: 8px 20px;
+}
+.navbar .dropdown-item:hover {
+  background-color: #36845a;
+  color: #ffffff;
+}
+.navbar .btn-outline-light {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  border-radius: 12px;
+  padding: 6px 20px;
+}
