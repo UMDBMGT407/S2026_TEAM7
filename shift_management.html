@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staff Scheduling Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shift_management.css" />
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="./dashboard.html">
+        <img src="./images/logo.png" alt="Logo" height="46px">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="./dashboard.html">Dashboard</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./menu.html">Menu</a></li>
+              <li><a class="dropdown-item" href="./menu_adjustments.html">Menu Adjustments</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./orders_and_sales.html">Orders & Sales</a></li>
+              <li><a class="dropdown-item" href="./inventory.html">Inventory</a></li>
+              <li><a class="dropdown-item" href="./inventory_adjustments.html">Inventory Adjustments</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./events.html">Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./loyalty_program.html">Loyalty Program</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./edit_promos.html">Edit Promos</a></li>
+              <li><a class="dropdown-item" href="./view_promos.html">View Promos</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./staff_availability.html">Staff Availability</a></li>
+              <li><a class="dropdown-item" href="./staff_scheduling_admin.html">Staff Schedule</a></li>
+            </ul>
+          </li>
+
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="./index.html">Sign Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="app">
+    <aside class="sidebar">
+      <h1>Admin Scheduler</h1>
+      <p>Manage staff availability, shifts, and schedule requests.</p>
+
+      <input type="text" class="staff-search" id="staffSearch" placeholder="Search staff..." />
+      <div class="staff-list" id="staffList"></div>
+    </aside>
+
+    <main class="main-content">
+      <div class="topbar">
+        <div>
+          <h2>Staff Scheduling</h2>
+          <p class="subtext" id="selectedStaffText">Select a staff member</p>
+        </div>
+
+        <div class="topbar-buttons">
+          <button class="light-btn" id="prevWeekBtn">Previous Week</button>
+          <button class="light-btn" id="nextWeekBtn">Next Week</button>
+          <a href="./staff_scheduling_admin.html" class="light-btn view-schedule-btn">View Schedule</a>
+          <button class="primary-btn" id="publishBtn">Publish Schedule</button>
+        </div>
+      </div>
+
+      <section class="summary-row" id="summaryRow"></section>
+
+      <div class="main-grid">
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Availability Calendar</h3>
+            <span>Week of March 16 - March 22</span>
+          </div>
+
+          <div class="calendar-legend">
+            <div class="legend-item">
+              <div class="legend-color availability"></div>
+              <span>Available</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color shift"></div>
+              <span>Scheduled Shift</span>
+            </div>
+          </div>
+
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </section>
+
+        <div class="right-column">
+          <section class="panel">
+            <h3>Create Shift</h3>
+
+            <div class="form-group">
+              <label>Staff Member</label>
+              <select id="shiftStaff"></select>
+            </div>
+
+            <div class="form-group">
+              <label>Day</label>
+              <select id="shiftDay">
+                <option value="mon">Monday</option>
+                <option value="tue">Tuesday</option>
+                <option value="wed">Wednesday</option>
+                <option value="thu">Thursday</option>
+                <option value="fri">Friday</option>
+                <option value="sat">Saturday</option>
+                <option value="sun">Sunday</option>
+              </select>
+            </div>
+
+            <div class="time-row">
+              <div class="form-group">
+                <label>Start Time</label>
+                <input type="time" id="shiftStart" value="09:00" />
+              </div>
+
+              <div class="form-group">
+                <label>End Time</label>
+                <input type="time" id="shiftEnd" value="17:00" />
+              </div>
+            </div>
+
+            <button class="dark-btn full-width" id="addShiftBtn">Add Shift</button>
+          </section>
+
+          <section class="panel">
+            <h3>Dropped Shifts & Requests</h3>
+            <div id="requestList"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const days = [
+      { key: "mon", label: "Monday", date: "Mar 16" },
+      { key: "tue", label: "Tuesday", date: "Mar 17" },
+      { key: "wed", label: "Wednesday", date: "Mar 18" },
+      { key: "thu", label: "Thursday", date: "Mar 19" },
+      { key: "fri", label: "Friday", date: "Mar 20" },
+      { key: "sat", label: "Saturday", date: "Mar 21" },
+      { key: "sun", label: "Sunday", date: "Mar 22" }
+    ];
+
+    const staffData = [
+      {
+        id: 1,
+        name: "Maya Patel",
+        role: "Server",
+        status: "Full-Time",
+        hours: 32,
+        availability: {
+          mon: ["10:00 AM - 6:00 PM"],
+          tue: ["12:00 PM - 8:00 PM"],
+          wed: ["9:00 AM - 3:00 PM"],
+          thu: ["Unavailable"],
+          fri: ["11:00 AM - 7:00 PM"],
+          sat: ["2:00 PM - 10:00 PM"],
+          sun: ["2:00 PM - 8:00 PM"]
+        },
+        shifts: {
+          tue: ["12:00 PM - 6:00 PM"],
+          sat: ["4:00 PM - 10:00 PM"]
+        }
+      },
+      {
+        id: 2,
+        name: "Jordan Kim",
+        role: "Host",
+        status: "Part-Time",
+        hours: 18,
+        availability: {
+          mon: ["4:00 PM - 10:00 PM"],
+          tue: ["4:00 PM - 10:00 PM"],
+          wed: ["Unavailable"],
+          thu: ["4:00 PM - 10:00 PM"],
+          fri: ["3:00 PM - 11:00 PM"],
+          sat: ["10:00 AM - 6:00 PM"],
+          sun: ["Unavailable"]
+        },
+        shifts: {
+          mon: ["5:00 PM - 10:00 PM"],
+          fri: ["4:00 PM - 9:00 PM"]
+        }
+      },
+      {
+        id: 3,
+        name: "Sofia Nguyen",
+        role: "Bartender",
+        status: "Full-Time",
+        hours: 28,
+        availability: {
+          mon: ["8:00 AM - 2:00 PM"],
+          tue: ["8:00 AM - 2:00 PM"],
+          wed: ["8:00 AM - 2:00 PM"],
+          thu: ["8:00 AM - 2:00 PM"],
+          fri: ["Unavailable"],
+          sat: ["Unavailable"],
+          sun: ["10:00 AM - 4:00 PM"]
+        },
+        shifts: {
+          wed: ["9:00 AM - 2:00 PM"],
+          thu: ["9:00 AM - 1:00 PM"]
+        }
+      }
+    ];
+
+    let requests = [
+      {
+        id: 1,
+        staff: "Maya Patel",
+        text: "Dropped Shift · Saturday · 4:00 PM - 10:00 PM"
+      },
+      {
+        id: 2,
+        staff: "Jordan Kim",
+        text: "Pickup Request · Friday · 4:00 PM - 9:00 PM"
+      }
+    ];
+
+    let selectedStaffId = 1;
+
+    const staffList = document.getElementById("staffList");
+    const selectedStaffText = document.getElementById("selectedStaffText");
+    const summaryRow = document.getElementById("summaryRow");
+    const calendarGrid = document.getElementById("calendarGrid");
+    const requestList = document.getElementById("requestList");
+    const shiftStaff = document.getElementById("shiftStaff");
+    const shiftDay = document.getElementById("shiftDay");
+    const shiftStart = document.getElementById("shiftStart");
+    const shiftEnd = document.getElementById("shiftEnd");
+    const addShiftBtn = document.getElementById("addShiftBtn");
+    const staffSearch = document.getElementById("staffSearch");
+
+    function getSelectedStaff() {
+      return staffData.find(staff => staff.id === selectedStaffId);
+    }
+
+    function renderStaffList(filterText = "") {
+      staffList.innerHTML = "";
+
+      const filteredStaff = staffData.filter(staff =>
+        staff.name.toLowerCase().includes(filterText.toLowerCase())
+      );
+
+      filteredStaff.forEach(staff => {
+        const card = document.createElement("div");
+        card.className = "staff-card";
+
+        if (staff.id === selectedStaffId) {
+          card.classList.add("active");
+        }
+
+        card.innerHTML = `
+          <strong>${staff.name}</strong>
+          <span>${staff.role} · ${staff.status}</span>
+        `;
+
+        card.addEventListener("click", function () {
+          selectedStaffId = staff.id;
+          renderPage();
+        });
+
+        staffList.appendChild(card);
+      });
+    }
+
+    function renderSummary() {
+      const staff = getSelectedStaff();
+
+      selectedStaffText.textContent = `${staff.name} · ${staff.role}`;
+
+      summaryRow.innerHTML = `
+        <div class="summary-box">
+          <label>Employee ID</label>
+          <strong>#EMP00${staff.id}</strong>
+        </div>
+        <div class="summary-box">
+          <label>Status</label>
+          <strong>${staff.status}</strong>
+        </div>
+        <div class="summary-box">
+          <label>Weekly Hours</label>
+          <strong>${staff.hours} hrs</strong>
+        </div>
+        <div class="summary-box">
+          <label>Role</label>
+          <strong>${staff.role}</strong>
+        </div>
+      `;
+    }
+
+    function renderCalendar() {
+      const staff = getSelectedStaff();
+      calendarGrid.innerHTML = "";
+
+      days.forEach(day => {
+        const dayCard = document.createElement("div");
+        dayCard.className = "day-card";
+
+        let availabilityHTML = "";
+        staff.availability[day.key].forEach(slot => {
+          if (slot === "Unavailable") {
+            availabilityHTML += `<div class="unavailable-slot">${slot}</div>`;
+          } else {
+            availabilityHTML += `<div class="availability-slot">${slot}</div>`;
+          }
+        });
+
+        let shiftsHTML = "";
+        if (staff.shifts[day.key]) {
+          staff.shifts[day.key].forEach((shift, index) => {
+            shiftsHTML += `
+              <div class="shift-chip">
+                <span>${shift}</span>
+                <button class="delete-shift-btn" onclick="deleteShift(${staff.id}, '${day.key}', ${index})">×</button>
+              </div>
+            `;
+          });
+        }
+
+        dayCard.innerHTML = `
+          <h4>${day.label}</h4>
+          <small>${day.date}</small>
+          ${availabilityHTML}
+          ${shiftsHTML}
+        `;
+
+        calendarGrid.appendChild(dayCard);
+      });
+    }
+
+    function renderShiftStaffOptions() {
+      shiftStaff.innerHTML = "";
+
+      staffData.forEach(staff => {
+        const option = document.createElement("option");
+        option.value = staff.id;
+        option.textContent = staff.name;
+
+        if (staff.id === selectedStaffId) {
+          option.selected = true;
+        }
+
+        shiftStaff.appendChild(option);
+      });
+    }
+
+    function renderRequests() {
+      requestList.innerHTML = "";
+
+      requests.forEach(request => {
+        const item = document.createElement("div");
+        item.className = "request-item";
+
+        item.innerHTML = `
+          <strong>${request.staff}</strong>
+          <p>${request.text}</p>
+          <div class="request-actions">
+            <button class="primary-btn accept-btn">Accept</button>
+            <button class="danger-btn decline-btn">Decline</button>
+          </div>
+        `;
+
+        const acceptBtn = item.querySelector(".accept-btn");
+        const declineBtn = item.querySelector(".decline-btn");
+
+        acceptBtn.addEventListener("click", function () {
+          requests = requests.filter(r => r.id !== request.id);
+          renderRequests();
+        });
+
+        declineBtn.addEventListener("click", function () {
+          requests = requests.filter(r => r.id !== request.id);
+          renderRequests();
+        });
+
+        requestList.appendChild(item);
+      });
+    }
+
+    function convertTo12Hour(time24) {
+      const parts = time24.split(":");
+      let hour = parseInt(parts[0]);
+      const minute = parts[1];
+      const ampm = hour >= 12 ? "PM" : "AM";
+
+      hour = hour % 12;
+      if (hour === 0) {
+        hour = 12;
+      }
+
+      return `${hour}:${minute} ${ampm}`;
+    }
+
+    function deleteShift(staffId, dayKey, shiftIndex) {
+      const staff = staffData.find(s => s.id === staffId);
+
+      if (!staff || !staff.shifts[dayKey]) return;
+
+      staff.shifts[dayKey].splice(shiftIndex, 1);
+
+      if (staff.shifts[dayKey].length === 0) {
+        delete staff.shifts[dayKey];
+      }
+
+      renderPage();
+    }
+
+    addShiftBtn.addEventListener("click", function () {
+      const staffId = parseInt(shiftStaff.value);
+      const dayKey = shiftDay.value;
+      const start = convertTo12Hour(shiftStart.value);
+      const end = convertTo12Hour(shiftEnd.value);
+      const shiftText = `${start} - ${end}`;
+
+      const staff = staffData.find(s => s.id === staffId);
+
+      if (!staff.shifts[dayKey]) {
+        staff.shifts[dayKey] = [];
+      }
+
+      staff.shifts[dayKey].push(shiftText);
+      selectedStaffId = staffId;
+      renderPage();
+    });
+
+    staffSearch.addEventListener("input", function () {
+      renderStaffList(staffSearch.value);
+    });
+
+    function renderPage() {
+      renderStaffList(staffSearch.value);
+      renderSummary();
+      renderCalendar();
+      renderShiftStaffOptions();
+      renderRequests();
+    }
+
+    renderPage();
+  </script>
+</body>
+</html>
