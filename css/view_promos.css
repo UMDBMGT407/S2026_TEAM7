@@ -1,0 +1,217 @@
+body,
+button,
+input,
+select,
+textarea,
+.navbar,
+.events {
+  font-family: "Passion One", sans-serif !important;
+}
+
+.navbar {
+  background-color: #204631 !important;
+  padding: 12px 24px;
+}
+.navbar .navbar-brand img {
+  height: 46px;
+}
+.navbar .nav-link {
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  color: #ffffff !important;
+  padding: 8px 14px;
+}
+.navbar .nav-link:hover {
+  color: #a8d5b5 !important;
+}
+.navbar .dropdown-menu {
+  background-color: #204631;
+  border: 1px solid #36845a;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.navbar .dropdown-item {
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  color: #ffffff;
+  padding: 8px 20px;
+}
+.navbar .dropdown-item:hover {
+  background-color: #36845a;
+  color: #ffffff;
+}
+.navbar .btn-outline-light {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  border-radius: 12px;
+  padding: 6px 20px;
+}
+body{
+margin:0;
+font-family:"Passion One", sans-serif;
+background-color:#36845a !important;
+}
+
+.calendar{
+width:85%;
+max-width:1050px;
+margin:30px auto;
+padding:20px;
+background:white;
+border-radius:10px;
+box-shadow:0px 6px 20px rgba(0,0,0,0.25);
+}
+
+.calendar-wrapper{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0px 6px 20px rgba(0,0,0,0.25);
+}
+
+.calendar-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:16px;
+font-size:24px;
+color:#204631;
+}
+
+.month-title{
+font-family:"Passion One", sans-serif;
+font-size:48px;
+color:#204631;
+text-align:center;
+background:white;
+padding:8px 60px;
+border-radius:100px;
+display:inline-block;
+margin-bottom:16px;
+}
+
+.calendar-month-header{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:30px;
+margin-bottom:16px;
+}
+
+.month-arrow{
+background:none;
+border:none;
+color:white;
+font-size:40px;
+cursor:pointer;
+}
+
+.month-arrow:hover{
+transform:scale(1.1);
+}
+
+button{
+background:#204631;
+color:white;
+padding:8px 14px;
+font-size:16px;
+cursor:pointer;
+border:none;
+border-radius:8px;
+font-family:"Passion One", sans-serif;
+box-shadow:2px 6px 4px rgba(0,0,0,0.25);
+}
+
+button:hover{
+background:#1a3828;
+}
+
+.days{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+margin-top:10px;
+}
+
+.day-name{
+color:#204631;
+text-align:center;
+font-size:24px;
+padding:8px;
+}
+
+.date{
+background:white;
+border:2px solid #204631;
+height:90px;
+padding:6px;
+position:relative;
+font-family:"Passion One", sans-serif;
+color:#204631;
+display:flex;
+flex-direction:column;
+}
+
+.calendar-day{
+border:2px solid black;
+height:90px;
+padding:6px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.date-number{
+font-family:"Passion One", sans-serif;
+font-size:20px;
+color:#204631;
+}
+
+.promo-card{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:4px;
+font-size:12px;
+color:#204631;
+text-align:center;
+margin-top:auto;
+}
+
+.promo-buttons{
+display:flex;
+gap:6px;
+}
+
+.btn-success{
+background:#36845a;
+border:none;
+font-family:"Passion One", sans-serif;
+font-size:6px;
+padding:3px 8px;
+}
+
+.btn-success:hover{
+background:#204631;
+}
+
+.btn-danger{
+font-family:"Passion One", sans-serif;
+font-size:6px;
+padding:3px 8px;
+}
+
+.promo-buttons .btn{
+font-size:9px;
+padding:1px 4px;
+border-radius:3px;
+line-height:1;
+box-shadow:none;
+}
+
+.promo-buttons{
+display:flex;
+justify-content:center;
+gap:2px;
+margin-top:1px;
+}
