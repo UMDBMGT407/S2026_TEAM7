@@ -1,0 +1,231 @@
+.event-details,
+.event-details * {
+  box-sizing: border-box;
+}
+.event-details {
+  background: #36845a;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Upcoming Events Panel*/
+.upcoming-events-background {
+  background: #ffffff;
+  border-radius: 15px;
+  width: 100%;
+  min-height: 600px;
+  position: relative;
+  box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
+}
+.upcoming-events-header {
+  color: #204631;
+  font-family: "Passion One", sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  padding: 20px 20px 10px 20px;
+}
+#eventsList {
+  padding: 0 10px;
+  width: 100%;
+}
+
+/* Event selection side bar menu */
+.event-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.event-item:hover { background: #f0f0f0; }
+.event-item.selected {
+  background: #e8f0eb;
+  border: 2px solid #36845a;
+  border-radius: 10px;
+}
+.event-item-type {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  color: #000;
+}
+.event-item-date, .event-item-time {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  color: #333;
+}
+.ellipse {
+  background: #36845a;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  margin-top: 6px;
+  align-items: center;
+}
+
+/* Event Details Panel */
+.event-details-background {
+  background: #ffffff;
+  border-radius: 15px;
+  width: 100%;
+  min-height: 600px;
+  position: relative;
+  box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
+}
+.event-details-frame {/*moves the name, event, etc,*/
+  display: grid;
+  gap: 12px;
+  row-gap: 0px;
+  grid-template-columns: repeat(2, fit-content(100%));
+  grid-template-rows: repeat(6, fit-content(100%));
+  align-items: center;
+  padding: 24px;
+}
+.event-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  padding: 0 24px;
+  margin-top: 8px;
+}
+.available-staff-section {
+  padding: 0 24px;
+  margin-top: 8px;
+}
+.event-label { /* Heading titles for the event, name, etc details */
+  color: #36845a;
+  text-align: left;
+  font-family: "Passion One", sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+}
+.event-value {
+  color: #000000;
+  text-align: left;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+.event-description {
+  color: #36845a;
+  text-align: left;
+  font-family: "Passion One", sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+}
+.event-desc-text {
+  color: #000000;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+}
+.staff-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.staff-name {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  color: #000;
+}
+@media (max-width: 768px) {
+  .page-content {
+    flex-direction: column;
+  }
+  .left-panel {
+    flex: none;
+    width: 100%;
+  }
+}
+.page-content {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  padding: 20px;
+  margin-top: 10px;
+}
+.left-panel {
+  flex: 0 0 320px;
+}
+.right-panel {
+  flex: 1;
+}
+
+/* Navigation Bar */
+.staff-nav-bar {
+  background: #204631;
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+.g-tlogo {
+  height: 46px;
+  width: auto;
+  object-fit: cover;
+}
+.schedule {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+}
+.events {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  font-weight: 400;
+}
+.sign-out-button {
+  background: transparent;
+  border: 2px solid #ffffff;
+  border-radius: 12px;
+  width: 120px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.sign-out {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+}
+.navbar .nav-link,
+.navbar-brand {
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  color: #ffffff !important;
+  padding: 8px 14px;
+}
+.navbar .nav-link:hover {
+  color: #a8d5b5 !important;
+}
+.navbar {
+  background-color: #204631 !important;
+  padding: 12px 24px;
+}
+.navbar .btn-outline-light {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  border-radius: 12px;
+  padding: 6px 20px;
+}
