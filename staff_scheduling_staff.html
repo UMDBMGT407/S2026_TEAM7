@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./css/staff_scheduling_staff.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Passion One Font Inputing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+
+  <style>
+   a,
+   button,
+   input,
+   select,
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+       border: none;
+       text-decoration: none;
+       background: none;
+   
+       -webkit-font-smoothing: antialiased;
+   }
+   
+   menu, ol, ul {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+   }
+   </style>
+  <title>Document</title>
+</head>
+<body>
+<div class="staff-scheduling">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+    <div class="container-fluid px-4">
+      <span class="navbar-brand">
+          <img src="./images/logo.png" alt="Logo" height="46px">
+      </span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="./staff_scheduling_staff.html">Schedule</a></li>
+          <li class="nav-item"><a class="nav-link" href="./event_details_staff.html">Events</a></li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="./index.html">Sign Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="calendar-background">
+    <div class="calendar-background2"></div>
+  </div>
+  <div class="calendar-nav">
+      <button onclick="navigate(-1)">&#8592;</button>
+      <span id="nav-label">Today</span>
+      <button onclick="navigate(1)">&#8594;</button>
+      
+      <div style="margin-left: auto;"> 
+        <button class="today-btn" onclick="goToToday()">Today</button>
+      </div>
+    </div>
+  <div class="dates" id="dateHeader"></div>
+  <div class="back-design" id="calendarGrid"></div>
+    <div class="sidebar">
+      <p class="sidebar-heading">View</p>
+      <button class="day_button active" onclick="setView('day')">Day</button>
+      <button class="day3_button" onclick="setView('3day')">3 Day</button>
+      <button class="week_button" onclick="setView('week')">Week</button>
+      
+      <p class="sidebar-heading">Staff</p>
+      <div class="staff-dropdown-wrapper">
+      <select class="staff-dropdown" onchange="filterByStaff(this.value)">
+        <option value="all">All Staff</option>
+        <option value="Alyssa Chen">Alyssa Chen</option>
+        <option value="Joseph Williams">Joseph Williams</option>
+        <option value="Crystal Brown">Crystal Brown</option>
+        <option value="Matt Johnson">Matt Johnson</option>
+      </select>
+    </div>
+    </div> 
+    
+  </div>
+  <script>
+    const HOURS = Array.from({ length: 24 }, (_, i) => i);
+    const DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    let currentView = 'day';
+    let offset = 0;
+    let selectedStaff = 'all';
+          function filterByStaff(value) {
+            selectedStaff = value;
+            renderCalendar(currentView);
+          }
+    
+    const events = [
+      { date: getDateStr(0), title: 'Alyssa Chen',  start: 10.5, end: 15,  color: '#204631' },
+      { date: getDateStr(1), title: 'Staff Meeting', start: 11,   end: 12,  color: '#36845a' },
+      { date: getDateStr(2), title: 'Crystal Brown', start: 13,   end: 17,  color: '#204631' },
+      { date: getDateStr(3), title: 'Matt Johnson',  start: 14,   end: 18,  color: '#36845a' },
+    ];
+
+    function getDateStr(offsetDays) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      return d.toISOString().split('T')[0];
+    }
+
+    function formatHour(h) {
+      const hr   = Math.floor(h);
+      const min  = Math.round((h - hr) * 60);
+      if (hr === 0)  return `12:${min.toString().padStart(2,'0')}am`;
+      if (hr === 12) return `12:${min.toString().padStart(2,'0')}pm`;
+      const ampm = hr < 12 ? 'am' : 'pm';
+      const disp = hr > 12 ? hr - 12 : hr;
+      return `${disp}:${min.toString().padStart(2,'0')}${ampm}`;
+    }
+
+    function getDatesForView(view) {
+      const base = new Date();
+
+      if (view === 'day') {
+        base.setDate(base.getDate() + offset);
+        return [new Date(base)];
+      }
+
+      if (view === '3day') {
+        base.setDate(base.getDate() + offset);
+        return [0, 1, 2].map(i => {
+          const d = new Date(base);
+          d.setDate(base.getDate() + i);
+          return d;
+        });
+      }
+
+      const day = base.getDay();
+      const monday = new Date(base);
+      monday.setDate(base.getDate() - (day === 0 ? 6 : day - 1) + (offset * 7));
+      return Array.from({ length: 7 }, (_, i) => {
+        const d = new Date(monday);
+        d.setDate(monday.getDate() + i);
+        return d;
+      });
+    }
+
+    function updateNavLabel(dates) {
+      const first = dates[0];
+      const last  = dates[dates.length - 1];
+      if (dates.length === 1) {
+        document.getElementById('nav-label').textContent =
+          `${DAY_NAMES[first.getDay()]}, ${first.getDate()} ${MONTH_NAMES[first.getMonth()]}`;
+      } else {
+        document.getElementById('nav-label').textContent =
+          `${first.getDate()} ${MONTH_NAMES[first.getMonth()]} – ${last.getDate()} ${MONTH_NAMES[last.getMonth()]}`;
+      }
+    }
+
+    function navigate(direction) {
+      offset += direction;
+      renderCalendar(currentView);
+    }
+
+    function setView(view) {
+      currentView = view;
+      offset = 0;
+
+      document.querySelectorAll('.day_button, .week_button, .day3_button').forEach(b => b.classList.remove('active'));
+      if (view === 'day')   document.querySelector('.day_button').classList.add('active');
+      if (view === 'week')  document.querySelector('.week_button').classList.add('active');
+      if (view === '3day')  document.querySelector('.day3_button').classList.add('active');
+
+      renderCalendar(view);
+    }
+
+    function goToToday() {
+      offset = 0;
+      renderCalendar(currentView);
+    }
+
+    function renderCalendar(view) {
+      const dates    = getDatesForView(view);
+      const todayStr = new Date().toISOString().split('T')[0];
+
+      updateNavLabel(dates);
+
+      document.getElementById('dateHeader').innerHTML = dates.map(d => {
+        const ds      = d.toISOString().split('T')[0];
+        const isToday = ds === todayStr;
+        return `<div class="date-label${isToday ? ' today' : ''}">
+          <span class="date-day-name">${DAY_NAMES[d.getDay()]},</span>
+          <span class="date-number">${d.getDate()}</span>
+          <span class="date-month">${MONTH_NAMES[d.getMonth()]}</span>
+        </div>`;
+      }).join('');
+
+      const timeCol = `<div class="time-column">
+        ${HOURS.map(h => {
+          const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`;
+          return `<div class="time-label">${label}</div>`;
+        }).join('')}
+      </div>`;
+
+      const dayCols = `<div class="days-wrapper">
+        ${dates.map(d => {
+          const ds        = d.toISOString().split('T')[0];
+          const dayEvents = events.filter(e => e.date === ds && 
+            (selectedStaff === 'all' || e.title === selectedStaff));
+          const cells     = HOURS.map(() => `<div class="day-cell"></div>`).join('');
+
+          const eventDivs = dayEvents.map(e => {
+            const top = e.start * 62;
+            const height = (e.end - e.start) * 62;
+            return `<div class="cal-event" style="top:${top}px;height:${height}px;background:${e.color}">
+              <div class="ev-title">${e.title}</div>
+              <div class="ev-time">${formatHour(e.start)} – ${formatHour(e.end)}</div>
+            </div>`;
+          }).join('');
+
+          let timeLine = '';
+          if (ds === todayStr) {
+            const now     = new Date();
+            const nowHour = now.getHours() + now.getMinutes() / 60;
+            timeLine = `<div class="current-time-line" style="top:${nowHour * 62}px"></div>`;
+          }
+
+          return `<div class="day-col">${cells}${eventDivs}${timeLine}</div>`;
+        }).join('')}
+      </div>`;
+
+      document.getElementById('calendarGrid').innerHTML = timeCol + dayCols;
+    }
+
+    renderCalendar('day');
+  </script>
+  
+</body>
+</html>
