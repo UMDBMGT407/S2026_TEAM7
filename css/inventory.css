@@ -1,0 +1,676 @@
+.inventory-analytics,
+.inventory-analytics * {
+  box-sizing: border-box;
+}
+
+.inventory-analytics {
+  background: #36845a;
+  min-height: 100vh;
+  padding: 120px 40px 60px;
+}
+
+/* PAGE GRID */
+.inventory-layout {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 420px 1fr 420px;
+  gap: 36px;
+  align-items: start;
+}
+
+/* LEFT KPI BOX */
+.inventory-kp-is {
+  position: static;
+  width: 100%;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.frame-9 {
+  width: 100%;
+  position: relative;
+}
+
+.line-1 {
+  border-top: 1px solid #000000;
+  width: calc(100% - 90px);
+  height: 0;
+  position: absolute;
+  left: 45px;
+  top: 0;
+  z-index: 2;
+}
+
+.rectangle-7 {
+  background: #ffffff;
+  width: 100%;
+  min-height: 350px;
+  position: relative;
+}
+
+.current-goals-kp-is {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 45px;
+  font-weight: 400;
+  position: absolute;
+  left: 0;
+  top: 34px;
+  width: 100%;
+}
+
+.inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value {
+  text-align: left;
+  font-family: "Roboto", sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.35;
+  position: absolute;
+  left: 35px;
+  top: 95px;
+  width: 68%;
+}
+
+.inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value-span {
+  color: #000000;
+}
+
+.inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value-span2 {
+  color: #204631;
+}
+
+._30-25-2-5-10-min-18 {
+  text-align: right;
+  font-family: "Roboto", sans-serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1.35;
+  position: absolute;
+  right: 35px;
+  top: 105px;
+  width: 120px;
+}
+
+._30-25-2-5-10-min-18-span {
+  color: #000000;
+}
+
+._30-25-2-5-10-min-18-span2 {
+  color: #204631;
+}
+
+.line-4 {
+  display: none;
+}
+
+/* CENTER GRAPH */
+.theoretical-vs-actual-inventory-costs-over-the-last-12-weeks {
+  background: #ffffff;
+  padding: 32px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 400px;
+  position: static;
+}
+
+.chart-axis {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+
+.main-chart {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+
+.y-axis-left {
+  padding: 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+._20000,
+._16000,
+._12000,
+._8000,
+._4000,
+._0,
+._13,
+._2,
+._3,
+._4,
+._5,
+._6,
+._7,
+._8,
+._9,
+._10,
+._11,
+._122 {
+  color: rgba(0, 0, 0, 0.7);
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+}
+
+.graphi-grid {
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+
+.x-lines {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: auto;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.y-lines {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  height: auto;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  overflow: visible;
+}
+
+.bar-area {
+  border-style: solid;
+  border-color: rgba(0, 0, 26, 0.3);
+  border-width: 0 0 1px 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 7px;
+  top: 6px;
+}
+
+.bar-group {
+  padding: 0 9px;
+  display: flex;
+  flex-direction: row;
+  gap: 2px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+
+.bar-block {
+  align-self: stretch;
+  flex: 1;
+  position: relative;
+}
+
+.single-bar {
+  height: 42.75%;
+  position: absolute;
+  right: -0.25px;
+  left: 0;
+  bottom: 0%;
+  top: 57.25%;
+}
+
+.bar-strip {
+  background: #618e2d;
+  opacity: 0.8;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
+}
+
+.single-bar2 {
+  height: 45.6%;
+  position: absolute;
+  right: -0.25px;
+  left: 0;
+  bottom: 0%;
+  top: 54.4%;
+}
+
+.bar-strip2 {
+  background: #204631;
+  opacity: 0.8;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
+}
+
+.single-bar3 { height: 46.8%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 53.2%; }
+.single-bar4 { height: 48.75%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 51.25%; }
+.single-bar5 { height: 44.7%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 55.3%; }
+.single-bar6 { height: 47.05%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 52.95%; }
+.single-bar7 { height: 49.65%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 50.35%; }
+.single-bar8 { height: 49.4%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 50.6%; }
+.single-bar9 { height: 53.4%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 46.6%; }
+.single-bar10 { height: 57.1%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 42.9%; }
+.single-bar11 { height: 46.5%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 53.5%; }
+.single-bar12 { height: 41.85%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 58.15%; }
+.single-bar13 { height: 44.1%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 55.9%; }
+.single-bar14 { height: 51.75%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 48.25%; }
+.single-bar15 { height: 54.45%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 45.55%; }
+.single-bar16 { height: 55.2%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 44.8%; }
+.single-bar17 { height: 60%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 40%; }
+.single-bar18 { height: 49.05%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 50.95%; }
+.single-bar19 { height: 50.1%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 49.9%; }
+.single-bar20 { height: 57.3%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 42.7%; }
+.single-bar21 { height: 59.4%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 40.6%; }
+.single-bar22 { height: 60.15%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 39.85%; }
+.single-bar23 { height: 64.75%; position: absolute; right: -0.25px; left: 0; bottom: 0%; top: 35.25%; }
+
+.x-axis {
+  margin: -2px 0 0 0;
+  padding: 0 0 8px 46px;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.x-label-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+
+.legends {
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.fill-legends {
+  padding: 0 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.legend {
+  padding: 4px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.legend-node {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  position: relative;
+}
+
+.basic-node {
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  left: 6px;
+  top: 6px;
+}
+
+.square-fill {
+  background: #618e2d;
+  border-style: solid;
+  border-color: #ffffff;
+  border-width: 1px;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: -6px;
+  top: -6px;
+}
+
+.theoretical-cost,
+.actual-cost {
+  color: rgba(0, 0, 0, 0.7);
+  text-align: left;
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  position: relative;
+}
+
+.square-fill2 {
+  background: #204631;
+  border-style: solid;
+  border-color: #ffffff;
+  border-width: 1px;
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: -6px;
+  top: -6px;
+}
+
+/* DELIVERY STATUS */
+.delivery-status-card {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 18px;
+  min-height: 56px;
+  width: 100%;
+}
+
+.delivery-status-label {
+  color: #ffffff;
+  text-align: left;
+  font-family: "Passion One", sans-serif;
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.delivery-status-value {
+  background: #204631;
+  color: #e6ee70;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  padding: 8px 26px;
+  min-width: 240px;
+}
+
+/* SUPPLIER CARD */
+.inventory-availability {
+  position: static;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.availability-for-suppliers {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 58px;
+  font-weight: 400;
+  width: 100%;
+  line-height: 0.9;
+}
+
+.supplier-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+}
+
+.availability-entry {
+  width: 100%;
+  height: 42px;
+  border-radius: 6px;
+  border: none;
+  padding: 0 10px;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+}
+
+.submit-button {
+  background: #204631;
+  color: #ffffff;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
+  width: 100%;
+  height: 45px;
+  border: none;
+  cursor: pointer;
+}
+
+/* CATEGORY IMAGE */
+.inventory-category-card {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.inventory-category-cost {
+  position: static;
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+
+/* STOCKOUT BOX */
+.top-stockout-items {
+  background: #ffffff;
+  padding: 19px 39px 44px 29px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 295px;
+  position: static;
+}
+
+.top-stock-out-items {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 32px;
+  font-weight: 400;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+.line-2 {
+  border-top: 1px solid #000000;
+  width: 100%;
+  height: 0;
+  position: relative;
+}
+
+.kaiser-roll-281-american-cheese-172-frozen-french-fries-156-beef-patty-127-chicken-breast-111 {
+  color: #000000;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.6;
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+
+/* NAVBAR - UNCHANGED */
+.navbar {
+  background-color: #204631 !important;
+  padding: 12px 24px;
+}
+
+.navbar .navbar-brand img {
+  height: 46px;
+}
+
+.navbar .nav-link {
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  color: #ffffff !important;
+  padding: 8px 14px;
+}
+
+.navbar .nav-link:hover {
+  color: #a8d5b5 !important;
+}
+
+.navbar .dropdown-menu {
+  background-color: #204631;
+  border: 1px solid #36845a;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+
+.navbar .dropdown-item {
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  color: #ffffff;
+  padding: 8px 20px;
+}
+
+.navbar .dropdown-item:hover {
+  background-color: #36845a;
+  color: #ffffff;
+}
+
+.navbar .btn-outline-light {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  border-radius: 12px;
+  padding: 6px 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1280px) {
+  .inventory-layout {
+    grid-template-columns: 380px 1fr 360px;
+    gap: 28px;
+  }
+
+  .availability-for-suppliers {
+    font-size: 48px;
+  }
+
+  .inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value,
+  ._30-25-2-5-10-min-18 {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .inventory-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .delivery-status-card {
+    grid-column: 2 / 3;
+  }
+
+  .inventory-category-card {
+    grid-column: 1 / 2;
+  }
+
+  .top-stockout-items {
+    grid-column: 2 / 3;
+  }
+}
+
+@media (max-width: 768px) {
+  .inventory-analytics {
+    padding: 110px 20px 40px;
+  }
+
+  .inventory-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value {
+    width: 58%;
+    font-size: 22px;
+    top: 105px;
+  }
+
+  ._30-25-2-5-10-min-18 {
+    font-size: 22px;
+    top: 115px;
+    right: 24px;
+  }
+
+  .availability-for-suppliers {
+    font-size: 42px;
+  }
+
+  .delivery-status-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .delivery-status-value {
+    min-width: 0;
+    width: 100%;
+  }
+}
