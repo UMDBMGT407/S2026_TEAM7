@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="./vars.css">
+<link rel="stylesheet" href="./css/admin.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  a, 
+  button, 
+  input, 
+  select, 
+  h1, 
+  h2, 
+  h3, 
+  h4, 
+  h5, 
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  menu, ol, ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>
+
+<title>Events</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="./dashboard.html">
+        <img src="./images/logo.png" alt="Logo" height="46px">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="./dashboard.html">Dashboard</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./menu.html">Menu</a></li>
+              <li><a class="dropdown-item" href="./menu_adjustments.html">Menu Adjustments</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./orders_and_sales.html">Orders & Sales</a></li>
+              <li><a class="dropdown-item" href="./inventory.html">Inventory</a></li>
+              <li><a class="dropdown-item" href="./inventory_adjustments.html">Inventory Adjustments</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./events.html">Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./loyalty_program.html">Loyalty Program</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./edit_promos.html">Edit Promos</a></li>
+              <li><a class="dropdown-item" href="./view_promos.html">View Promos</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./staff_scheduling_admin.html">Staff Schedule</a></li>
+              <li><a class="dropdown-item" href="./shift_management.html">Shift Management</a></li>
+            </ul>
+          </li>
+
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="./index.html">Sign Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+<div class="events">
+
+<div class="events-header">
+
+<div class="pending-requests-view">
+
+<div class="pending-event-requests">
+Pending Event Requests:
+</div>
+
+<div class="number-of-requests">
+<div class="pending-requests-box">
+<div id="requestCount" class="request-count">1</div>
+</div>
+</div>
+
+</div>
+
+<a href="#requests" class="view-requests-button">
+<div class="pending-event-text">View Requests</div>
+</a>
+
+</div>
+
+<div class="divider"></div>
+
+<div id="requests" class="requests-content">
+
+<div id="requestSection">
+
+<div class="event-request-title">
+<div class="event-request-1">Event Request 1</div>
+</div>
+
+<div class="event-requests-criteria">
+<div>Customer Name:</div>
+<div>Customer Phone:</div>
+<div>Customer Email:</div>
+<div>Event Type:</div>
+<div>Party Size:</div>
+<div>Event Notes:</div>
+</div>
+
+<div class="event-request-info">
+<div class="customerfillin">Martha Lewis</div>
+<div class="customerfillin">443-902-3456</div>
+<div class="customerfillin">MarthaLewis8@gmail.com</div>
+<div class="customerfillin">Birthday Party</div>
+<div class="party-size-input">20</div>
+<div class="customerfillin"></div>
+</div>
+
+<div class="event-request-criteria-2">
+<div>Event Date:</div>
+<div>Event Time:</div>
+<div>Event Duration:</div>
+<div>Catering Info:</div>
+</div>
+
+<div class="event-request-info-2">
+<div class="customerfillin2">04/25/2026</div>
+<div class="customerfillin3">2:00 PM</div>
+<div class="customerfillin3">2.5 Hours</div>
+<div class="customerfillin4">
+4 Nachos, 7 Large Fries, 10 Burgers, 4 Caesar Wraps
+</div>
+</div>
+
+<div class="button-row">
+
+  <div class="accept-button" id="acceptBtn">
+    <div class="apply-promo-text2">Accept</div>
+  </div>
+
+  <div class="deny-button" id="denyBtn">
+    <div class="apply-promo-text">Deny</div>
+  </div>
+
+</div>
+
+
+<div class="calendar">
+  <div class="calendar2">
+
+    <div class="calendar-title">April 2026</div>
+
+    <div class="calendar-grid">
+
+      <div class="day-name">Mon</div>
+      <div class="day-name">Tues</div>
+      <div class="day-name">Wed</div>
+      <div class="day-name">Thurs</div>
+      <div class="day-name">Fri</div>
+      <div class="day-name">Sat</div>
+      <div class="day-name">Sun</div>
+
+      <div></div>
+      <div></div>
+
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>4</div>
+      <div>5</div>
+
+      <div>6</div>
+      <div>7</div>
+      <div>8</div>
+      <div>9</div>
+      <div>10</div>
+      <div>11</div>
+      <div>12</div>
+
+      <div>13</div>
+      <div>14</div>
+      <div>15</div>
+      <div>16</div>
+      <div>17</div>
+      <div>18</div>
+      <div>19</div>
+
+      <div>20</div>
+      <div>21</div>
+      <div>22</div>
+      <div>23</div>
+      <div>24</div>
+      <div class="selected-day">25</div>
+      <div>26</div>
+
+      <div>27</div>
+      <div>28</div>
+      <div>29</div>
+      <div>30</div>
+
+    </div>
+
+  </div>
+</div>
+</div>
+
+<a href="event_details_admin.html" class="view-all-events-button">
+<div class="view-all-events-text">View All Events</div>
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+let countElement = document.getElementById("requestCount");
+let requestSection = document.getElementById("requestSection");
+
+let acceptBtn = document.getElementById("acceptBtn");
+let denyBtn = document.getElementById("denyBtn");
+
+function updateRequests(){
+
+let count = parseInt(countElement.innerText);
+
+if(count > 0){
+count--;
+countElement.innerText = count;
+}
+
+if(count === 0){
+requestSection.style.display = "none";
+}
+
+}
+
+acceptBtn.addEventListener("click", updateRequests);
+denyBtn.addEventListener("click", updateRequests);
+
+</script>
+
+</body>
+</html>
