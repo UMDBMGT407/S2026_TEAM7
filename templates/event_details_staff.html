@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./css/staff.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Passion One Font Inputing -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+   a,
+   button,
+   input,
+   select,
+   h1,
+   h2,
+   h3,
+   h4,
+   h5,
+   * {
+       box-sizing: border-box;
+       margin: 0;
+       padding: 0;
+       border: none;
+       text-decoration: none;
+       background: none;
+   
+       -webkit-font-smoothing: antialiased;
+   }
+   
+   menu, ol, ul {
+       list-style-type: none;
+       margin: 0;
+       padding: 0;
+   }
+   </style>
+  <title>Document</title>
+</head>
+<body>
+  <div class="staff">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+      <div class="container-fluid px-4">
+        <span class="navbar-brand">
+          <img src="./images/logo.png" alt="Logo" height="46px">
+        </span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item"><a class="nav-link" href="./staff_scheduling_staff.html">Schedule</a></li>
+            <li class="nav-item"><a class="nav-link" href="./event_details_staff.html">Events</a></li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="btn btn-outline-light" href="./index.html">Sign Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="page-content">
+    <div class="left-panel">
+      <div class="upcoming-events-background">
+        <div class="upcoming-events-header">Upcoming Events:</div>
+        <div id="eventsList"></div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="event-details-background">
+        <div id="eventDetail"></div>
+      </div>
+    </div>
+  </div>
+
+    
+  </div>
+  <script>
+    const events = [
+      {
+        id: 1,
+        type: 'Birthday',
+        name: 'Benjamin King',
+        email: 'awesomegroup@gmail.com',
+        guests: 20,
+        date: 'May 7, 2026',
+        time: '06:00pm-09:00pm',
+        description: 'Birthday party for my friend.',
+        staff: ['Alyssa Chen', 'Joseph Williams', 'Crystal Brown', 'Matt Johnson']
+      },
+      {
+        id: 2,
+        type: 'Birthday',
+        name: 'Jackie Martin',
+        email: 'jmartin67@gmail.com',
+        guests: 12,
+        date: 'June 4, 2026',
+        time: '07:00pm-09:00pm',
+        description: 'Birthday party for my friend.',
+        staff: ['Alyssa Chen', 'Crystal Brown']
+      },
+      {
+        id: 3,
+        type: 'Graduation Party',
+        name: 'Sarah Johnson',
+        email: 'sarah@gmail.com',
+        guests: 35,
+        date: 'June 6, 2026',
+        time: '01:00pm-04:00pm',
+        description: 'Graduation celebration.',
+        staff: ['Joseph Williams', 'Matt Johnson']
+      }
+    ];
+
+    let selectedEvent = events[0];
+    
+    function selectEvent(id) {
+      selectedEvent = events.find(e => e.id === id);
+      renderEventsList();
+      renderEventDetail();
+    }
+
+    function renderEventsList() {
+      const list = document.getElementById('eventsList');
+      list.innerHTML = events.map(e => `
+        <div class="event-item ${selectedEvent.id === e.id ? 'selected' : ''}"
+            onclick="selectEvent(${e.id})">
+          <div class="ellipse"></div>
+          <div>
+            <div class="event-item-type">${e.type}</div>
+            <div class="event-item-date">${e.date}</div>
+            <div class="event-item-time">${e.time}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderEventDetail() {
+      const detail = document.getElementById('eventDetail');
+      detail.innerHTML = `
+        <div class="event-details-frame">
+          <div class="event-label">Event:</div>
+          <div class="event-value">${selectedEvent.type}</div>
+          <div class="event-label">Name:</div>
+          <div class="event-value">${selectedEvent.name}</div>
+          <div class="event-label">Email:</div>
+          <div class="event-value">${selectedEvent.email}</div>
+          <div class="event-label">Guests:</div>
+          <div class="event-value">${selectedEvent.guests}</div>
+          <div class="event-label">Day:</div>
+          <div class="event-value">${selectedEvent.date}</div>
+          <div class="event-label">Time:</div>
+          <div class="event-value">${selectedEvent.time}</div>
+        </div>
+        <div class="event-desc">
+          <div class="event-description">Event Description:</div>
+          <div class="event-desc-text">${selectedEvent.description}</div>
+        </div>
+        <div class="available-staff-section">
+          <div class="event-description">Available Staff:</div>
+          ${selectedEvent.staff.map(s => `
+            <div class="staff-item">
+              <div class="ellipse"></div>
+              <span class="staff-name">${s}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    renderEventsList();
+    renderEventDetail();
+  </script>
+</body>
+</html>

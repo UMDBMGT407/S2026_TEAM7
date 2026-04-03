@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./css/customer_consolidated.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  
+  
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    a { text-decoration: none; }
+  </style>
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="become-a-member">
+    <nav class="navbar navbar-expand-lg gt-nav">
+      <div class="container">
+        <a class="navbar-brand" href="./index.html">
+          <img src="./images/logo.png" alt="Logo" class="nav-logo"/>
+        </a>
+
+
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav mx-auto nav-links-row">
+            <li class="nav-item">
+              <a class="nav-link" href="./online_ordering.html">Order Online</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./event_inquiry.html">Event Inquiry</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./loyalty_status.html">Loyalty Status</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./become_a_member.html">Become a Member</a>
+            </li>
+          </ul>
+
+
+          <ul class="navbar-nav auth-nav">
+            <li class="nav-item account-actions">
+              <a class="sign-in-btn active-signin" id="navAccountButton" href="./login.html">Sign In</a>
+              <a class="sign-out-btn" id="navSignOutButton" href="#" hidden>Sign Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="page-content">
+    <div class="title-text">
+      <div class="join-greene-turtle-rewards">JOIN GREENE TURTLE REWARDS</div>
+      <div
+        class="earn-points-every-visit-unlock-exclusive-perks-get-10-off-your-first-order"
+      >
+        Earn points every visit. Unlock exclusive perks. Get 10% off your first
+        order.
+      </div>
+    </div>
+    <div class="form-fields">
+      <div class="first-name">FIRST NAME</div>
+      <div class="last-name">LAST NAME</div>
+      <div class="birthday">BIRTHDAY</div>
+      <input class="first-name-entry" type="text" name="firstName" placeholder="">
+      <input class="last-name-entry" type="text" name="lastName">
+      <input class="birthday-entry" type="date" name="birthday">
+      <div class="email">EMAIL</div>
+      <div class="phone-number">PHONE NUMBER</div>
+      <div class="preferred-channel">PREFERRED CHANNEL</div>
+      <input class="email-entry" type="email" name="email">
+      <input class="phone-number-entry" type="tel" name="phone">
+      <div class="messaging-select">
+        <label class="messaging-select">
+          <input class="text-select" type="radio" name="preferredChannel" value="text">
+          <span class="text-messaging">Text Messaging</span>
+        </label>
+      </div>
+      <div class="username">USERNAME</div>
+      <div class="password">PASSWORD</div>
+      <div class="email-select">
+        <label class="email-select">
+          <input class="email-select2" type="radio" name="preferredChannel" value="email">
+          <span class="email2">Email</span>
+        </label>
+      </div>
+      <input class="username-entry" type="text" name="username">
+      <input class="password-entry" type="password" name="password">
+    </div>
+    <div class="opt-in-and-create">
+      <label class="opt-in">
+        <input class="opt-in-select" type="checkbox" name="promoOptIn">
+        <span class="i-agree-to-receive-promotions-and-updates-via-email-sms">
+          I agree to receive promotions and updates via email/sms
+        </span>
+      </label>
+      <button class="create-account-button" type="submit">Create Account</button>
+    </div>
+  </div>
+  
+<script>
+ const navAccountButton = document.getElementById("navAccountButton");
+ const navSignOutButton = document.getElementById("navSignOutButton");
+ const userRole = localStorage.getItem("userRole");
+
+
+ if (navAccountButton && userRole === "customer") {
+   navAccountButton.href = "./loyalty_status.html";
+   navAccountButton.classList.add("account-icon-btn");
+   navAccountButton.classList.remove("active-signin");
+   navAccountButton.innerHTML = '<img src="./images/profile_head.png" alt="Profile" class="account-icon-image">';
+   navAccountButton.setAttribute("aria-label", "Loyalty account");
+   navAccountButton.setAttribute("title", "Loyalty account");
+
+
+   if (navSignOutButton) {
+     navSignOutButton.hidden = false;
+
+
+     navSignOutButton.addEventListener("click", function (e) {
+       e.preventDefault();
+       localStorage.removeItem("userRole");
+       localStorage.removeItem("username");
+       window.location.replace("./login.html");
+     });
+   }
+ } else if (navAccountButton) {
+   navAccountButton.href = "./login.html";
+   navAccountButton.classList.remove("account-icon-btn");
+   navAccountButton.classList.add("active-signin");
+   navAccountButton.innerHTML = "Sign In";
+   navAccountButton.setAttribute("aria-label", "Sign In");
+   navAccountButton.setAttribute("title", "Sign In");
+
+
+   if (navSignOutButton) {
+     navSignOutButton.hidden = true;
+   }
+ }
+</script>
+  
+</body>
+</html>

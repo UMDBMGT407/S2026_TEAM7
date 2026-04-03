@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./vars.css">
+  <link rel="stylesheet" href="./css/customer_consolidated.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    a { text-decoration: none; }
+  </style>
+  <title>Document</title>
+</head>
+
+<body>
+  <div class="online-ordering"> 
+    <nav class="navbar navbar-expand-lg gt-nav">
+        <div class="container">
+          <a class="navbar-brand" href="./index.html">
+            <img src="./images/logo.png" alt="Logo" class="nav-logo"/>
+          </a>
+
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto nav-links-row">
+              <li class="nav-item">
+                <a class="nav-link" href="./online_ordering.html">Order Online</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./event_inquiry.html">Event Inquiry</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./loyalty_status.html">Loyalty Status</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="./become_a_member.html">Become a Member</a>
+              </li>
+            </ul>
+
+
+          <ul class="navbar-nav auth-nav">
+            <li class="nav-item account-actions">
+              <a class="sign-in-btn active-signin" id="navAccountButton" href="./login.html">Sign In</a>
+              <a class="sign-out-btn" id="navSignOutButton" href="#" hidden>Sign Out</a>
+            </li>
+          </ul>
+          </div>
+        </div>
+      </nav>
+    <main class="online-ordering-page">
+    <section class="ordering-topbar">
+      
+
+      <a href="./cart.html" class="bag">
+        <img src="./images/bagbutton0.png" alt="Shopping bag" class="bagbutton" />
+        <span class="cart-count" id="cartCount">0</span>
+      </a>
+    </section>
+
+    <section class="menu-layout">
+    <div class="menu-category drinks">
+      <h2 class="category-title">Drinks</h2>
+      <div class="menu-grid">
+        <div class="menu-card" data-name="Soft Drink" data-price="3.99">
+          <h3 class="item-name">Soft Drink</h3>
+          <p class="item-desc">Coke, Diet Coke, Sprite</p>
+          <div class="item-footer">
+            <span class="item-price">$3.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Lemonade" data-price="4.49">
+          <h3 class="item-name">Lemonade</h3>
+          <p class="item-desc">Fresh squeezed lemonade</p>
+          <div class="item-footer">
+            <span class="item-price">$4.49</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-category burgers">
+      <h2 class="category-title">Burgers</h2>
+      <div class="menu-grid">
+        <div class="menu-card" data-name="Classic Burger" data-price="12.99">
+          <h3 class="item-name">Classic Burger</h3>
+          <p class="item-desc">Lettuce, tomato, pickle</p>
+          <div class="item-footer">
+            <span class="item-price">$12.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Cowboy Burger" data-price="14.99">
+          <h3 class="item-name">Cowboy Burger</h3>
+          <p class="item-desc">Topped with onion rings, BBQ sauce, bacon, and cheddar cheese</p>
+          <div class="item-footer">
+            <span class="item-price">$14.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-category handhelds">
+      <h2 class="category-title">Handhelds</h2>
+      <div class="menu-grid">
+        <div class="menu-card" data-name="Chicken Wrap" data-price="11.49">
+          <h3 class="item-name">Chicken Wrap</h3>
+          <p class="item-desc">Grilled chicken, ranch, lettuce</p>
+          <div class="item-footer">
+            <span class="item-price">$11.49</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Crabby Melt" data-price="15.99">
+          <h3 class="item-name">Crabby Melt</h3>
+          <p class="item-desc">Crab dip, melted cheese, and tomato on toasted bread</p>
+          <div class="item-footer">
+            <span class="item-price">$15.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-category mains">
+      <h2 class="category-title">Mains</h2>
+      <div class="menu-grid">
+        <div class="menu-card" data-name="Fish and Chips" data-price="15.99">
+          <h3 class="item-name">Fish and Chips</h3>
+          <p class="item-desc">Served with fries and slaw</p>
+          <div class="item-footer">
+            <span class="item-price">$15.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Chicken Alfredo" data-price="16.99">
+          <h3 class="item-name">Chicken Alfredo</h3>
+          <p class="item-desc">Creamy alfredo with pasta</p>
+          <div class="item-footer">
+            <span class="item-price">$16.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Shrimp Pasta" data-price="17.99">
+          <h3 class="item-name">Shrimp Pasta</h3>
+          <p class="item-desc">Shrimp tossed with pasta in a creamy garlic sauce</p>
+          <div class="item-footer">
+            <span class="item-price">$17.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="menu-category shareables">
+      <h2 class="category-title">Shareables</h2>
+      <div class="menu-grid">
+        <div class="menu-card" data-name="Mozzarella Sticks" data-price="9.99">
+          <h3 class="item-name">Mozzarella Sticks</h3>
+          <p class="item-desc">Served with marinara sauce</p>
+          <div class="item-footer">
+            <span class="item-price">$9.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Onion Rings" data-price="8.00">
+          <h3 class="item-name">Onion Rings</h3>
+          <p class="item-desc">Crispy battered onion rings served golden brown</p>
+          <div class="item-footer">
+            <span class="item-price">$8.00</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Legendary Tenders" data-price="16.99">
+          <h3 class="item-name">Legendary Tenders</h3>
+          <p class="item-desc">Crispy chicken tenders served with your choice of dipping sauce</p>
+          <div class="item-footer">
+            <span class="item-price">$16.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Chicken Quesadilla" data-price="12.00">
+          <h3 class="item-name">Chicken Quesadilla</h3>
+          <p class="item-desc">Grilled chicken and melted cheese in a toasted tortilla</p>
+          <div class="item-footer">
+            <span class="item-price">$12.00</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Loaded Tater Tots" data-price="12.99">
+          <h3 class="item-name">Loaded Tater Tots</h3>
+          <p class="item-desc">Tater tots topped with cheese, bacon, and green onions</p>
+          <div class="item-footer">
+            <span class="item-price">$12.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+
+        <div class="menu-card" data-name="Loaded Nachos" data-price="11.99">
+          <h3 class="item-name">Loaded Nachos</h3>
+          <p class="item-desc">Cheese, jalapeños, salsa</p>
+          <div class="item-footer">
+            <span class="item-price">$11.99</span>
+            <button class="add-btn">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+  </section>
+</main>
+<script>
+  const navAccountButton = document.getElementById("navAccountButton");
+  const navSignOutButton = document.getElementById("navSignOutButton");
+  const userRole = localStorage.getItem("userRole");
+
+  if (navAccountButton && userRole === "customer") {
+    navAccountButton.href = "./loyalty_status.html";
+    navAccountButton.classList.add("account-icon-btn");
+    navAccountButton.classList.remove("active-signin");
+    navAccountButton.innerHTML = '<img src="./images/profile_head.png" alt="Profile" class="account-icon-image">';
+    navAccountButton.setAttribute("aria-label", "Loyalty account");
+    navAccountButton.setAttribute("title", "Loyalty account");
+
+    if (navSignOutButton) {
+      navSignOutButton.hidden = false;
+
+      navSignOutButton.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("username");
+        window.location.replace("./login.html");
+      });
+    }
+  } else if (navAccountButton) {
+    navAccountButton.href = "./login.html";
+    navAccountButton.classList.remove("account-icon-btn");
+    navAccountButton.classList.add("active-signin");
+    navAccountButton.innerHTML = "Sign In";
+    navAccountButton.setAttribute("aria-label", "Sign In");
+    navAccountButton.setAttribute("title", "Sign In");
+
+    if (navSignOutButton) {
+      navSignOutButton.hidden = true;
+    }
+  }
+</script>
+<script>
+  const addButtons = document.querySelectorAll(".add-btn");
+  const cartCount = document.getElementById("cartCount");
+
+  function updateCartCount() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = totalQuantity;
+  }
+
+  addButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      const card = this.closest(".menu-card");
+      const itemName = card.dataset.name;
+      const itemPrice = parseFloat(card.dataset.price);
+
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+      const existingItem = cart.find((item) => item.name === itemName);
+
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          name: itemName,
+          price: itemPrice,
+          quantity: 1
+        });
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+    });
+  });
+
+  updateCartCount();
+</script>
+</body>
+</html>
