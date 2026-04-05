@@ -4,27 +4,28 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./vars.css">
-  <link rel="stylesheet" href="./css/customer_consolidated.css">
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/customer_consolidated.css') }}">
+
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     body { margin: 0; }
     a { text-decoration: none; }
   </style>
+
   <title>Document</title>
 </head>
 <body>
   <div class="homepage">
     <nav class="navbar navbar-expand-lg gt-nav">
       <div class="container">
-        <a class="navbar-brand" href="./index.html">
-          <img src="./images/logo.png" alt="Logo" class="nav-logo"/>
+        <a class="navbar-brand" href="{{ url_for('home') }}">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="nav-logo"/>
         </a>
-
 
         <button
           class="navbar-toggler"
@@ -38,107 +39,85 @@
           <span class="navbar-toggler-icon"></span>
         </button>
 
-
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav mx-auto nav-links-row">
             <li class="nav-item">
-              <a class="nav-link" href="./online_ordering.html">Order Online</a>
+              <a class="nav-link" href="{{ url_for('online_ordering') }}">Order Online</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./event_inquiry.html">Event Inquiry</a>
+              <a class="nav-link" href="{{ url_for('event_inquiry') }}">Event Inquiry</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./loyalty_status.html">Loyalty Status</a>
+              <a class="nav-link" href="{{ url_for('loyalty_status') }}">Loyalty Status</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./become_a_member.html">Become a Member</a>
+              <a class="nav-link" href="{{ url_for('become_a_member') }}">Become a Member</a>
             </li>
           </ul>
 
-
           <ul class="navbar-nav auth-nav">
             <li class="nav-item account-actions">
-              <a class="sign-in-btn active-signin" id="navAccountButton" href="./login.html">Sign In</a>
-              <a class="sign-out-btn" id="navSignOutButton" href="#" hidden>Sign Out</a>
+              {% if user_role == "customer" %}
+                <a class="sign-in-btn account-icon-btn" id="navAccountButton" href="{{ url_for('loyalty_status') }}">
+                  <img src="{{ url_for('static', filename='images/profile_head.png') }}" alt="Profile" class="account-icon-image">
+                </a>
+                <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
+
+              {% elif user_role == "staff" %}
+                <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('staff_page') }}">Staff</a>
+                <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
+
+              {% elif user_role == "admin" %}
+                <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('admin_page') }}">Admin</a>
+                <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
+
+              {% else %}
+                <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('login') }}">Sign In</a>
+              {% endif %}
             </li>
           </ul>
         </div>
       </div>
     </nav>
+
+    <section class="hero-section">
+      <img class="hero-image" src="{{ url_for('static', filename='images/banner-image0.png') }}" alt="Greene Turtle College Park" />
+      <div class="hero-overlay">
+        <h1 class="hero-title">GREENE TURTLE</h1>
+        <p class="hero-subtitle">College Park, Maryland</p>
+      </div>
+    </section>
+
+    <section class="homepage-main-body">
+      <div class="promo-badge">Current Promo!</div>
+
+      <div class="info-grid">
+        <div class="info-left">
+          <p>7356 Baltimore Ave,</p>
+          <p>College Park, MD 20740</p>
+
+          <p class="info-space">(240) 764-8714</p>
+          <p>gtcollegepark@thegreeneturtle.com</p>
+        </div>
+
+        <div class="info-right">
+          <p>Open Sunday-Thursday</p>
+          <p>11:00 AM - 1:00 AM</p>
+
+          <p class="info-space">Open Friday-Saturday</p>
+          <p>11:00 AM - 2:00 AM</p>
+        </div>
+      </div>
+
+      <div class="homepage-buttons">
+        <a href="{{ url_for('online_ordering') }}" class="homepage-btn">Order Food</a>
+        <a href="{{ url_for('become_a_member') }}" class="homepage-btn">Create Account</a>
+        <a href="{{ url_for('loyalty_status') }}" class="homepage-btn">Loyalty Status</a>
+        <a href="{{ url_for('event_inquiry') }}" class="homepage-btn">Book an Event</a>
+      </div>
+    </section>
+  </div>
   
-  <section class="hero-section">
-    <img class="hero-image" src="./images/banner-image0.png" alt="Greene Turtle College Park" />
-    <div class="hero-overlay">
-      <h1 class="hero-title">GREENE TURTLE</h1>
-      <p class="hero-subtitle">College Park, Maryland</p>
-    </div>
-  </section>
-
-  <section class="homepage-main-body">
-    <div class="promo-badge">Current Promo!</div>
-
-    <div class="info-grid">
-      <div class="info-left">
-        <p>7356 Baltimore Ave,</p>
-        <p>College Park, MD 20740</p>
-
-        <p class="info-space">(240) 764-8714</p>
-        <p>gtcollegepark@thegreeneturtle.com</p>
-      </div>
-
-      <div class="info-right">
-        <p>Open Sunday-Thursday</p>
-        <p>11:00 AM - 1:00 AM</p>
-
-        <p class="info-space">Open Friday-Saturday</p>
-        <p>11:00 AM - 2:00 AM</p>
-      </div>
-    </div>
-
-    <div class="homepage-buttons">
-      <a href="./online_ordering.html" class="homepage-btn">Order Food</a>
-      <a href="./become_a_member.html" class="homepage-btn">Create Account</a>
-      <a href="./loyalty_status.html" class="homepage-btn">Loyalty Status</a>
-      <a href="./event_inquiry.html" class="homepage-btn">Book an Event</a>
-    </div>
-  </section>
-</div>
-<script>
-  const navAccountButton = document.getElementById("navAccountButton");
-  const navSignOutButton = document.getElementById("navSignOutButton");
-  const userRole = localStorage.getItem("userRole");
-
-  if (navAccountButton && userRole === "customer") {
-    navAccountButton.href = "./loyalty_status.html";
-    navAccountButton.classList.add("account-icon-btn");
-    navAccountButton.classList.remove("active-signin");
-    navAccountButton.innerHTML = '<img src="./images/profile_head.png" alt="Profile" class="account-icon-image">';
-    navAccountButton.setAttribute("aria-label", "Loyalty account");
-    navAccountButton.setAttribute("title", "Loyalty account");
-
-    if (navSignOutButton) {
-      navSignOutButton.hidden = false;
-
-      navSignOutButton.addEventListener("click", function (e) {
-        e.preventDefault();
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("username");
-        window.location.replace("./login.html");
-      });
-    }
-  } else if (navAccountButton) {
-    navAccountButton.href = "./login.html";
-    navAccountButton.classList.remove("account-icon-btn");
-    navAccountButton.classList.add("active-signin");
-    navAccountButton.innerHTML = "Sign In";
-    navAccountButton.setAttribute("aria-label", "Sign In");
-    navAccountButton.setAttribute("title", "Sign In");
-
-    if (navSignOutButton) {
-      navSignOutButton.hidden = true;
-    }
-  }
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
