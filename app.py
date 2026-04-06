@@ -332,7 +332,7 @@ def staff_shift():
 @app.route("/admin-page")
 @role_required("admin")
 def admin_page():
-    return render_template("admin_dashboard.html", user_role=session.get("user_role"))
+    return render_template("dashboard.html", user_role=session.get("user_role"))
 
 
 # Menu
