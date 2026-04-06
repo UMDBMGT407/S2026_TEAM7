@@ -287,6 +287,22 @@ def menu():
 def menu_adjustments():
     return render_template("menu_adjustments.html", user_role=session.get("user_role"))
 
+@app.route("/loyalty-program")
+@role_required("admin")
+def loyalty_program():
+    return render_template("loyalty_program.html", user_role=session.get("user_role"))
+
+
+@app.route("/staff-scheduling-admin")
+@role_required("admin")
+def staff_scheduling_admin():
+    return render_template("staff_scheduling_admin.html", user_role=session.get("user_role"))
+
+
+@app.route("/shift-management")
+@role_required("admin")
+def shift_management():
+    return render_template("shift_management.html", user_role=session.get("user_role"))
 
 
 if __name__ == "__main__":
