@@ -34,7 +34,7 @@
   <div class="container-fluid px-4">
     
     <!-- LOGO -->
-    <a class="navbar-brand" href="{{ url_for('admin_page') }}">
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">
       <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
     </a>
 
@@ -48,7 +48,7 @@
       <ul class="navbar-nav me-auto">
 
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('admin_page') }}">Dashboard</a>
+          <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
         </li>
 
         <!-- MENU -->
@@ -72,7 +72,7 @@
 
         <!-- EVENTS -->
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('events_admin') }}">Events</a>
+          <a class="nav-link" href="{{ url_for('events') }}">Events</a>
         </li>
 
         <!-- LOYALTY -->
