@@ -304,6 +304,23 @@ def staff_scheduling_admin():
 def shift_management():
     return render_template("shift_management.html", user_role=session.get("user_role"))
 
+@app.route("/edit-promos")
+@role_required("admin")
+def edit_promos():
+   return render_template("edit_promos.html", user_role=session.get("user_role"))
+
+@app.route("/view-promos")
+@role_required("admin")
+def view_promos():
+   return render_template("view_promos.html", user_role=session.get("user_role"))
+
+@app.route("/events-admin")
+@role_required("admin")
+def events_admin():
+   return render_template("events.html", user_role=session.get("user_role"))
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
