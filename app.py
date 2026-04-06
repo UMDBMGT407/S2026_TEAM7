@@ -368,9 +368,9 @@ def inventory_adjustments():
 
 
 # Events (admin inquiry management)
-@app.route("/events-admin")
+@app.route("/events")
 @role_required("admin")
-def events_admin():
+def events():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
         SELECT COUNT(*) AS total FROM event_inquiries
@@ -391,7 +391,7 @@ def events_admin():
                            index=0, user_role=session.get("user_role"))
 
 
-@app.route("/events-admin/view/<int:index>")
+@app.route("/events/view/<int:index>")
 @role_required("admin")
 def view_event(index):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -430,7 +430,7 @@ def approve_event(inquiry_id):
         """, (inquiry_id,))
     mysql.connection.commit()
     cur.close()
-    return redirect(url_for("events_admin"))
+    return redirect(url_for("events"))
 
 
 @app.route("/event-reject/<int:inquiry_id>")
@@ -443,7 +443,7 @@ def reject_event(inquiry_id):
     """, (inquiry_id,))
     mysql.connection.commit()
     cur.close()
-    return redirect(url_for("events_admin"))
+    return redirect(url_for("events"))
 
 
 # Loyalty Program
