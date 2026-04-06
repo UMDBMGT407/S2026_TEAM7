@@ -241,14 +241,14 @@
       ${dates.map(d => {
         const ds        = d.toISOString().split('T')[0];
         const dayEvents = events.filter(e => e.date === ds &&
-          (selectedStaff === 'all' || e.title === selectedStaff));
+          (selectedStaff === 'all' || e.role === selectedStaff));
         const cells     = HOURS.map(() => `<div class="day-cell"></div>`).join('');
 
         const eventDivs = dayEvents.map(e => {
           const top    = e.start * 62;
           const height = (e.end - e.start) * 62;
           return `<div class="cal-event" style="top:${top}px;height:${height}px;background:${e.color}">
-            <div class="ev-title">${e.title}</div>
+            <div class="ev-title">${e.role}</div>
             <div class="ev-time">${formatHour(e.start)} – ${formatHour(e.end)}</div>
           </div>`;
         }).join('');
