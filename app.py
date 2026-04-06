@@ -49,12 +49,12 @@ def login():
         if username.endswith("@gtstaff.com"):
             session["user_role"] = "staff"
             session["username"] = username
-            return redirect(url_for("staff_page"))
+            return redirect(url_for("staff_scheduling_staff"))
 
         elif username.endswith("@gtadmin.com"):
             session["user_role"] = "admin"
             session["username"] = username
-            return redirect(url_for("admin_page"))
+            return redirect(url_for("dashboard"))
 
         else:
             session["user_role"] = "customer"
@@ -233,9 +233,9 @@ def loyalty_status():
 # ========================
 # STAFF PAGES
 # ========================
-@app.route("/staff-page")
+@app.route("/staff-scheduling-staff")
 @role_required("staff", "admin")
-def staff_page():
+def staff_scheduling_staff():
     return render_template("staff_scheduling_staff.html", user_role=session.get("user_role"))
 
 
@@ -245,11 +245,11 @@ def staff_scheduling():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
     staff_members = [row["name"] for row in cur.fetchall()]
-    cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
+    cur.execute("SELECT date, title, start_hour, end_hour, color FROM schedule")
     schedule_events = [
         {
             'date':  str(row["date"]),
-            'role': row["role"],
+            'title': row["title"],
             'start': float(row["start_hour"]),
             'end':   float(row["end_hour"]),
             'color': row["color"]
@@ -331,7 +331,7 @@ def staff_shift():
 # ========================
 @app.route("/dashboard")
 @role_required("admin")
-def admin_page():
+def dashboard():
     return render_template("dashboard.html", user_role=session.get("user_role"))
 
 
