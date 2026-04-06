@@ -304,15 +304,234 @@ def staff_scheduling_admin():
 def shift_management():
     return render_template("shift_management.html", user_role=session.get("user_role"))
 
-@app.route("/edit-promos")
+#EDIT PROMOS
+@app.route("/admin/promos", methods=["GET"])
 @role_required("admin")
-def edit_promos():
-   return render_template("edit_promos.html", user_role=session.get("user_role"))
+def promos_page():
+    cur = mysql.connection.cursor()
 
+    cur.execute("SELECT id, name FROM menu_items")
+    menu_items = cur.fetchall()
+
+    cur.close()
+
+    return render_template(
+        "edit_promos.html",
+        menu_items=menu_items,
+        user_role=session.get("user_role")
+    )
+
+
+@app.route("/admin/promos/add", methods=["POST"])
+@role_required("admin")
+def add_promotion():
+    cur = mysql.connection.cursor()
+
+    try:
+        promotion_name = request.form.get("promotion_name")
+        promotion_type = request.form.get("promotion_type")
+        description = request.form.get("description")
+        discount = float(request.form.get("discount")) if request.form.get("discount") else None
+        start_date = request.form.get("start_date") or None
+        end_date = request.form.get("end_date") or None
+        start_time = request.form.get("start_time") or None
+        end_time = request.form.get("end_time") or None
+        recurring = request.form.get("recurring")
+
+        menu_item_ids = request.form.getlist("menu_item_ids")
+
+        # --- VALIDATION ---
+        if not promotion_name or not menu_item_ids:
+            return redirect(url_for("promos_page"))
+
+        # --- INSERT PROMO ---
+        cur.execute("""
+            INSERT INTO promotions
+            (promotion_name, promotion_type, description, discount,
+             start_date, end_date, start_time, end_time, recurring_day)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            promotion_name,
+            promotion_type,
+            description,
+            discount,
+            start_date,
+            end_date,
+            start_time,
+            end_time,
+            recurring
+        ))
+
+        promotion_id = cur.lastrowid
+
+        # --- LINK MENU ITEMS ---
+        for item_id in menu_item_ids:
+            cur.execute("""
+                INSERT INTO promotion_items (promotion_id, menu_item_id)
+                VALUES (%s, %s)
+            """, (promotion_id, item_id))
+
+        mysql.connection.commit()
+
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+
+    finally:
+        cur.close()
+
+    return redirect(url_for("promos_page"))
+    
+from datetime import datetime, timedelta
+
+# =========================
+# VIEW PROMOS (CALENDAR)
+# =========================
 @app.route("/view-promos")
 @role_required("admin")
 def view_promos():
-   return render_template("view_promos.html", user_role=session.get("user_role"))
+
+    # Get month/year from URL or default to today
+    month = request.args.get("month", type=int)
+    year = request.args.get("year", type=int)
+
+    today = datetime.today()
+
+    if not month:
+        month = today.month
+    if not year:
+        year = today.year
+
+    cur = mysql.connection.cursor()
+
+    # --- GET PROMOS FOR CALENDAR ---
+    cur.execute("""
+        SELECT pc.date, p.id, p.promotion_name
+        FROM promotion_calendar pc
+        JOIN promotions p ON pc.promotion_id = p.id
+        WHERE MONTH(pc.date) = %s AND YEAR(pc.date) = %s
+    """, (month, year))
+
+    rows = cur.fetchall()
+
+    # --- GET ALL PROMOTIONS (FOR ADD FORM) ---
+    cur.execute("SELECT id, promotion_name FROM promotions")
+    promotions = cur.fetchall()
+
+    cur.close()
+
+    # --- ORGANIZE BY DAY ---
+    calendar_data = {}
+
+    for row in rows:
+        day = row["date"].day
+
+        if day not in calendar_data:
+            calendar_data[day] = []
+
+        calendar_data[day].append({
+            "id": row["id"],
+            "name": row["promotion_name"],
+            "date": row["date"]
+        })
+
+    return render_template(
+        "view_promos.html",
+        calendar_data=calendar_data,
+        promotions=promotions,
+        month=month,
+        year=year,
+        user_role=session.get("user_role")
+    )
+
+
+# =========================
+# VIEW PROMO DETAILS
+# =========================
+@app.route("/promo/<int:promo_id>")
+@role_required("admin")
+def promo_details(promo_id):
+    cur = mysql.connection.cursor()
+
+    cur.execute("SELECT * FROM promotions WHERE id = %s", (promo_id,))
+    promo = cur.fetchone()
+
+    cur.close()
+
+    return render_template("promo_details.html", promo=promo)
+
+
+# =========================
+# DELETE PROMO FROM DAY
+# =========================
+@app.route("/delete-promo/<int:promo_id>")
+@role_required("admin")
+def delete_promo(promo_id):
+    date = request.args.get("date")
+    month = request.args.get("month")
+    year = request.args.get("year")
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+        DELETE FROM promotion_calendar
+        WHERE promotion_id = %s AND date = %s
+    """, (promo_id, date))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("view_promos", month=month, year=year))
+
+
+# =========================
+# ADD PROMO TO CALENDAR (DATE RANGE)
+# =========================
+@app.route("/add-promo-to-calendar", methods=["POST"])
+@role_required("admin")
+def add_promo_to_calendar():
+    cur = mysql.connection.cursor()
+
+    try:
+        promotion_id = request.form.get("promotion_id")
+
+        start_date = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
+        end_date = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d").date()
+
+        # --- VALIDATION ---
+        if end_date < start_date:
+            return redirect(url_for("view_promos"))
+
+        current_date = start_date
+
+        while current_date <= end_date:
+
+            # --- CHECK FOR DUPLICATES ---
+            cur.execute("""
+                SELECT 1 FROM promotion_calendar
+                WHERE promotion_id = %s AND date = %s
+            """, (promotion_id, current_date))
+
+            exists = cur.fetchone()
+
+            if not exists:
+                cur.execute("""
+                    INSERT INTO promotion_calendar (promotion_id, date)
+                    VALUES (%s, %s)
+                """, (promotion_id, current_date))
+
+            current_date += timedelta(days=1)
+
+        mysql.connection.commit()
+
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+
+    finally:
+        cur.close()
+
+    return redirect(url_for("view_promos"))
 
 @app.route("/events-admin")
 @role_required("admin")
