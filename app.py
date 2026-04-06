@@ -1,8 +1,17 @@
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, session, abort
+from flask_mysqldb import MySQL
+import MySQLdb.cursors
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = "replace-this-with-a-real-secret-key"
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'your_password'
+app.config['MYSQL_DB'] = 'your_database'
+mysql = MySQL(app)
 
 
 # ========================
@@ -86,9 +95,8 @@ def checkout():
 
 @app.route("/event-inquiry", methods=["GET", "POST"])
 def event_inquiry():
-    cur = mysql.connection.cursor()
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    # Pull booked dates from the booked_events table
     cur.execute("""
         SELECT DATE(booked_datetime) AS booked_date
         FROM booked_events
@@ -97,16 +105,15 @@ def event_inquiry():
     booked_dates = [str(row["booked_date"]) for row in booked_date_rows if row["booked_date"]]
 
     if request.method == "POST":
-        full_name = request.form.get("fullName", "").strip()
-        organization = request.form.get("organization", "").strip()
-        guests = request.form.get("guests", "").strip()
-        email = request.form.get("email", "").strip()
-        phone = request.form.get("phone", "").strip()
+        full_name          = request.form.get("fullName", "").strip()
+        organization       = request.form.get("organization", "").strip()
+        guests             = request.form.get("guests", "").strip()
+        email              = request.form.get("email", "").strip()
+        phone              = request.form.get("phone", "").strip()
         preferred_datetime = request.form.get("preferredDateTime", "").strip()
-        event_description = request.form.get("eventDescription", "").strip()
-        catering_package = request.form.get("cateringPackage", "").strip()
+        event_description  = request.form.get("eventDescription", "").strip()
+        catering_package   = request.form.get("cateringPackage", "").strip()
 
-        # Check if selected date is already booked
         requested_date = preferred_datetime.split("T")[0] if preferred_datetime else None
 
         if requested_date in booked_dates:
@@ -118,22 +125,12 @@ def event_inquiry():
                 message="That date is already booked. Please choose another day."
             )
 
-        # Save as a pending inquiry
         cur.execute("""
             INSERT INTO event_inquiries
             (full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            full_name,
-            organization,
-            guests,
-            email,
-            phone,
-            preferred_datetime,
-            event_description,
-            catering_package,
-            "pending"
-        ))
+        """, (full_name, organization, guests, email, phone,
+              preferred_datetime, event_description, catering_package, "pending"))
         mysql.connection.commit()
         cur.close()
 
@@ -153,21 +150,19 @@ def event_inquiry():
     )
 
 
-
 @app.route("/become-a-member", methods=["GET", "POST"])
 def become_a_member():
     if request.method == "POST":
-        first_name = request.form.get("firstName", "").strip()
-        last_name = request.form.get("lastName", "").strip()
-        birthday = request.form.get("birthday", "").strip()
-        email = request.form.get("email", "").strip()
-        phone = request.form.get("phone", "").strip()
+        first_name        = request.form.get("firstName", "").strip()
+        last_name         = request.form.get("lastName", "").strip()
+        birthday          = request.form.get("birthday", "").strip()
+        email             = request.form.get("email", "").strip()
+        phone             = request.form.get("phone", "").strip()
         preferred_channel = request.form.get("preferredChannel", "").strip()
-        username = request.form.get("username", "").strip()
-        password = request.form.get("password", "").strip()
-        promo_opt_in = 1 if request.form.get("promoOptIn") else 0
+        username          = request.form.get("username", "").strip()
+        password          = request.form.get("password", "").strip()
+        promo_opt_in      = 1 if request.form.get("promoOptIn") else 0
 
-        # basic validation
         if not all([first_name, last_name, birthday, email, phone, preferred_channel, username, password]):
             return render_template(
                 "become_a_member.html",
@@ -175,22 +170,13 @@ def become_a_member():
                 message="Please fill out all required fields."
             )
 
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute("""
             INSERT INTO members
             (first_name, last_name, date_of_birth, email, phone, preferred_channel, username, password, promo_opt_in)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            first_name,
-            last_name,
-            birthday,
-            email,
-            phone,
-            preferred_channel,
-            username,
-            password,
-            promo_opt_in
-        ))
+        """, (first_name, last_name, birthday, email, phone,
+              preferred_channel, username, password, promo_opt_in))
         mysql.connection.commit()
         cur.close()
 
@@ -203,13 +189,11 @@ def become_a_member():
     return render_template("become_a_member.html", user_role=session.get("user_role"))
 
 
-
 @app.route("/loyalty-status")
 def loyalty_status():
     user_role = session.get("user_role")
-    username = session.get("username")
+    username  = session.get("username")
 
-    # Not logged in
     if not user_role or not username:
         return render_template(
             "loyalty_status.html",
@@ -218,7 +202,6 @@ def loyalty_status():
             customer_view=False
         )
 
-    # Staff/admin should not see customer loyalty info
     if user_role != "customer":
         return render_template(
             "loyalty_status.html",
@@ -228,16 +211,12 @@ def loyalty_status():
             message="Loyalty status is only available for customer accounts."
         )
 
-    cur = mysql.connection.cursor()
-    cur.execute("""
-        SELECT first_name, points
-        FROM members
-        WHERE username = %s
-    """, (username,))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT first_name, points FROM members WHERE username = %s", (username,))
     member = cur.fetchone()
     cur.close()
 
-    points = member["points"]
+    points            = member["points"]
     redeemable_credit = points / 100
 
     return render_template(
@@ -252,7 +231,7 @@ def loyalty_status():
 
 
 # ========================
-# STAFF / ADMIN PAGES
+# STAFF PAGES
 # ========================
 @app.route("/staff-page")
 @role_required("staff", "admin")
@@ -260,10 +239,85 @@ def staff_page():
     return render_template("staff_page.html", user_role=session.get("user_role"))
 
 
+@app.route("/schedule")
+@role_required("staff", "admin")
+def staff_scheduling():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
+    staff_members = [row["name"] for row in cur.fetchall()]
+    cur.execute("SELECT date, title, start_hour, end_hour, color FROM schedule")
+    schedule_events = [
+        {
+            'date':  str(row["date"]),
+            'title': row["title"],
+            'start': float(row["start_hour"]),
+            'end':   float(row["end_hour"]),
+            'color': row["color"]
+        }
+        for row in cur.fetchall()
+    ]
+    cur.close()
+    # Admins see admin navbar, staff see staff navbar
+    template = "staff_scheduling_admin.html" if session.get("user_role") == "admin" else "staff_scheduling_staff.html"
+    return render_template(template, staff_members=staff_members,
+                           schedule_events=schedule_events,
+                           user_role=session.get("user_role"))
+
+
+@app.route("/event-details")
+@role_required("staff", "admin")
+def event_details():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT id, type, name, email, guests, date, time, description FROM events")
+    event_rows = cur.fetchall()
+    events = []
+    for row in event_rows:
+        cur.execute("""
+            SELECT u.name FROM users u
+            JOIN event_staff es ON u.id = es.user_id
+            WHERE es.event_id = %s
+        """, (row["id"],))
+        staff = [s["name"] for s in cur.fetchall()]
+        events.append({
+            'id':          row["id"],
+            'type':        row["type"],
+            'name':        row["name"],
+            'email':       row["email"],
+            'guests':      row["guests"],
+            'date':        str(row["date"]),
+            'time':        row["time"],
+            'description': row["description"],
+            'staff':       staff
+        })
+    cur.close()
+    # Admins see admin navbar, staff see staff navbar
+    template = "event_details_admin.html" if session.get("user_role") == "admin" else "event_details_staff.html"
+    return render_template(template, events=events, user_role=session.get("user_role"))
+
+
+# ========================
+# ADMIN PAGES
+# ========================
 @app.route("/admin-page")
 @role_required("admin")
 def admin_page():
     return render_template("admin_dashboard.html", user_role=session.get("user_role"))
+
+
+# Menu
+@app.route("/menu")
+@role_required("admin")
+def menu():
+    return render_template("menu.html", user_role=session.get("user_role"))
+
+
+@app.route("/menu-adjustments")
+@role_required("admin")
+def menu_adjustments():
+    return render_template("menu_adjustments.html", user_role=session.get("user_role"))
+
+
+# Orders
 @app.route("/orders-and-sales")
 @role_required("admin")
 def orders_and_sales():
@@ -276,280 +330,23 @@ def inventory():
     return render_template("inventory.html", user_role=session.get("user_role"))
 
 
-@app.route("/menu")
+@app.route("/inventory-adjustments")
 @role_required("admin")
-def menu():
-    return render_template("menu.html", user_role=session.get("user_role"))
+def inventory_adjustments():
+    return render_template("inventory_adjustments.html", user_role=session.get("user_role"))
 
 
-@app.route("/menu-adjustments")
-@role_required("admin")
-def menu_adjustments():
-    return render_template("menu_adjustments.html", user_role=session.get("user_role"))
-
-@app.route("/loyalty-program")
-@role_required("admin")
-def loyalty_program():
-    return render_template("loyalty_program.html", user_role=session.get("user_role"))
-
-
-@app.route("/staff-scheduling-admin")
-@role_required("admin")
-def staff_scheduling_admin():
-    return render_template("staff_scheduling_admin.html", user_role=session.get("user_role"))
-
-
-@app.route("/shift-management")
-@role_required("admin")
-def shift_management():
-    return render_template("shift_management.html", user_role=session.get("user_role"))
-
-#EDIT PROMOS
-@app.route("/admin/promos", methods=["GET"])
-@role_required("admin")
-def promos_page():
-    cur = mysql.connection.cursor()
-
-    cur.execute("SELECT id, name FROM menu_items")
-    menu_items = cur.fetchall()
-
-    cur.close()
-
-    return render_template(
-        "edit_promos.html",
-        menu_items=menu_items,
-        user_role=session.get("user_role")
-    )
-
-
-@app.route("/admin/promos/add", methods=["POST"])
-@role_required("admin")
-def add_promotion():
-    cur = mysql.connection.cursor()
-
-    try:
-        promotion_name = request.form.get("promotion_name")
-        promotion_type = request.form.get("promotion_type")
-        description = request.form.get("description")
-        discount = float(request.form.get("discount")) if request.form.get("discount") else None
-        start_date = request.form.get("start_date") or None
-        end_date = request.form.get("end_date") or None
-        start_time = request.form.get("start_time") or None
-        end_time = request.form.get("end_time") or None
-        recurring = request.form.get("recurring")
-
-        menu_item_ids = request.form.getlist("menu_item_ids")
-
-        # --- VALIDATION ---
-        if not promotion_name or not menu_item_ids:
-            return redirect(url_for("promos_page"))
-
-        # --- INSERT PROMO ---
-        cur.execute("""
-            INSERT INTO promotions
-            (promotion_name, promotion_type, description, discount,
-             start_date, end_date, start_time, end_time, recurring_day)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            promotion_name,
-            promotion_type,
-            description,
-            discount,
-            start_date,
-            end_date,
-            start_time,
-            end_time,
-            recurring
-        ))
-
-        promotion_id = cur.lastrowid
-
-        # --- LINK MENU ITEMS ---
-        for item_id in menu_item_ids:
-            cur.execute("""
-                INSERT INTO promotion_items (promotion_id, menu_item_id)
-                VALUES (%s, %s)
-            """, (promotion_id, item_id))
-
-        mysql.connection.commit()
-
-    except Exception as e:
-        mysql.connection.rollback()
-        print(e)
-
-    finally:
-        cur.close()
-
-    return redirect(url_for("promos_page"))
-    
-from datetime import datetime, timedelta
-
-# =========================
-# VIEW PROMOS (CALENDAR)
-# =========================
-@app.route("/view-promos")
-@role_required("admin")
-def view_promos():
-
-    # Get month/year from URL or default to today
-    month = request.args.get("month", type=int)
-    year = request.args.get("year", type=int)
-
-    today = datetime.today()
-
-    if not month:
-        month = today.month
-    if not year:
-        year = today.year
-
-    cur = mysql.connection.cursor()
-
-    # --- GET PROMOS FOR CALENDAR ---
-    cur.execute("""
-        SELECT pc.date, p.id, p.promotion_name
-        FROM promotion_calendar pc
-        JOIN promotions p ON pc.promotion_id = p.id
-        WHERE MONTH(pc.date) = %s AND YEAR(pc.date) = %s
-    """, (month, year))
-
-    rows = cur.fetchall()
-
-    # --- GET ALL PROMOTIONS (FOR ADD FORM) ---
-    cur.execute("SELECT id, promotion_name FROM promotions")
-    promotions = cur.fetchall()
-
-    cur.close()
-
-    # --- ORGANIZE BY DAY ---
-    calendar_data = {}
-
-    for row in rows:
-        day = row["date"].day
-
-        if day not in calendar_data:
-            calendar_data[day] = []
-
-        calendar_data[day].append({
-            "id": row["id"],
-            "name": row["promotion_name"],
-            "date": row["date"]
-        })
-
-    return render_template(
-        "view_promos.html",
-        calendar_data=calendar_data,
-        promotions=promotions,
-        month=month,
-        year=year,
-        user_role=session.get("user_role")
-    )
-
-
-# =========================
-# VIEW PROMO DETAILS
-# =========================
-@app.route("/promo/<int:promo_id>")
-@role_required("admin")
-def promo_details(promo_id):
-    cur = mysql.connection.cursor()
-
-    cur.execute("SELECT * FROM promotions WHERE id = %s", (promo_id,))
-    promo = cur.fetchone()
-
-    cur.close()
-
-    return render_template("promo_details.html", promo=promo)
-
-
-# =========================
-# DELETE PROMO FROM DAY
-# =========================
-@app.route("/delete-promo/<int:promo_id>")
-@role_required("admin")
-def delete_promo(promo_id):
-    date = request.args.get("date")
-    month = request.args.get("month")
-    year = request.args.get("year")
-
-    cur = mysql.connection.cursor()
-
-    cur.execute("""
-        DELETE FROM promotion_calendar
-        WHERE promotion_id = %s AND date = %s
-    """, (promo_id, date))
-
-    mysql.connection.commit()
-    cur.close()
-
-    return redirect(url_for("view_promos", month=month, year=year))
-
-
-# =========================
-# ADD PROMO TO CALENDAR (DATE RANGE)
-# =========================
-@app.route("/add-promo-to-calendar", methods=["POST"])
-@role_required("admin")
-def add_promo_to_calendar():
-    cur = mysql.connection.cursor()
-
-    try:
-        promotion_id = request.form.get("promotion_id")
-
-        start_date = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
-        end_date = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d").date()
-
-        # --- VALIDATION ---
-        if end_date < start_date:
-            return redirect(url_for("view_promos"))
-
-        current_date = start_date
-
-        while current_date <= end_date:
-
-            # --- CHECK FOR DUPLICATES ---
-            cur.execute("""
-                SELECT 1 FROM promotion_calendar
-                WHERE promotion_id = %s AND date = %s
-            """, (promotion_id, current_date))
-
-            exists = cur.fetchone()
-
-            if not exists:
-                cur.execute("""
-                    INSERT INTO promotion_calendar (promotion_id, date)
-                    VALUES (%s, %s)
-                """, (promotion_id, current_date))
-
-            current_date += timedelta(days=1)
-
-        mysql.connection.commit()
-
-    except Exception as e:
-        mysql.connection.rollback()
-        print(e)
-
-    finally:
-        cur.close()
-
-    return redirect(url_for("view_promos"))
-
-# =========================
-# EVENTS ADMIN - VIEW PAGE
-# =========================
+# Events (admin inquiry management)
 @app.route("/events-admin")
 @role_required("admin")
 def events_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    # --- COUNT PENDING REQUESTS ---
     cur.execute("""
-        SELECT COUNT(*) AS total
-        FROM event_inquiries
+        SELECT COUNT(*) AS total FROM event_inquiries
         WHERE inquiry_status = 'pending'
     """)
     count = cur.fetchone()["total"]
 
-    # --- GET FIRST REQUEST ---
     cur.execute("""
         SELECT * FROM event_inquiries
         WHERE inquiry_status = 'pending'
@@ -557,115 +354,235 @@ def events_admin():
         LIMIT 1
     """)
     inquiry = cur.fetchone()
-
     cur.close()
 
-    return render_template(
-        "events.html",
-        inquiry=inquiry,
-        count=count,
-        index=0,
-        user_role=session.get("user_role")
-    )
+    return render_template("events.html", inquiry=inquiry, count=count,
+                           index=0, user_role=session.get("user_role"))
 
 
-# =========================
-# NEXT / PREVIOUS REQUEST
-# =========================
 @app.route("/events-admin/view/<int:index>")
 @role_required("admin")
 def view_event(index):
-    cur = mysql.connection.cursor()
-
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
         SELECT * FROM event_inquiries
         WHERE inquiry_status = 'pending'
         ORDER BY created_at ASC
     """)
     inquiries = cur.fetchall()
-
     cur.close()
 
     if not inquiries:
-        return render_template(
-            "events.html",
-            inquiry=None,
-            count=0,
-            index=0,
-            user_role=session.get("user_role")
-        )
+        return render_template("events.html", inquiry=None, count=0,
+                               index=0, user_role=session.get("user_role"))
 
-    # --- PREVENT OUT OF RANGE ---
-    if index < 0:
-        index = 0
-    if index >= len(inquiries):
-        index = len(inquiries) - 1
-
-    return render_template(
-        "events.html",
-        inquiry=inquiries[index],
-        count=len(inquiries),
-        index=index,
-        user_role=session.get("user_role")
-    )
+    index = max(0, min(index, len(inquiries) - 1))
+    return render_template("events.html", inquiry=inquiries[index],
+                           count=len(inquiries), index=index,
+                           user_role=session.get("user_role"))
 
 
-# =========================
-# APPROVE EVENT
-# =========================
 @app.route("/event-approve/<int:inquiry_id>")
 @role_required("admin")
 def approve_event(inquiry_id):
-    cur = mysql.connection.cursor()
-
-    # --- GET INQUIRY DATA ---
-    cur.execute("""
-        SELECT preferred_datetime
-        FROM event_inquiries
-        WHERE inquiry_id = %s
-    """, (inquiry_id,))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT preferred_datetime FROM event_inquiries WHERE inquiry_id = %s", (inquiry_id,))
     inquiry = cur.fetchone()
-
     if inquiry:
-        # --- INSERT INTO booked_events ---
         cur.execute("""
             INSERT INTO booked_events (inquiry_id, booked_datetime)
             VALUES (%s, %s)
         """, (inquiry_id, inquiry["preferred_datetime"]))
-
-        # --- UPDATE STATUS ---
         cur.execute("""
-            UPDATE event_inquiries
-            SET inquiry_status = 'approved'
+            UPDATE event_inquiries SET inquiry_status = 'approved'
             WHERE inquiry_id = %s
         """, (inquiry_id,))
-
     mysql.connection.commit()
     cur.close()
-
     return redirect(url_for("events_admin"))
 
 
-# =========================
-# REJECT EVENT
-# =========================
 @app.route("/event-reject/<int:inquiry_id>")
 @role_required("admin")
 def reject_event(inquiry_id):
-    cur = mysql.connection.cursor()
-
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
-        UPDATE event_inquiries
-        SET inquiry_status = 'rejected'
+        UPDATE event_inquiries SET inquiry_status = 'rejected'
         WHERE inquiry_id = %s
     """, (inquiry_id,))
-
     mysql.connection.commit()
     cur.close()
-
     return redirect(url_for("events_admin"))
 
 
+# Loyalty Program
+@app.route("/loyalty-program")
+@role_required("admin")
+def loyalty_program():
+    return render_template("loyalty_program.html", user_role=session.get("user_role"))
+
+
+# Promos
+@app.route("/admin/promos", methods=["GET"])
+@role_required("admin")
+def promos_page():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT id, name FROM menu_items")
+    menu_items = cur.fetchall()
+    cur.close()
+    return render_template("edit_promos.html", menu_items=menu_items,
+                           user_role=session.get("user_role"))
+
+
+@app.route("/admin/promos/add", methods=["POST"])
+@role_required("admin")
+def add_promotion():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    try:
+        promotion_name = request.form.get("promotion_name")
+        promotion_type = request.form.get("promotion_type")
+        description    = request.form.get("description")
+        discount       = float(request.form.get("discount")) if request.form.get("discount") else None
+        start_date     = request.form.get("start_date") or None
+        end_date       = request.form.get("end_date") or None
+        start_time     = request.form.get("start_time") or None
+        end_time       = request.form.get("end_time") or None
+        recurring      = request.form.get("recurring")
+        menu_item_ids  = request.form.getlist("menu_item_ids")
+
+        if not promotion_name or not menu_item_ids:
+            return redirect(url_for("promos_page"))
+
+        cur.execute("""
+            INSERT INTO promotions
+            (promotion_name, promotion_type, description, discount,
+             start_date, end_date, start_time, end_time, recurring_day)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (promotion_name, promotion_type, description, discount,
+              start_date, end_date, start_time, end_time, recurring))
+
+        promotion_id = cur.lastrowid
+        for item_id in menu_item_ids:
+            cur.execute("""
+                INSERT INTO promotion_items (promotion_id, menu_item_id)
+                VALUES (%s, %s)
+            """, (promotion_id, item_id))
+
+        mysql.connection.commit()
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+    finally:
+        cur.close()
+
+    return redirect(url_for("promos_page"))
+
+
+@app.route("/view-promos")
+@role_required("admin")
+def view_promos():
+    month = request.args.get("month", type=int)
+    year  = request.args.get("year", type=int)
+    today = datetime.today()
+    if not month:
+        month = today.month
+    if not year:
+        year = today.year
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        SELECT pc.date, p.id, p.promotion_name
+        FROM promotion_calendar pc
+        JOIN promotions p ON pc.promotion_id = p.id
+        WHERE MONTH(pc.date) = %s AND YEAR(pc.date) = %s
+    """, (month, year))
+    rows = cur.fetchall()
+
+    cur.execute("SELECT id, promotion_name FROM promotions")
+    promotions = cur.fetchall()
+    cur.close()
+
+    calendar_data = {}
+    for row in rows:
+        day = row["date"].day
+        if day not in calendar_data:
+            calendar_data[day] = []
+        calendar_data[day].append({
+            "id":   row["id"],
+            "name": row["promotion_name"],
+            "date": row["date"]
+        })
+
+    return render_template("view_promos.html", calendar_data=calendar_data,
+                           promotions=promotions, month=month, year=year,
+                           user_role=session.get("user_role"))
+
+
+@app.route("/promo/<int:promo_id>")
+@role_required("admin")
+def promo_details(promo_id):
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT * FROM promotions WHERE id = %s", (promo_id,))
+    promo = cur.fetchone()
+    cur.close()
+    return render_template("promo_details.html", promo=promo)
+
+
+@app.route("/delete-promo/<int:promo_id>")
+@role_required("admin")
+def delete_promo(promo_id):
+    date  = request.args.get("date")
+    month = request.args.get("month")
+    year  = request.args.get("year")
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        DELETE FROM promotion_calendar
+        WHERE promotion_id = %s AND date = %s
+    """, (promo_id, date))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for("view_promos", month=month, year=year))
+
+
+@app.route("/add-promo-to-calendar", methods=["POST"])
+@role_required("admin")
+def add_promo_to_calendar():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    try:
+        promotion_id = request.form.get("promotion_id")
+        start_date   = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
+        end_date     = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d").date()
+
+        if end_date < start_date:
+            return redirect(url_for("view_promos"))
+
+        current_date = start_date
+        while current_date <= end_date:
+            cur.execute("""
+                SELECT 1 FROM promotion_calendar
+                WHERE promotion_id = %s AND date = %s
+            """, (promotion_id, current_date))
+            if not cur.fetchone():
+                cur.execute("""
+                    INSERT INTO promotion_calendar (promotion_id, date)
+                    VALUES (%s, %s)
+                """, (promotion_id, current_date))
+            current_date += timedelta(days=1)
+
+        mysql.connection.commit()
+    except Exception as e:
+        mysql.connection.rollback()
+        print(e)
+    finally:
+        cur.close()
+
+    return redirect(url_for("view_promos"))
+
+# Staff
+@app.route("/shift-management")
+@role_required("admin")
+def shift_management():
+    return render_template("shift_management.html", user_role=session.get("user_role"))
 
 
 if __name__ == "__main__":
