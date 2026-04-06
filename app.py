@@ -533,10 +533,137 @@ def add_promo_to_calendar():
 
     return redirect(url_for("view_promos"))
 
+# =========================
+# EVENTS ADMIN - VIEW PAGE
+# =========================
 @app.route("/events-admin")
 @role_required("admin")
 def events_admin():
-   return render_template("events.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor()
+
+    # --- COUNT PENDING REQUESTS ---
+    cur.execute("""
+        SELECT COUNT(*) AS total
+        FROM event_inquiries
+        WHERE inquiry_status = 'pending'
+    """)
+    count = cur.fetchone()["total"]
+
+    # --- GET FIRST REQUEST ---
+    cur.execute("""
+        SELECT * FROM event_inquiries
+        WHERE inquiry_status = 'pending'
+        ORDER BY created_at ASC
+        LIMIT 1
+    """)
+    inquiry = cur.fetchone()
+
+    cur.close()
+
+    return render_template(
+        "events.html",
+        inquiry=inquiry,
+        count=count,
+        index=0,
+        user_role=session.get("user_role")
+    )
+
+
+# =========================
+# NEXT / PREVIOUS REQUEST
+# =========================
+@app.route("/events-admin/view/<int:index>")
+@role_required("admin")
+def view_event(index):
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+        SELECT * FROM event_inquiries
+        WHERE inquiry_status = 'pending'
+        ORDER BY created_at ASC
+    """)
+    inquiries = cur.fetchall()
+
+    cur.close()
+
+    if not inquiries:
+        return render_template(
+            "events.html",
+            inquiry=None,
+            count=0,
+            index=0,
+            user_role=session.get("user_role")
+        )
+
+    # --- PREVENT OUT OF RANGE ---
+    if index < 0:
+        index = 0
+    if index >= len(inquiries):
+        index = len(inquiries) - 1
+
+    return render_template(
+        "events.html",
+        inquiry=inquiries[index],
+        count=len(inquiries),
+        index=index,
+        user_role=session.get("user_role")
+    )
+
+
+# =========================
+# APPROVE EVENT
+# =========================
+@app.route("/event-approve/<int:inquiry_id>")
+@role_required("admin")
+def approve_event(inquiry_id):
+    cur = mysql.connection.cursor()
+
+    # --- GET INQUIRY DATA ---
+    cur.execute("""
+        SELECT preferred_datetime
+        FROM event_inquiries
+        WHERE inquiry_id = %s
+    """, (inquiry_id,))
+    inquiry = cur.fetchone()
+
+    if inquiry:
+        # --- INSERT INTO booked_events ---
+        cur.execute("""
+            INSERT INTO booked_events (inquiry_id, booked_datetime)
+            VALUES (%s, %s)
+        """, (inquiry_id, inquiry["preferred_datetime"]))
+
+        # --- UPDATE STATUS ---
+        cur.execute("""
+            UPDATE event_inquiries
+            SET inquiry_status = 'approved'
+            WHERE inquiry_id = %s
+        """, (inquiry_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("events_admin"))
+
+
+# =========================
+# REJECT EVENT
+# =========================
+@app.route("/event-reject/<int:inquiry_id>")
+@role_required("admin")
+def reject_event(inquiry_id):
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+        UPDATE event_inquiries
+        SET inquiry_status = 'rejected'
+        WHERE inquiry_id = %s
+    """, (inquiry_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("events_admin"))
 
 
 
