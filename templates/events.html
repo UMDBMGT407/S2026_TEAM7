@@ -123,153 +123,104 @@ Schedule</a></li>
   </div>
 </nav>
 
-<div class="events">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Requests</title>
 
-<div class="events-header">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
 
-<div class="pending-requests-view">
+        .container {
+            margin-top: 40px;
+        }
 
-<div class="pending-event-requests">
-Pending Event Requests:
-</div>
+        .card {
+            border: 2px solid black;
+            padding: 20px;
+            width: 400px;
+            margin: 20px auto;
+            text-align: left;
+        }
 
-<div class="number-of-requests">
-<div class="pending-requests-box">
-<div id="requestCount" class="request-count">1</div>
-</div>
-</div>
+        .buttons {
+            margin-top: 20px;
+        }
 
-</div>
+        .buttons a {
+            margin: 5px;
+            padding: 10px 15px;
+            border: 1px solid black;
+            text-decoration: none;
+            color: black;
+        }
 
-<a href="#requests" class="view-requests-button">
-<div class="pending-event-text">View Requests</div>
-</a>
+        .nav-buttons a {
+            margin: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
 
-</div>
+<body>
 
-<div class="divider"></div>
+    <div class="container">
 
-<div id="requests" class="requests-content">
+        <h1>Event Requests</h1>
 
-<div id="requestSection">
+        <p><strong>Pending Event Requests:</strong> {{ count }}</p>
 
-<div class="event-request-title">
-<div class="event-request-1">Event Request 1</div>
-</div>
+        {% if inquiry %}
 
-<div class="event-requests-criteria">
-<div>Customer Name:</div>
-<div>Customer Phone:</div>
-<div>Customer Email:</div>
-<div>Event Type:</div>
-<div>Party Size:</div>
-<div>Event Notes:</div>
-</div>
+        <div class="card">
 
-<div class="event-request-info">
-<div class="customerfillin">Martha Lewis</div>
-<div class="customerfillin">443-902-3456</div>
-<div class="customerfillin">MarthaLewis8@gmail.com</div>
-<div class="customerfillin">Birthday Party</div>
-<div class="party-size-input">20</div>
-<div class="customerfillin"></div>
-</div>
+            <p><strong>Name:</strong> {{ inquiry.full_name }}</p>
+            <p><strong>Organization:</strong> {{ inquiry.organization }}</p>
 
-<div class="event-request-criteria-2">
-<div>Event Date:</div>
-<div>Event Time:</div>
-<div>Event Duration:</div>
-<div>Catering Info:</div>
-</div>
+            <p><strong>Guests:</strong> {{ inquiry.guests }}</p>
 
-<div class="event-request-info-2">
-<div class="customerfillin2">04/25/2026</div>
-<div class="customerfillin3">2:00 PM</div>
-<div class="customerfillin3">2.5 Hours</div>
-<div class="customerfillin4">
-4 Nachos, 7 Large Fries, 10 Burgers, 4 Caesar Wraps
-</div>
-</div>
+            <p><strong>Email:</strong> {{ inquiry.email }}</p>
+            <p><strong>Phone:</strong> {{ inquiry.phone }}</p>
 
-<div class="button-row">
+            <p><strong>Date & Time:</strong><br>
+                {{ inquiry.preferred_datetime.strftime('%B %d, %Y %I:%M %p') }}
+            </p>
 
-  <div class="accept-button" id="acceptBtn">
-    <div class="apply-promo-text2">Accept</div>
-  </div>
+            <p><strong>Event Description:</strong><br>
+                {{ inquiry.event_description }}
+            </p>
 
-  <div class="deny-button" id="denyBtn">
-    <div class="apply-promo-text">Deny</div>
-  </div>
+            <p><strong>Catering:</strong> {{ inquiry.catering_package }}</p>
 
-</div>
+        </div>
 
+        <!-- NAVIGATION -->
+        <div class="nav-buttons">
+            <a href="/events-admin/view/{{ index - 1 }}">← Previous</a>
+            <a href="/events-admin/view/{{ index + 1 }}">Next →</a>
+        </div>
 
-<div class="calendar">
-  <div class="calendar2">
+        <!-- ACTION BUTTONS -->
+        <div class="buttons">
+            <a href="/event-approve/{{ inquiry.inquiry_id }}">Approve</a>
+            <a href="/event-reject/{{ inquiry.inquiry_id }}">Reject</a>
+        </div>
 
-    <div class="calendar-title">April 2026</div>
+        {% else %}
 
-    <div class="calendar-grid">
+        <p>No pending event requests.</p>
 
-      <div class="day-name">Mon</div>
-      <div class="day-name">Tues</div>
-      <div class="day-name">Wed</div>
-      <div class="day-name">Thurs</div>
-      <div class="day-name">Fri</div>
-      <div class="day-name">Sat</div>
-      <div class="day-name">Sun</div>
-
-      <div></div>
-      <div></div>
-
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-      <div>5</div>
-
-      <div>6</div>
-      <div>7</div>
-      <div>8</div>
-      <div>9</div>
-      <div>10</div>
-      <div>11</div>
-      <div>12</div>
-
-      <div>13</div>
-      <div>14</div>
-      <div>15</div>
-      <div>16</div>
-      <div>17</div>
-      <div>18</div>
-      <div>19</div>
-
-      <div>20</div>
-      <div>21</div>
-      <div>22</div>
-      <div>23</div>
-      <div>24</div>
-      <div class="selected-day">25</div>
-      <div>26</div>
-
-      <div>27</div>
-      <div>28</div>
-      <div>29</div>
-      <div>30</div>
+        {% endif %}
 
     </div>
 
-  </div>
-</div>
-</div>
-
-<a href="event_details_admin.html" class="view-all-events-button">
-<div class="view-all-events-text">View All Events</div>
-</a>
-
-</div>
-
-</div>
+</body>
+</html>
 
 <script>
 
