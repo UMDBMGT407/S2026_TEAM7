@@ -186,30 +186,31 @@ Schedule</a></li>
 </div>
 
 <script>
+const calendarData = {{ calendar_data | tojson }};
+const currentMonthFromFlask = {{ month }};
+const currentYearFromFlask = {{ year }};
+</script>
+  
+<script>
 
 const months = [
 "January","February","March","April","May","June",
 "July","August","September","October","November","December"
 ];
 
-let today = new Date();
-let currentMonth = today.getMonth();
-let currentYear = today.getFullYear();
+// 🔥 DATA FROM FLASK
+const calendarData = {{ calendar_data | tojson }};
+const currentMonthFromFlask = {{ month }};
+const currentYearFromFlask = {{ year }};
+
+// 🔥 SYNC WITH FLASK
+let currentMonth = currentMonthFromFlask - 1; // JS = 0-based
+let currentYear = currentYearFromFlask;
 
 
-const promotion = {
-id: "1001",
-name: "Happy Hour",
-description: "Happy Hour every Friday from 3 PM – 6 PM with drink specials.",
-startDate: "2026-03-06",
-endDate: "2026-03-06",
-startTime: "3:00 PM",
-endTime: "6:00 PM",
-discount: "50% Off Drinks",
-type: "Drink Promotion"
-};
-
-
+// =========================
+// RENDER CALENDAR
+// =========================
 function renderCalendar(){
 
 document.getElementById("monthTitle").textContent =
@@ -234,40 +235,40 @@ let col = document.createElement("div");
 col.className = "col calendar-day";
 
 if(rowNum === 0 && colNum < firstDay){
-
-col.innerHTML = "";
-
+    col.innerHTML = "";
 }
 
 else if(date <= daysInMonth){
 
-col.innerHTML = `<div class="day-number">${date}</div>`;
+    col.innerHTML = `<div class="day-number">${date}</div>`;
 
-if(currentYear === 2026 && currentMonth === 2 && date === 6){
+    // 🔥 SHOW PROMOTIONS FROM DATABASE
+    if(calendarData[date]){
 
-let promoCard = document.createElement("div");
-promoCard.className = "promo-card";
+        calendarData[date].forEach(promo => {
 
-promoCard.innerHTML = `
-Happy Hour
-<div>
-<button class="btn btn-success btn-sm" onclick="viewPromotion()">View</button>
-<button class="btn btn-danger btn-sm" onclick="deletePromo(this)">Delete</button>
-</div>
-`;
+            let promoCard = document.createElement("div");
+            promoCard.className = "promo-card";
 
-col.appendChild(promoCard);
+            promoCard.innerHTML = `
+                ${promo.name}
+                <div>
+                    <button class="btn btn-success btn-sm" onclick="viewPromotion(${promo.id})">View</button>
+                    <button class="btn btn-danger btn-sm" onclick="deletePromo(${promo.id}, '${promo.date}')">Delete</button>
+                </div>
+            `;
 
-}
+            col.appendChild(promoCard);
 
-date++;
+        });
 
+    }
+
+    date++;
 }
 
 else{
-
-col.innerHTML = "";
-
+    col.innerHTML = "";
 }
 
 row.appendChild(col);
@@ -277,50 +278,59 @@ row.appendChild(col);
 calendar.appendChild(row);
 
 }
-
 }
+
+
+// =========================
+// CHANGE MONTH (FLASK ROUTE)
+// =========================
 function changeMonth(direction){
 
-currentMonth += direction;
+let newMonth = currentMonth + 1 + direction;
+let newYear = currentYear;
 
-if(currentMonth < 0){
-currentMonth = 11;
-currentYear--;
+if(newMonth < 1){
+    newMonth = 12;
+    newYear--;
 }
 
-if(currentMonth > 11){
-currentMonth = 0;
-currentYear++;
+if(newMonth > 12){
+    newMonth = 1;
+    newYear++;
 }
 
-renderCalendar();
-
+// 🔥 Redirect to Flask
+window.location.href = `/view-promos?month=${newMonth}&year=${newYear}`;
 }
-function deletePromo(button){
 
-let promo = button.closest(".promo-card");
+
+// =========================
+// DELETE PROMO (CALL FLASK)
+// =========================
+function deletePromo(promoId, date){
 
 if(confirm("Delete this promotion?")){
-promo.remove();
+    window.location.href =
+    `/delete-promo/${promoId}?date=${date}&month=${currentMonth+1}&year=${currentYear}`;
 }
 
 }
-function viewPromotion(){
 
-document.getElementById("promoName").textContent = promotion.name;
-document.getElementById("promoID").textContent = promotion.id;
-document.getElementById("promoDescription").textContent = promotion.description;
-document.getElementById("promoStartDate").textContent = promotion.startDate;
-document.getElementById("promoEndDate").textContent = promotion.endDate;
-document.getElementById("promoStartTime").textContent = promotion.startTime;
-document.getElementById("promoEndTime").textContent = promotion.endTime;
-document.getElementById("promoDiscount").textContent = promotion.discount;
-document.getElementById("promoType").textContent = promotion.type;
 
-let modal = new bootstrap.Modal(document.getElementById("promoModal"));
-modal.show();
+// =========================
+// VIEW PROMO DETAILS
+// =========================
+function viewPromotion(promoId){
+
+// 🔥 Redirect to Flask details page
+window.location.href = `/promo/${promoId}`;
 
 }
+
+
+// =========================
+// INITIAL LOAD
+// =========================
 renderCalendar();
 
 </script>
