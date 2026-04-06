@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="./vars.css">
-  <link rel="stylesheet" href="./css/admin.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='vars.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -186,8 +186,8 @@ Schedule</a></li>
             </div>
 
             <div class="graphi-grid">
-              <img class="x-lines" src="x-lines0.svg" />
-              <img class="y-lines" src="y-lines0.svg" />
+              <img class="x-lines" src="{{ url_for('static', filename='x-lines0.svg') }}" />
+              <img class="y-lines" src="{{ url_for('static', filename='y-lines0.svg') }}" />
 
               <div class="bar-area">
                 <div class="bar-group">
@@ -303,7 +303,7 @@ Schedule</a></li>
       </div>
 
       <div class="inventory-category-card">
-        <img src="images/inventory_category_cost.png" alt="Inventory Category Cost" class="inventory-category-cost" />
+        <img src="{{ url_for('static', filename='images/inventory_category_cost.png') }}" alt="Inventory Category Cost" class="inventory-category-cost" />
       </div>
 
       <div class="top-stockout-items">
