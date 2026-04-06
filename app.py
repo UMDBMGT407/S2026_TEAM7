@@ -294,6 +294,37 @@ def event_details():
     template = "event_details_admin.html" if session.get("user_role") == "admin" else "event_details_staff.html"
     return render_template(template, events=events, user_role=session.get("user_role"))
 
+@app.route("/staff-shift")
+@role_required("staff", "admin")
+def staff_shift():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute(
+        "SELECT s.id, s.date, s.start_hour AS startH, s.end_hour AS endH,"
+        " s.role, e.type AS event"
+        " FROM schedule s"
+        " LEFT JOIN events e ON s.event_id = e.id"
+        " WHERE s.user_id = %s AND s.date >= CURDATE()"
+        " ORDER BY s.date ASC",
+        (session.get("user_id"),)
+    )
+    rows = cur.fetchall()
+    cur.close()
+ 
+    scheduled_shifts = [
+        {
+            'id':    row["id"],
+            'date':  str(row["date"]),
+            'startH': float(row["startH"]),
+            'endH':   float(row["endH"]),
+            'role':  row["role"],
+            'event': row["event"] or "General"
+        }
+        for row in rows
+    ]
+ 
+    return render_template("staff_shift.html", scheduled_shifts=scheduled_shifts,
+                           user_role=session.get("user_role"))
+
 
 # ========================
 # ADMIN PAGES
@@ -584,6 +615,36 @@ def add_promo_to_calendar():
 def shift_management():
     return render_template("shift_management.html", user_role=session.get("user_role"))
 
+@app.route("/staff-shift")
+@role_required("staff", "admin")
+def staff_shift():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute(
+        "SELECT s.id, s.date, s.start_hour AS startH, s.end_hour AS endH,"
+        " s.role, e.type AS event"
+        " FROM schedule s"
+        " LEFT JOIN events e ON s.event_id = e.id"
+        " WHERE s.user_id = %s AND s.date >= CURDATE()"
+        " ORDER BY s.date ASC",
+        (session.get("user_id"),)
+    )
+    rows = cur.fetchall()
+    cur.close()
+ 
+    scheduled_shifts = [
+        {
+            'id':    row["id"],
+            'date':  str(row["date"]),
+            'startH': float(row["startH"]),
+            'endH':   float(row["endH"]),
+            'role':  row["role"],
+            'event': row["event"] or "General"
+        }
+        for row in rows
+    ]
+ 
+    return render_template("staff_shift.html", scheduled_shifts=scheduled_shifts,
+                           user_role=session.get("user_role"))
 
 if __name__ == "__main__":
     app.run(debug=True)
