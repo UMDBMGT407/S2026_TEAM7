@@ -236,7 +236,7 @@ def loyalty_status():
 @app.route("/staff-page")
 @role_required("staff", "admin")
 def staff_page():
-    return render_template("staff_page.html", user_role=session.get("user_role"))
+    return render_template("staff_scheduling_staff.html", user_role=session.get("user_role"))
 
 
 @app.route("/schedule")
@@ -329,7 +329,7 @@ def staff_shift():
 # ========================
 # ADMIN PAGES
 # ========================
-@app.route("/admin-page")
+@app.route("/dashboard")
 @role_required("admin")
 def admin_page():
     return render_template("dashboard.html", user_role=session.get("user_role"))
