@@ -264,6 +264,29 @@ def staff_page():
 @role_required("admin")
 def admin_page():
     return render_template("admin_dashboard.html", user_role=session.get("user_role"))
+@app.route("/orders-and-sales")
+@role_required("admin")
+def orders_and_sales():
+    return render_template("orders_and_sales.html", user_role=session.get("user_role"))
+
+
+@app.route("/inventory")
+@role_required("admin")
+def inventory():
+    return render_template("inventory.html", user_role=session.get("user_role"))
+
+
+@app.route("/menu")
+@role_required("admin")
+def menu():
+    return render_template("menu.html", user_role=session.get("user_role"))
+
+
+@app.route("/menu-adjustments")
+@role_required("admin")
+def menu_adjustments():
+    return render_template("menu_adjustments.html", user_role=session.get("user_role"))
+
 
 
 if __name__ == "__main__":
