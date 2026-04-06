@@ -96,6 +96,11 @@
         order.
       </div>
     </div>
+
+    {% if message %}
+      <div class="form-message">{{ message }}</div>
+    {% endif %}
+
   <form method="POST" action="{{ url_for('become_a_member') }}">
     <div class="form-fields">
       <div class="first-name">FIRST NAME</div>
