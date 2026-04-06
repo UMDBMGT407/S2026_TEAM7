@@ -539,7 +539,7 @@ def add_promo_to_calendar():
 @app.route("/events-admin")
 @role_required("admin")
 def events_admin():
-    cur = mysql.connection.cursor()
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     # --- COUNT PENDING REQUESTS ---
     cur.execute("""
