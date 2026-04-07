@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '9f5dd0cc-2926-11f1-b373-9020ee489e3f:1-79';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '9f5dd0cc-2926-11f1-b373-9020ee489e3f:1-82';
 
 --
 -- Table structure for table `booked_events`
@@ -292,6 +292,30 @@ LOCK TABLES `orders` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `promotion_calendar`
+--
+
+DROP TABLE IF EXISTS `promotion_calendar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `promotion_calendar` (
+  `promotion_id` int NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`promotion_id`,`date`),
+  CONSTRAINT `promotion_calendar_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`promotion_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `promotion_calendar`
+--
+
+LOCK TABLES `promotion_calendar` WRITE;
+/*!40000 ALTER TABLE `promotion_calendar` DISABLE KEYS */;
+/*!40000 ALTER TABLE `promotion_calendar` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `promotion_items`
 --
 
@@ -539,4 +563,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-04-06 18:15:18
+-- Dump completed on 2026-04-07 13:29:50
