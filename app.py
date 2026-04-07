@@ -242,7 +242,7 @@ def staff_scheduling_staff():
 
 @app.route("/schedule")
 @role_required("staff", "admin")
-def staff_scheduling():
+def staff_scheduling_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
     staff_members = [row["name"] for row in cur.fetchall()]
