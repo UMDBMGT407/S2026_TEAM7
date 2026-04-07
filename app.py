@@ -506,7 +506,7 @@ def loyalty_program():
 # Promos
 @app.route("/admin/promos", methods=["GET"])
 @role_required("admin")
-def promos_page():
+def edit_promos():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
 
