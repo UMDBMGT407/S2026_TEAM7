@@ -20,10 +20,10 @@
 <body>
 <div class="staff">
 
-  <nav class="navbar navbar-expand-lg gt-nav">
-    <div class="container">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+    <div class="container-fluid px-4">
       <a class="navbar-brand" href="{{ url_for('staff_scheduling_staff') }}">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="nav-logo"/>
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
       </a>
 
       <button
@@ -39,7 +39,7 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto nav-links-row">
+        <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('staff_scheduling_staff') }}">Schedule</a>
           </li>
@@ -53,17 +53,7 @@
 
         <ul class="navbar-nav auth-nav">
           <li class="nav-item account-actions">
-            {% if user_role == "staff" %}
-              <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('staff_scheduling') }}">Staff</a>
-              <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
-
-            {% elif user_role == "admin" %}
-              <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('admin_page') }}">Admin</a>
-              <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
-
-            {% else %}
-              <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('login') }}">Sign In</a>
-            {% endif %}
+            <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
           </li>
         </ul>
       </div>
