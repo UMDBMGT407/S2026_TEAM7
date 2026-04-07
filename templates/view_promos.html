@@ -124,113 +124,122 @@ Schedule</a></li>
   </div>
 </nav>
 
+<div class="view-promos-page">
 
-  <div class="container mt-4">
+  <div class="promo-toolbar">
+    <div class="promo-toolbar-card">
+      <h2 class="toolbar-title">Add Existing Promotion to Calendar</h2>
 
-  <div class="top-actions">
-    <h3 class="mb-3">Add Existing Promotion to Calendar</h3>
+      <form method="POST" action="{{ url_for('add_promo_to_calendar') }}" class="promo-toolbar-form">
+        <div class="toolbar-field">
+          <label for="promotion_id">Promotion</label>
+          <select name="promotion_id" id="promotion_id" required>
+            <option value="">Select promotion</option>
+            {% for promo in promotions %}
+              <option value="{{ promo.promotion_id }}">
+                {{ promo.promotion_name }} (ID {{ promo.promotion_id }})
+              </option>
+            {% endfor %}
+          </select>
+        </div>
 
-    <form method="POST" action="{{ url_for('add_promo_to_calendar') }}">
-      <div>
-        <label for="promotion_id" class="form-label">Promotion</label>
-        <select class="form-select" name="promotion_id" id="promotion_id" required>
-          <option value="">Select promotion</option>
-          {% for promo in promotions %}
-            <option value="{{ promo.promotion_id }}">
-              {{ promo.promotion_name }} (ID {{ promo.promotion_id }})
-            </option>
-          {% endfor %}
-        </select>
-      </div>
+        <div class="toolbar-field">
+          <label for="start_date">Start Date</label>
+          <input type="date" name="start_date" id="start_date" required>
+        </div>
 
-      <div>
-        <label for="start_date" class="form-label">Start Date</label>
-        <input class="form-control" type="date" name="start_date" id="start_date" required>
-      </div>
+        <div class="toolbar-field">
+          <label for="end_date">End Date</label>
+          <input type="date" name="end_date" id="end_date" required>
+        </div>
 
-      <div>
-        <label for="end_date" class="form-label">End Date</label>
-        <input class="form-control" type="date" name="end_date" id="end_date" required>
-      </div>
-
-      <div>
-        <button type="submit" class="btn btn-success w-100">Add to Calendar</button>
-      </div>
-    </form>
+        <div class="toolbar-field toolbar-submit">
+          <button type="submit" class="calendar-btn">Add to Calendar</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <div class="calendar-month-header text-center d-flex justify-content-center align-items-center gap-3 mb-4">
-    <a class="btn btn-outline-success"
-       href="{{ url_for('view_promos', month=prev_month, year=prev_year) }}">
-      &#10094;
-    </a>
+  <div class="calendar-shell">
+    <div class="calendar-month-header">
+      <a class="month-toggle"
+         href="{{ url_for('view_promos', month=prev_month, year=prev_year) }}">
+        &#10094;
+      </a>
 
-    <h2 class="month-title">{{ month_names[month - 1] }} {{ year }}</h2>
+      <div class="month-title-wrap">
+        <h2 class="month-title">{{ month_names[month - 1] }} {{ year }}</h2>
+      </div>
 
-    <a class="btn btn-outline-success"
-       href="{{ url_for('view_promos', month=next_month, year=next_year) }}">
-      &#10095;
-    </a>
-  </div>
+      <a class="month-toggle"
+         href="{{ url_for('view_promos', month=next_month, year=next_year) }}">
+        &#10095;
+      </a>
+    </div>
 
-  <div class="row text-center fw-bold g-0">
-    <div class="col calendar-day-name">Sun</div>
-    <div class="col calendar-day-name">Mon</div>
-    <div class="col calendar-day-name">Tue</div>
-    <div class="col calendar-day-name">Wed</div>
-    <div class="col calendar-day-name">Thu</div>
-    <div class="col calendar-day-name">Fri</div>
-    <div class="col calendar-day-name">Sat</div>
-  </div>
+    <div class="calendar-board">
+      <div class="calendar-weekdays">
+        <div class="calendar-day-name">Sun</div>
+        <div class="calendar-day-name">Mon</div>
+        <div class="calendar-day-name">Tue</div>
+        <div class="calendar-day-name">Wed</div>
+        <div class="calendar-day-name">Thu</div>
+        <div class="calendar-day-name">Fri</div>
+        <div class="calendar-day-name">Sat</div>
+      </div>
 
-  <div class="calendar-grid">
-    {% for day in range(1, dim + 1) %}
-      <div class="calendar-day">
-        <div class="day-number">{{ day }}</div>
+      <div class="calendar-grid">
+        {% for _ in range((first_weekday + 1) % 7) %}
+          <div class="calendar-day empty-day"></div>
+        {% endfor %}
 
-        {% if day in calendar_data %}
-          {% for promo in calendar_data[day] %}
-            <div class="promo-card">
-              <div><strong>{{ promo.name }}</strong></div>
+        {% for day in range(1, dim + 1) %}
+          <div class="calendar-day">
+            <div class="day-number">{{ day }}</div>
 
-              <div class="promo-actions">
-                <button
-                  type="button"
-                  class="btn btn-success btn-sm"
-                  onclick="viewPromotion({{ promo.id }})">
-                  View
-                </button>
+            <div class="day-promos">
+              {% if day in calendar_data %}
+                {% for promo in calendar_data[day] %}
+                  <div class="promo-card">
+                    <div class="promo-name">{{ promo.name }}</div>
 
-                <a
-                  class="btn btn-danger btn-sm"
-                  href="{{ url_for('delete_promo',
-                                   promo_id=promo.id,
-                                   date=promo.date.strftime('%Y-%m-%d'),
-                                   month=month,
-                                   year=year) }}"
-                  onclick="return confirm('Delete this promotion from the calendar?')">
-                  Delete
-                </a>
-              </div>
+                    <button
+                      type="button"
+                      class="promo-action-btn info-btn"
+                      onclick="viewPromotion({{ promo.id }})">
+                      View Info
+                    </button>
+
+                    <a
+                      class="promo-action-btn delete-btn"
+                      href="{{ url_for('delete_promo',
+                                       promo_id=promo.id,
+                                       date=promo.date.strftime('%Y-%m-%d'),
+                                       month=month,
+                                       year=year) }}"
+                      onclick="return confirm('Delete this promotion from the calendar?')">
+                      Delete
+                    </a>
+                  </div>
+                {% endfor %}
+              {% endif %}
             </div>
-          {% endfor %}
-        {% endif %}
+          </div>
+        {% endfor %}
       </div>
-    {% endfor %}
+    </div>
   </div>
-
 </div>
 
 <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <div class="modal-header">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content promo-modal-content">
+      <div class="modal-header promo-modal-header">
         <h5 class="modal-title">Promotion Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body promo-modal-body">
         <p><strong>Promotion Name:</strong> <span id="promoName"></span></p>
         <p><strong>Promotion ID:</strong> <span id="promoID"></span></p>
         <p><strong>Description:</strong> <span id="promoDescription"></span></p>
@@ -241,7 +250,6 @@ Schedule</a></li>
         <p><strong>Discount:</strong> <span id="promoDiscount"></span></p>
         <p><strong>Promotion Type:</strong> <span id="promoType"></span></p>
       </div>
-
     </div>
   </div>
 </div>
