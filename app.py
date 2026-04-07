@@ -267,7 +267,7 @@ def staff_scheduling_admin():
 
 @app.route("/event-details")
 @role_required("staff", "admin")
-def event_details():
+def event_details_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT id, type, name, email, guests, date, time, description FROM events")
     event_rows = cur.fetchall()
