@@ -5,13 +5,17 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="./vars.css">
+<link rel="stylesheet" href="./css/admin.css">
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-  
+
 <style>
   a, 
   button, 
@@ -38,216 +42,179 @@
 
 <title>Events</title>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
-  <div class="container-fluid px-4">
-    
-    <!-- LOGO -->
-    <a class="navbar-brand" href="{{ url_for('dashboard') }}">
-      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
-    </a>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="./dashboard.html">
+        <img src="./images/logo.png" alt="Logo" height="46px">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="./dashboard.html">Dashboard</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./menu.html">Menu</a></li>
+              <li><a class="dropdown-item" href="./menu_adjustments.html">Menu Adjustments</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./orders_and_sales.html">Orders & Sales</a></li>
+              <li><a class="dropdown-item" href="./inventory.html">Inventory</a></li>
+              <li><a class="dropdown-item" href="./inventory_adjustments.html">Inventory Adjustments</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./events.html">Events</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="./loyalty_program.html">Loyalty Program</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./edit_promos.html">Edit Promos</a></li>
+              <li><a class="dropdown-item" href="./view_promos.html">View Promos</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="./staff_scheduling_admin.html">Staff Schedule</a></li>
+              <li><a class="dropdown-item" href="./shift_management.html">Shift Management</a></li>
+            </ul>
+          </li>
 
-    <!-- TOGGLER -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- NAV LINKS -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
-
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-        </li>
-
-        <!-- MENU -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('menu') }}">Menu</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('menu_adjustments') }}">Menu Adjustments</a></li>
-          </ul>
-        </li>
-
-        <!-- ORDERS -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('orders_and_sales') }}">Orders & Sales</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('inventory') }}">Inventory</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('inventory_adjustments') }}">Inventory Adjustments</a></li>
-          </ul>
-        </li>
-
-        <!-- EVENTS -->
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('events_admin') }}">Events</a>
-        </li>
-
-        <!-- LOYALTY -->
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
-        </li>
-
-        <!-- PROMOS -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('edit_promos') }}">Edit Promos</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('view_promos') }}">View Promos</a></li>
-          </ul>
-        </li>
-
-        <!-- STAFF -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff 
-Schedule</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
-          </ul>
-        </li>
-
-      </ul>
-
-      <!-- SIGN OUT -->
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
-        </li>
-      </ul>
-
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="btn btn-outline-light" href="./index.html">Sign Out</a>
+          </li>
+        </ul>
+      </div>
     </div>
+  </nav>
+
+
+<div class="events">
+
+  <div class="events-header">
+    <div class="pending-requests-view">
+      <div class="pending-event-requests">
+        Pending Event Requests:
+      </div>
+
+      <div class="number-of-requests">
+        <div class="pending-requests-box">
+          <div id="requestCount" class="request-count">{{ count }}</div>
+        </div>
+      </div>
+    </div>
+
+    <a href="#requests" class="view-requests-button">
+      <div class="pending-event-text">View Requests</div>
+    </a>
   </div>
-</nav>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Event Requests</title>
+  <div class="divider"></div>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
+  <div id="requests" class="requests-content">
 
-        .container {
-            margin-top: 40px;
-        }
+    {% if inquiry %}
+    <div id="requestSection">
 
-        .card {
-            border: 2px solid black;
-            padding: 20px;
-            width: 400px;
-            margin: 20px auto;
-            text-align: left;
-        }
+      <div class="event-request-title">
+        <div class="event-request-1">Event Request {{ index + 1 }}</div>
+      </div>
 
-        .buttons {
-            margin-top: 20px;
-        }
+      <div class="event-requests-criteria">
+        <div>Customer Name:</div>
+        <div>Customer Phone:</div>
+        <div>Customer Email:</div>
+        <div>Organization:</div>
+        <div>Party Size:</div>
+        <div>Event Notes:</div>
+      </div>
 
-        .buttons a {
-            margin: 5px;
-            padding: 10px 15px;
-            border: 1px solid black;
-            text-decoration: none;
-            color: black;
-        }
+      <div class="event-request-info">
+        <div class="customerfillin">{{ inquiry.full_name }}</div>
+        <div class="customerfillin">{{ inquiry.phone or 'N/A' }}</div>
+        <div class="customerfillin">{{ inquiry.email }}</div>
+        <div class="customerfillin">{{ inquiry.organization or 'N/A' }}</div>
+        <div class="party-size-input">{{ inquiry.guests }}</div>
+        <div class="customerfillin">{{ inquiry.event_description or 'N/A' }}</div>
+      </div>
 
-        .nav-buttons a {
-            margin: 10px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-    </style>
-</head>
+      <div class="event-request-criteria-2">
+        <div>Event Date:</div>
+        <div>Event Time:</div>
+        <div>Catering Package:</div>
+        <div>Status:</div>
+      </div>
 
-<body>
+      <div class="event-request-info-2">
+        <div class="customerfillin2">{{ inquiry.preferred_datetime.strftime('%m/%d/%Y') }}</div>
+        <div class="customerfillin3">{{ inquiry.preferred_datetime.strftime('%I:%M %p') }}</div>
+        <div class="customerfillin3">{{ inquiry.catering_package or 'N/A' }}</div>
+        <div class="customerfillin4">{{ inquiry.inquiry_status }}</div>
+      </div>
 
-    <div class="container">
+      <div class="button-row">
+        <a
+          class="button-link accept-button"
+          href="{{ url_for('approve_event', inquiry_id=inquiry.inquiry_id) }}"
+          onclick="return confirmAction('approve')"
+        >
+          <div class="apply-promo-text2">Accept</div>
+        </a>
 
-        <h1>Event Requests</h1>
+        <a
+          class="button-link deny-button"
+          href="{{ url_for('reject_event', inquiry_id=inquiry.inquiry_id) }}"
+          onclick="return confirmAction('reject')"
+        >
+          <div class="apply-promo-text">Deny</div>
+        </a>
+      </div>
 
-        <p><strong>Pending Event Requests:</strong> {{ count }}</p>
-
-        {% if inquiry %}
-
-        <div class="card">
-
-            <p><strong>Name:</strong> {{ inquiry.full_name }}</p>
-            <p><strong>Organization:</strong> {{ inquiry.organization }}</p>
-
-            <p><strong>Guests:</strong> {{ inquiry.guests }}</p>
-
-            <p><strong>Email:</strong> {{ inquiry.email }}</p>
-            <p><strong>Phone:</strong> {{ inquiry.phone }}</p>
-
-            <p><strong>Date & Time:</strong><br>
-                {{ inquiry.preferred_datetime.strftime('%B %d, %Y %I:%M %p') }}
-            </p>
-
-            <p><strong>Event Description:</strong><br>
-                {{ inquiry.event_description }}
-            </p>
-
-            <p><strong>Catering:</strong> {{ inquiry.catering_package }}</p>
-
-        </div>
-
-        <!-- NAVIGATION -->
-        <div class="nav-buttons">
-            <a href="/events-admin/view/{{ index - 1 }}">← Previous</a>
-            <a href="/events-admin/view/{{ index + 1 }}">Next →</a>
-        </div>
-
-        <!-- ACTION BUTTONS -->
-        <div class="buttons">
-            <a href="/event-approve/{{ inquiry.inquiry_id }}">Approve</a>
-            <a href="/event-reject/{{ inquiry.inquiry_id }}">Reject</a>
-        </div>
-
-        {% else %}
-
-        <p>No pending event requests.</p>
-
+      {% if count > 1 %}
+      <div class="nav-buttons">
+        {% if index > 0 %}
+          <a class="btn btn-secondary" href="{{ url_for('view_event', index=index - 1) }}">Previous</a>
         {% endif %}
 
+        {% if index < count - 1 %}
+          <a class="btn btn-secondary" href="{{ url_for('view_event', index=index + 1) }}">Next</a>
+        {% endif %}
+      </div>
+      {% endif %}
+
     </div>
 
-</body>
-</html>
+    {% else %}
+    <div id="requestSection" class="empty-state">
+      No pending event requests.
+    </div>
+    {% endif %}
+
+  </div>
+
+</div>
 
 <script>
-
-let countElement = document.getElementById("requestCount");
-let requestSection = document.getElementById("requestSection");
-
-let acceptBtn = document.getElementById("acceptBtn");
-let denyBtn = document.getElementById("denyBtn");
-
-function updateRequests(){
-
-let count = parseInt(countElement.innerText);
-
-if(count > 0){
-count--;
-countElement.innerText = count;
-}
-
-if(count === 0){
-requestSection.style.display = "none";
-}
-
-}
-
-acceptBtn.addEventListener("click", updateRequests);
-denyBtn.addEventListener("click", updateRequests);
-
+  function confirmAction(action) {
+    return confirm(`Are you sure you want to ${action} this event request?`);
+  }
 </script>
 
 </body>
