@@ -4,11 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='vars.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/customer_consolidated.css') }}">
 
 <style>
   a, 
@@ -33,306 +34,234 @@
     padding: 0;
   }
 </style>
-
-</head>
 <title>View Promotions</title>
+</head>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
-  <div class="container-fluid px-4">
-    
-    <!-- LOGO -->
-    <a class="navbar-brand" href="{{ url_for('dashboard') }}">
-      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
+  <title>Admin Dashboard</title>
+</head>
+<body>
+  <div class="admin-dashboard">
+
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+      <div class="container-fluid px-4">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Menu</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('menu') }}">Menu</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('menu_adjustments') }}">Menu Adjustments</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orders</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('orders_and_sales') }}">Orders & Sales</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('inventory') }}">Inventory</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('inventory_adjustments') }}">Inventory Adjustments</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('events') }}">Events</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Promos</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('edit_promos') }}">Edit Promos</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('view_promos') }}">View Promos</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Staff</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff Schedule</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
+              </ul>
+            </li>
+
+          </ul>
+
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  <div class="container mt-4">
+
+  <div class="top-actions">
+    <h3 class="mb-3">Add Existing Promotion to Calendar</h3>
+
+    <form method="POST" action="{{ url_for('add_promo_to_calendar') }}">
+      <div>
+        <label for="promotion_id" class="form-label">Promotion</label>
+        <select class="form-select" name="promotion_id" id="promotion_id" required>
+          <option value="">Select promotion</option>
+          {% for promo in promotions %}
+            <option value="{{ promo.promotion_id }}">
+              {{ promo.promotion_name }} (ID {{ promo.promotion_id }})
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="start_date" class="form-label">Start Date</label>
+        <input class="form-control" type="date" name="start_date" id="start_date" required>
+      </div>
+
+      <div>
+        <label for="end_date" class="form-label">End Date</label>
+        <input class="form-control" type="date" name="end_date" id="end_date" required>
+      </div>
+
+      <div>
+        <button type="submit" class="btn btn-success w-100">Add to Calendar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="calendar-month-header text-center d-flex justify-content-center align-items-center gap-3 mb-4">
+    <a class="btn btn-outline-success"
+       href="{{ url_for('view_promos', month=prev_month, year=prev_year) }}">
+      &#10094;
     </a>
 
-    <!-- TOGGLER -->
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    <h2 class="month-title">{{ month_names[month - 1] }} {{ year }}</h2>
 
-    <!-- NAV LINKS -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav me-auto">
+    <a class="btn btn-outline-success"
+       href="{{ url_for('view_promos', month=next_month, year=next_year) }}">
+      &#10095;
+    </a>
+  </div>
 
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-        </li>
+  <div class="row text-center fw-bold g-0">
+    <div class="col calendar-day-name">Sun</div>
+    <div class="col calendar-day-name">Mon</div>
+    <div class="col calendar-day-name">Tue</div>
+    <div class="col calendar-day-name">Wed</div>
+    <div class="col calendar-day-name">Thu</div>
+    <div class="col calendar-day-name">Fri</div>
+    <div class="col calendar-day-name">Sat</div>
+  </div>
 
-        <!-- MENU -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('menu') }}">Menu</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('menu_adjustments') }}">Menu Adjustments</a></li>
-          </ul>
-        </li>
+  <div class="calendar-grid">
+    {% for day in range(1, dim + 1) %}
+      <div class="calendar-day">
+        <div class="day-number">{{ day }}</div>
 
-        <!-- ORDERS -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('orders_and_sales') }}">Orders & Sales</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('inventory') }}">Inventory</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('inventory_adjustments') }}">Inventory Adjustments</a></li>
-          </ul>
-        </li>
+        {% if day in calendar_data %}
+          {% for promo in calendar_data[day] %}
+            <div class="promo-card">
+              <div><strong>{{ promo.name }}</strong></div>
 
-        <!-- EVENTS -->
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('events_admin') }}">Events</a>
-        </li>
+              <div class="promo-actions">
+                <button
+                  type="button"
+                  class="btn btn-success btn-sm"
+                  onclick="viewPromotion({{ promo.id }})">
+                  View
+                </button>
 
-        <!-- LOYALTY -->
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
-        </li>
+                <a
+                  class="btn btn-danger btn-sm"
+                  href="{{ url_for('delete_promo',
+                                   promo_id=promo.id,
+                                   date=promo.date.strftime('%Y-%m-%d'),
+                                   month=month,
+                                   year=year) }}"
+                  onclick="return confirm('Delete this promotion from the calendar?')">
+                  Delete
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
 
-        <!-- PROMOS -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('edit_promos') }}">Edit Promos</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('view_promos') }}">View Promos</a></li>
-          </ul>
-        </li>
+</div>
 
-        <!-- STAFF -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff 
-Schedule</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
-          </ul>
-        </li>
+<div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-      </ul>
+      <div class="modal-header">
+        <h5 class="modal-title">Promotion Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
 
-      <!-- SIGN OUT -->
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
-        </li>
-      </ul>
+      <div class="modal-body">
+        <p><strong>Promotion Name:</strong> <span id="promoName"></span></p>
+        <p><strong>Promotion ID:</strong> <span id="promoID"></span></p>
+        <p><strong>Description:</strong> <span id="promoDescription"></span></p>
+        <p><strong>Start Date:</strong> <span id="promoStartDate"></span></p>
+        <p><strong>End Date:</strong> <span id="promoEndDate"></span></p>
+        <p><strong>Start Time:</strong> <span id="promoStartTime"></span></p>
+        <p><strong>End Time:</strong> <span id="promoEndTime"></span></p>
+        <p><strong>Discount:</strong> <span id="promoDiscount"></span></p>
+        <p><strong>Promotion Type:</strong> <span id="promoType"></span></p>
+      </div>
 
     </div>
   </div>
-</nav>
-
-
-
-<div class="container mt-4">
-
-<div class="calendar-month-header text-center">
-
-<button class="month-arrow" onclick="changeMonth(-1)">&#10094;</button>
-
-<h2 id="monthTitle" class="month-title"></h2>
-
-<button class="month-arrow" onclick="changeMonth(1)">&#10095;</button>
-
-</div>
-
-
-<div class="calendar-container">
-<div class="calendar-wrapper">
-
-<div class="row text-center calendar-header fw-bold">
-
-<div class="col">Sun</div>
-<div class="col">Mon</div>
-<div class="col">Tue</div>
-<div class="col">Wed</div>
-<div class="col">Thu</div>
-<div class="col">Fri</div>
-<div class="col">Sat</div>
-
-</div>
-
-<div id="calendarDays"></div>
-
-</div>
-</div>
-
-</div>
-
-<div class="modal fade" id="promoModal">
-<div class="modal-dialog">
-<div class="modal-content">
-
-<div class="modal-header">
-<h5 class="modal-title">Promotion Details</h5>
-<button class="btn-close" data-bs-dismiss="modal"></button>
-</div>
-
-<div class="modal-body">
-
-<p><strong>Promotion Name:</strong> <span id="promoName"></span></p>
-<p><strong>Promotion ID:</strong> <span id="promoID"></span></p>
-<p><strong>Description:</strong> <span id="promoDescription"></span></p>
-<p><strong>Start Date:</strong> <span id="promoStartDate"></span></p>
-<p><strong>End Date:</strong> <span id="promoEndDate"></span></p>
-<p><strong>Start Time:</strong> <span id="promoStartTime"></span></p>
-<p><strong>End Time:</strong> <span id="promoEndTime"></span></p>
-<p><strong>Discount:</strong> <span id="promoDiscount"></span></p>
-<p><strong>Promotion Type:</strong> <span id="promoType"></span></p>
-
-</div>
-
-</div>
-</div>
 </div>
 
 <script>
-const calendarData = {{ calendar_data | tojson }};
-const currentMonthFromFlask = {{ month }};
-const currentYearFromFlask = {{ year }};
+  function viewPromotion(promoId) {
+    fetch(`/promo/${promoId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Promotion not found");
+        }
+        return response.json();
+      })
+      .then(promo => {
+        document.getElementById("promoName").textContent = promo.promotion_name || "";
+        document.getElementById("promoID").textContent = promo.promotion_id || "";
+        document.getElementById("promoDescription").textContent = promo.description || "";
+        document.getElementById("promoStartDate").textContent = promo.start_date || "";
+        document.getElementById("promoEndDate").textContent = promo.end_date || "";
+        document.getElementById("promoStartTime").textContent = promo.start_time || "";
+        document.getElementById("promoEndTime").textContent = promo.end_time || "";
+        document.getElementById("promoDiscount").textContent = promo.discount || "";
+        document.getElementById("promoType").textContent = promo.promotion_type || "";
+
+        const modal = new bootstrap.Modal(document.getElementById("promoModal"));
+        modal.show();
+      })
+      .catch(error => {
+        alert(error.message);
+      });
+  }
 </script>
-  
-<script>
 
-const months = [
-"January","February","March","April","May","June",
-"July","August","September","October","November","December"
-];
-
-// 🔥 DATA FROM FLASK
-const calendarData = {{ calendar_data | tojson }};
-const currentMonthFromFlask = {{ month }};
-const currentYearFromFlask = {{ year }};
-
-// 🔥 SYNC WITH FLASK
-let currentMonth = currentMonthFromFlask - 1; // JS = 0-based
-let currentYear = currentYearFromFlask;
-
-
-// =========================
-// RENDER CALENDAR
-// =========================
-function renderCalendar(){
-
-document.getElementById("monthTitle").textContent =
-months[currentMonth] + " " + currentYear;
-
-const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-
-const calendar = document.getElementById("calendarDays");
-calendar.innerHTML = "";
-
-let date = 1;
-
-for(let rowNum = 0; rowNum < 6; rowNum++){
-
-let row = document.createElement("div");
-row.className = "row text-center";
-
-for(let colNum = 0; colNum < 7; colNum++){
-
-let col = document.createElement("div");
-col.className = "col calendar-day";
-
-if(rowNum === 0 && colNum < firstDay){
-    col.innerHTML = "";
-}
-
-else if(date <= daysInMonth){
-
-    col.innerHTML = `<div class="day-number">${date}</div>`;
-
-    // 🔥 SHOW PROMOTIONS FROM DATABASE
-    if(calendarData[date]){
-
-        calendarData[date].forEach(promo => {
-
-            let promoCard = document.createElement("div");
-            promoCard.className = "promo-card";
-
-            promoCard.innerHTML = `
-                ${promo.name}
-                <div>
-                    <button class="btn btn-success btn-sm" onclick="viewPromotion(${promo.id})">View</button>
-                    <button class="btn btn-danger btn-sm" onclick="deletePromo(${promo.id}, '${promo.date}')">Delete</button>
-                </div>
-            `;
-
-            col.appendChild(promoCard);
-
-        });
-
-    }
-
-    date++;
-}
-
-else{
-    col.innerHTML = "";
-}
-
-row.appendChild(col);
-
-}
-
-calendar.appendChild(row);
-
-}
-}
-
-
-// =========================
-// CHANGE MONTH (FLASK ROUTE)
-// =========================
-function changeMonth(direction){
-
-let newMonth = currentMonth + 1 + direction;
-let newYear = currentYear;
-
-if(newMonth < 1){
-    newMonth = 12;
-    newYear--;
-}
-
-if(newMonth > 12){
-    newMonth = 1;
-    newYear++;
-}
-
-// 🔥 Redirect to Flask
-window.location.href = `/view-promos?month=${newMonth}&year=${newYear}`;
-}
-
-
-// =========================
-// DELETE PROMO (CALL FLASK)
-// =========================
-function deletePromo(promoId, date){
-
-if(confirm("Delete this promotion?")){
-    window.location.href =
-    `/delete-promo/${promoId}?date=${date}&month=${currentMonth+1}&year=${currentYear}`;
-}
-
-}
-
-
-// =========================
-// VIEW PROMO DETAILS
-// =========================
-function viewPromotion(promoId){
-
-// 🔥 Redirect to Flask details page
-window.location.href = `/promo/${promoId}`;
-
-}
-
-
-// =========================
-// INITIAL LOAD
-// =========================
-renderCalendar();
-
-</script>
 </body>
 </html>
