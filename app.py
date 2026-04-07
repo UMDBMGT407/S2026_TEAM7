@@ -555,7 +555,7 @@ def add_promotion():
 @role_required("admin")
 def view_promos():
     month = request.args.get("month", type=int)
-    year  = request.args.get("year", type=int)
+    year = request.args.get("year", type=int)
 
     today = datetime.today()
     if not month:
@@ -563,24 +563,68 @@ def view_promos():
     if not year:
         year = today.year
 
+    dim = calendar.monthrange(year, month)[1]
+
+    prev_month = month - 1
+    prev_year = year
+    next_month = month + 1
+    next_year = year
+
+    if month == 1:
+        prev_month = 12
+        prev_year = year - 1
+
+    if month == 12:
+        next_month = 1
+        next_year = year + 1
+
+    month_names = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ]
+
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-   
     cur.execute("""
         SELECT pc.date, p.promotion_id, p.promotion_name
         FROM promotion_calendar pc
         JOIN promotions p ON pc.promotion_id = p.promotion_id
         WHERE MONTH(pc.date) = %s AND YEAR(pc.date) = %s
     """, (month, year))
-
     rows = cur.fetchall()
-
 
     cur.execute("SELECT promotion_id, promotion_name FROM promotions")
     promotions = cur.fetchall()
 
     cur.close()
 
+    calendar_data = {}
+    for row in rows:
+        day = row["date"].day
+
+        if day not in calendar_data:
+            calendar_data[day] = []
+
+        calendar_data[day].append({
+            "id": row["promotion_id"],
+            "name": row["promotion_name"],
+            "date": row["date"]
+        })
+
+    return render_template(
+        "view_promos.html",
+        calendar_data=calendar_data,
+        promotions=promotions,
+        month=month,
+        year=year,
+        dim=dim,
+        prev_month=prev_month,
+        prev_year=prev_year,
+        next_month=next_month,
+        next_year=next_year,
+        month_names=month_names,
+        user_role=session.get("user_role")
+    )
     # Build calendar dictionary
     calendar_data = {}
     for row in rows:
