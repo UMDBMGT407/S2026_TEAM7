@@ -3937,182 +3937,295 @@ button {
 }
 
 /*VIEW PROMOS*/
-body,
-button,
-input,
-select,
-textarea,
-.navbar,
-.events {
-  font-family: "Passion One", sans-serif !important;
+body {
+  margin: 0;
+  background: #36845a !important;
+  font-family: "Passion One", sans-serif;
 }
 
-body{
-margin:0;
-font-family:"Passion One", sans-serif;
-background-color:#36845a !important;
+.view-promos-page {
+  padding: 110px 24px 50px;
 }
 
-.calendar{
-width:85%;
-max-width:1050px;
-margin:30px auto;
-padding:20px;
-background:white;
-border-radius:10px;
-box-shadow:0px 6px 20px rgba(0,0,0,0.25);
+.promo-toolbar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
 }
 
-.calendar-wrapper{
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0px 6px 20px rgba(0,0,0,0.25);
+.promo-toolbar-card {
+  width: 100%;
+  max-width: 1200px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px 28px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
-.calendar-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:16px;
-font-size:24px;
-color:#204631;
+.toolbar-title {
+  color: #204631;
+  font-size: 34px;
+  text-align: center;
+  margin: 0 0 20px 0;
 }
 
-.month-title{
-font-family:"Passion One", sans-serif;
-font-size:48px;
-color:#204631;
-text-align:center;
-background:white;
-padding:8px 60px;
-border-radius:100px;
-display:inline-block;
-margin-bottom:16px;
+.promo-toolbar-form {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 16px;
+  align-items: end;
 }
 
-.calendar-month-header{
-display:flex;
-justify-content:center;
-align-items:center;
-gap:30px;
-margin-bottom:16px;
+.toolbar-field {
+  display: flex;
+  flex-direction: column;
 }
 
-.month-arrow{
-background:none;
-border:none;
-color:white;
-font-size:40px;
-cursor:pointer;
+.toolbar-field label {
+  color: #204631;
+  font-size: 22px;
+  margin-bottom: 8px;
 }
 
-.month-arrow:hover{
-transform:scale(1.1);
+.promo-toolbar-form select,
+.promo-toolbar-form input {
+  min-height: 52px;
+  width: 100%;
+  border: 2px solid #d8e4dc;
+  border-radius: 12px;
+  padding: 0 14px;
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  background: #fff;
 }
 
-button{
-background:#204631;
-color:white;
-padding:8px 14px;
-font-size:16px;
-cursor:pointer;
-border:none;
-border-radius:8px;
-font-family:"Passion One", sans-serif;
-box-shadow:2px 6px 4px rgba(0,0,0,0.25);
+.promo-toolbar-form select:focus,
+.promo-toolbar-form input:focus {
+  outline: none;
+  border-color: #36845a;
+  box-shadow: 0 0 0 0.2rem rgba(54, 132, 90, 0.15);
 }
 
-button:hover{
-background:#1a3828;
+.calendar-btn {
+  min-height: 52px;
+  border: none;
+  border-radius: 12px;
+  padding: 0 22px;
+  background: #204631;
+  color: #fff;
+  font-size: 22px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
 }
 
-.days{
-display:grid;
-grid-template-columns:repeat(7,1fr);
-margin-top:10px;
+.calendar-btn:hover {
+  background: #173726;
 }
 
-.day-name{
-color:#204631;
-text-align:center;
-font-size:24px;
-padding:8px;
+.calendar-shell {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.date{
-background:white;
-border:2px solid #204631;
-height:90px;
-padding:6px;
-position:relative;
-font-family:"Passion One", sans-serif;
-color:#204631;
-display:flex;
-flex-direction:column;
+.calendar-month-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 20px;
 }
 
-.calendar-day{
-border:2px solid black;
-height:90px;
-padding:6px;
-display:flex;
-flex-direction:column;
-justify-content:space-between;
+.month-toggle {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #204631;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 30px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
 }
 
-.date-number{
-font-family:"Passion One", sans-serif;
-font-size:20px;
-color:#204631;
+.month-toggle:hover {
+  background: #f3f7f4;
+  color: #204631;
 }
 
-.promo-card{
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-gap:4px;
-font-size:12px;
-color:#204631;
-text-align:center;
-margin-top:auto;
+.month-title-wrap {
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 12px 36px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
 }
 
-.promo-buttons{
-display:flex;
-gap:6px;
+.month-title {
+  margin: 0;
+  color: #204631;
+  font-size: 56px;
+  line-height: 1;
 }
 
-.btn-success{
-background:#36845a;
-border:none;
-font-family:"Passion One", sans-serif;
-font-size:6px;
-padding:3px 8px;
+.calendar-board {
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 24px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
 }
 
-.btn-success:hover{
-background:#204631;
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
-.btn-danger{
-font-family:"Passion One", sans-serif;
-font-size:6px;
-padding:3px 8px;
+.calendar-day-name {
+  text-align: center;
+  color: #204631;
+  font-size: 24px;
+  padding: 8px 0;
 }
 
-.promo-buttons .btn{
-font-size:9px;
-padding:1px 4px;
-border-radius:3px;
-line-height:1;
-box-shadow:none;
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
 }
 
-.promo-buttons{
-display:flex;
-justify-content:center;
-gap:2px;
-margin-top:1px;
+.calendar-day {
+  min-height: 170px;
+  background: #ffffff;
+  border: 2px solid #d8e4dc;
+  border-radius: 16px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-day {
+  background: #f7f7f7;
+  border-style: dashed;
+  opacity: 0.6;
+}
+
+.day-number {
+  color: #204631;
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.day-promos {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.promo-card {
+  background: #eef6f0;
+  border: 1px solid #cfe0d4;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.promo-name {
+  color: #204631;
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.promo-action-btn {
+  width: 100%;
+  min-height: 32px;
+  border-radius: 8px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 14px;
+  margin-top: 6px;
+  cursor: pointer;
+}
+
+.info-btn {
+  background: #36845a;
+  color: #fff;
+}
+
+.info-btn:hover {
+  background: #204631;
+}
+
+.delete-btn {
+  background: #c84c4c;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background: #a53d3d;
+  color: #fff;
+}
+
+.promo-modal-content {
+  border: none;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.promo-modal-header {
+  background: #204631;
+  color: #ffffff;
+}
+
+.promo-modal-body {
+  background: #ffffff;
+  padding: 24px;
+}
+
+.promo-modal-body p {
+  margin-bottom: 10px;
+  color: #204631;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+}
+
+@media (max-width: 1100px) {
+  .promo-toolbar-form {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .toolbar-submit {
+    grid-column: 1 / -1;
+  }
+
+  .month-title {
+    font-size: 42px;
+  }
+}
+
+@media (max-width: 768px) {
+  .promo-toolbar-form {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-grid,
+  .calendar-weekdays {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calendar-day-name {
+    display: none;
+  }
+
+  .month-title {
+    font-size: 34px;
+  }
 }
