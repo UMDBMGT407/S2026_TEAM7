@@ -223,13 +223,39 @@ Schedule</a></li>
     </div>
   </div>
 
-  <script>
-    document.querySelectorAll('.delete-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        button.closest('.seasonal-item-row').remove();
-      });
+ <script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+  button.addEventListener('click', async () => {
+
+    const row = button.closest('.seasonal-item-row');
+    const itemText = row.querySelector('.seasonal-item-text').innerText;
+
+    // Extract name (before the -- number)
+    const itemName = itemText.split('--')[0].trim();
+
+    const confirmed = confirm(`Remove ${itemName} from seasonal items?`);
+    if (!confirmed) return;
+
+    const response = await fetch("{{ url_for('remove_seasonal_item') }}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        item_name: itemName
+      })
     });
-  </script>
+
+    const result = await response.json();
+
+    if (result.success) {
+      row.remove();
+    } else {
+      alert("Failed to update item.");
+    }
+  });
+});
+</script>
 
 </body>
 </html>
