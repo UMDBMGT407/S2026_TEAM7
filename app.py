@@ -10,7 +10,7 @@ app.secret_key = "replace-this-with-a-real-secret-key"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'your_password'
+app.config['MYSQL_PASSWORD'] = 'your password'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -237,11 +237,6 @@ def loyalty_status():
 @app.route("/staff-scheduling-staff")
 @role_required("staff", "admin")
 def staff_scheduling_staff():
-    return redirect(url_for("staff_scheduling_admin"))
-
-@app.route("/schedule")
-@role_required("staff", "admin")
-def staff_scheduling_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
     staff_members = [row["name"] for row in cur.fetchall()]
@@ -264,10 +259,9 @@ def staff_scheduling_admin():
                            user_role=session.get("user_role"))
 
 
-@app.route("/event-details", endpoint="event_details_staff")
-@app.route("/event-details", endpoint="event_details_admin")
+@app.route("/event-details")
 @role_required("staff", "admin")
-def event_details_admin():
+def event_details_staff():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT id, type, name, email, guests, date, time, description FROM events")
     event_rows = cur.fetchall()
