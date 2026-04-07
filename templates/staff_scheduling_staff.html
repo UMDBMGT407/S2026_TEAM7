@@ -19,10 +19,10 @@
 </head>
 <body>
 <div class="staff">
-  <nav class="navbar navbar-expand-lg gt-nav">
-    <div class="container">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
+    <div class="container-fluid px-4">
       <a class="navbar-brand" href="{{ url_for('staff_scheduling_staff') }}">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="nav-logo"/>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
       </a>
 
       <button
@@ -38,7 +38,7 @@
       </button>
 
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto nav-links-row">
+        <ul class="navbar-nav me-auto">
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('staff_scheduling_staff') }}">Schedule</a>
           </li>
@@ -52,80 +52,73 @@
 
         <ul class="navbar-nav auth-nav">
           <li class="nav-item account-actions">
-            {% if user_role == "staff" %}
-              <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('staff_scheduling_staff') }}">Staff</a>
-              <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
-
-            {% elif user_role == "admin" %}
-              <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('dashboard')}}">Admin</a>
-              <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
-
-            {% else %}
-              <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('login') }}">Sign In</a>
-            {% endif %}
+            <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <div class="page-layout">
-    <div class="sidebar">
-      <p class="sidebar-heading">View</p>
-      <button class="day_button active" onclick="setView('day')">Day</button>
-      <button class="day3_button" onclick="setView('3day')">3 Day</button>
-      <button class="week_button" onclick="setView('week')">Week</button>
-      <p class="sidebar-heading">Staff</p>
-      <div class="staff-dropdown-wrapper">
-        <!-- Staff list passed from Flask via Jinja2 -->
-        <select class="staff-dropdown" onchange="filterByStaff(this.value)">
+  <div class="sched-page">
+ 
+    <!-- Sidebar -->
+    <aside class="sched-sidebar">
+      <div class="sched-sidebar-inner">
+ 
+        <div class="sched-section-label">View</div>
+        <div class="sched-view-btns">
+          <button class="sched-view-btn active" onclick="setView('day')">Day</button>
+          <button class="sched-view-btn" onclick="setView('3day')">3 Day</button>
+          <button class="sched-view-btn" onclick="setView('week')">Week</button>
+        </div>
+ 
+        <div class="sched-section-label" style="margin-top: 28px;">Filter Staff</div>
+        <select class="sched-dropdown" onchange="filterByStaff(this.value)">
           <option value="all">All Staff</option>
           {% for member in staff_members %}
           <option value="{{ member }}">{{ member }}</option>
           {% endfor %}
         </select>
+ 
       </div>
-    </div>
-    <div class="calendar-area">
-      <div class="calendar-background2">
-        <div class="calendar-nav">
-          <button onclick="navigate(-1)">&#8592;</button>
-          <span id="nav-label">Today</span>
-          <button onclick="navigate(1)">&#8594;</button>
-          <div style="margin-left: auto;">
-            <button class="today-btn" onclick="goToToday()">Today</button>
-          </div>
+    </aside>
+ 
+    <!-- Main calendar area -->
+    <main class="sched-main">
+      <div class="sched-header-row">
+        <div class="sched-page-title">Staff Schedule</div>
+        <div class="sched-nav-controls">
+          <button class="sched-nav-btn" onclick="navigate(-1)">&#8592;</button>
+          <span class="sched-nav-label" id="nav-label">Today</span>
+          <button class="sched-nav-btn" onclick="navigate(1)">&#8594;</button>
+          <button class="sched-today-btn" onclick="goToToday()">Today</button>
         </div>
+      </div>
+ 
+      <div class="sched-calendar-card">
         <div class="dates" id="dateHeader"></div>
         <div class="back-design" id="calendarGrid"></div>
       </div>
-    </div>
+    </main>
+ 
   </div>
-</div>
-
+ 
 <script>
   const HOURS = Array.from({ length: 24 }, (_, i) => i);
   const DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
+ 
   let currentView = 'day';
   let offset = 0;
   let selectedStaff = 'all';
-
-  // Schedule events passed from Flask via Jinja2
+ 
   const events = {{ schedule_events | tojson }};
-
+ 
   function filterByStaff(value) {
     selectedStaff = value;
     renderCalendar(currentView);
   }
-
-  function getDateStr(offsetDays) {
-    const d = new Date();
-    d.setDate(d.getDate() + offsetDays);
-    return d.toISOString().split('T')[0];
-  }
-
+ 
   function formatHour(h) {
     const hr  = Math.floor(h);
     const min = Math.round((h - hr) * 60);
@@ -135,7 +128,7 @@
     const disp = hr > 12 ? hr - 12 : hr;
     return `${disp}:${min.toString().padStart(2,'0')}${ampm}`;
   }
-
+ 
   function getDatesForView(view) {
     const base = new Date();
     if (view === 'day') {
@@ -159,7 +152,7 @@
       return d;
     });
   }
-
+ 
   function updateNavLabel(dates) {
     const first = dates[0];
     const last  = dates[dates.length - 1];
@@ -171,33 +164,34 @@
         `${first.getDate()} ${MONTH_NAMES[first.getMonth()]} – ${last.getDate()} ${MONTH_NAMES[last.getMonth()]}`;
     }
   }
-
+ 
   function navigate(direction) {
     offset += direction;
     renderCalendar(currentView);
   }
-
+ 
   function setView(view) {
     currentView = view;
     offset = 0;
-    document.querySelectorAll('.day_button, .week_button, .day3_button').forEach(b => b.classList.remove('active'));
-    if (view === 'day')  document.querySelector('.day_button').classList.add('active');
-    if (view === 'week') document.querySelector('.week_button').classList.add('active');
-    if (view === '3day') document.querySelector('.day3_button').classList.add('active');
+    document.querySelectorAll('.sched-view-btn').forEach(b => b.classList.remove('active'));
+    const btns = document.querySelectorAll('.sched-view-btn');
+    if (view === 'day')  btns[0].classList.add('active');
+    if (view === '3day') btns[1].classList.add('active');
+    if (view === 'week') btns[2].classList.add('active');
     renderCalendar(view);
   }
-
+ 
   function goToToday() {
     offset = 0;
     renderCalendar(currentView);
   }
-
+ 
   function renderCalendar(view) {
     const dates    = getDatesForView(view);
     const todayStr = new Date().toISOString().split('T')[0];
-
+ 
     updateNavLabel(dates);
-
+ 
     document.getElementById('dateHeader').innerHTML = dates.map(d => {
       const ds      = d.toISOString().split('T')[0];
       const isToday = ds === todayStr;
@@ -207,21 +201,21 @@
         <span class="date-month">${MONTH_NAMES[d.getMonth()]}</span>
       </div>`;
     }).join('');
-
+ 
     const timeCol = `<div class="time-column">
       ${HOURS.map(h => {
         const label = h === 0 ? '12am' : h < 12 ? `${h}am` : h === 12 ? '12pm' : `${h - 12}pm`;
         return `<div class="time-label">${label}</div>`;
       }).join('')}
     </div>`;
-
+ 
     const dayCols = `<div class="days-wrapper">
       ${dates.map(d => {
         const ds        = d.toISOString().split('T')[0];
         const dayEvents = events.filter(e => e.date === ds &&
           (selectedStaff === 'all' || e.role === selectedStaff));
         const cells     = HOURS.map(() => `<div class="day-cell"></div>`).join('');
-
+ 
         const eventDivs = dayEvents.map(e => {
           const top    = e.start * 62;
           const height = (e.end - e.start) * 62;
@@ -230,21 +224,21 @@
             <div class="ev-time">${formatHour(e.start)} – ${formatHour(e.end)}</div>
           </div>`;
         }).join('');
-
+ 
         let timeLine = '';
         if (ds === todayStr) {
           const now     = new Date();
           const nowHour = now.getHours() + now.getMinutes() / 60;
           timeLine = `<div class="current-time-line" style="top:${nowHour * 62}px"></div>`;
         }
-
+ 
         return `<div class="day-col">${cells}${eventDivs}${timeLine}</div>`;
       }).join('')}
     </div>`;
-
+ 
     document.getElementById('calendarGrid').innerHTML = timeCol + dayCols;
   }
-
+ 
   renderCalendar('day');
 </script>
 </body>
