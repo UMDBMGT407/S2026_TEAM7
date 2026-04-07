@@ -616,15 +616,44 @@ CREATE TABLE IF NOT EXISTS schedule (
 
 USE greene_turtle_db;
 
+-- ========================
+-- CLEAR EXISTING DATA
+-- ========================
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE event_staff;
+TRUNCATE TABLE schedule;
+TRUNCATE TABLE events;
+TRUNCATE TABLE users;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ========================
+-- USERS
+-- ========================
 INSERT INTO users (name, email, password, role) VALUES
 ('Alyssa Chen', 'alyssa@gtstaff.com', 'test', 'staff'),
 ('Matt Johnson', 'matt@gtstaff.com', 'test', 'staff');
 
+-- ========================
+-- EVENTS
+-- ========================
 INSERT INTO events (type, name, email, guests, date, time, description) VALUES
-('Birthday', 'Benjamin King', 'bking@gmail.com', 20, '2026-05-07', '06:00pm-09:00pm', 'Birthday party.');
+('Birthday',          'Benjamin King',       'bking@gmail.com',    20, '2026-05-07', '06:00pm-09:00pm', 'Birthday party.'),
+('Graduation Party',  'Sarah Johnson',       'sarah@gmail.com',    35, '2026-06-06', '01:00pm-04:00pm', 'Graduation celebration for the class of 2026.'),
+('Anniversary Dinner','The Williams Family', 'williams@gmail.com', 15, '2026-05-20', '07:00pm-10:00pm', 'Anniversary dinner celebration.');
 
-INSERT INTO event_staff (event_id, user_id) VALUES (1, 1), (1, 2);
+-- ========================
+-- EVENT STAFF
+-- ========================
+INSERT INTO event_staff (event_id, user_id) VALUES
+(1, 1), (1, 2),
+(2, 1), (2, 2),
+(3, 2);
 
+-- ========================
+-- SCHEDULE
+-- ========================
 INSERT INTO schedule (user_id, date, role, start_hour, end_hour, color) VALUES
 (1, CURDATE(), 'Hostess', 10.5, 15.0, '#204631'),
-(2, CURDATE(), 'Server', 12.0, 18.0, '#36845a');
+(2, CURDATE(), 'Server',  12.0, 18.0, '#36845a');
