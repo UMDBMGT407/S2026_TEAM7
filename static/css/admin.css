@@ -272,6 +272,75 @@ body {
   padding: 60px 90px;
 }
 
+.promotion-form {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.form-row {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.menu-items-box {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.menu-item-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.apply-wrap {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.apply-promotion-button {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background-color: #204631;
+  color: white;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.secondary-button {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background-color: #6c757d;
+  color: white;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
 
 .insert-promotion {
   font-family: "Passion One", sans-serif;
