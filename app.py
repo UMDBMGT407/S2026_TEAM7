@@ -341,7 +341,24 @@ def dashboard():
 @role_required("admin")
 def menu():
     return render_template("menu.html", user_role=session.get("user_role"))
+@app.route("/remove-seasonal-item", methods=["POST"])
+@role_required("admin")
+def remove_seasonal_item():
+    item_name = request.form.get("item_name")
 
+    cur = mysql.connection.cursor()
+
+    # Instead of deleting, change category
+    cur.execute("""
+        UPDATE menu_items
+        SET category = 'regular'
+        WHERE name = %s
+    """, (item_name,))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return {"success": True}
 
 @app.route("/menu-adjustments")
 @role_required("admin")
