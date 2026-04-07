@@ -1,112 +1,212 @@
-.staff, 
-.staff * {
-  box-sizing: border-box;
+/* Navigation Bar */
+.navbar {
+  background-color: #204631 !important;
+  padding: 12px 24px;
 }
+.navbar .navbar-brand img {
+  height: 46px;
+}
+.navbar .nav-link {
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  color: #ffffff !important;
+  padding: 8px 14px;
+}
+.navbar .nav-link:hover {
+  color: #a8d5b5 !important;
+}
+.navbar .dropdown-menu {
+  background-color: #204631;
+  border: 1px solid #36845a;
+  border-radius: 8px;
+  margin-top: 4px;
+}
+.navbar .dropdown-item {
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  color: #ffffff;
+  padding: 8px 20px;
+}
+.navbar .dropdown-item:hover {
+  background-color: #36845a;
+  color: #ffffff;
+}
+.navbar .btn-outline-light {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  border-radius: 12px;
+  padding: 6px 20px;
+}
+ 
+/*STYLING FOR ALL PAGES*/
+.staff,
 .staff {
   background: #36845a;
-  height: 1024px;
+  min-height: 100vh;  
   position: relative;
-  overflow: hidden;
+}
+body {
+  font-family: "Inter", sans-serif;
+  background: #f3f3f3;
+  overflow-x: hidden;
 }
 
 /* Staff Schedule */
-.calendar-background2 {
-  background: #f3f3f3;
-  border-radius: 20px;
-  width: 100%;
-  flex: 1;
-  min-height: 700px;
-  box-shadow: 0px 4px 4px 5px rgba(0, 0, 0, 0.25);
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  gap: 6px;
-}
-.back-design {
+.sched-page {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  width: 100%;
-  flex: 1;
-  height: 600px;
-  overflow-y: scroll;
-  position: relative;
+  min-height: calc(100vh - 70px);
 }
 
-/*Calendar Grid*/
-.time-column { width: 130px; flex-shrink: 0; }
-.time-label {
-  height: 62px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ededed;
-  border: 1px solid #a2a2a2;
-  font-family: "Passion One", sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-}
-.days-wrapper {
-  flex: 1;
-  display: flex;
-  min-width: 0;
-  width: 100%;
-}
-.day-col {
-  flex: 1;
-  min-width: 0;
-  position: relative;
+.sched-sidebar {
+  flex: 0 0 220px;
+  background: #204631;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
 }
-.day-cell {height: 62px; background: #ededed; border: 1px solid #a2a2a2; }
-.cal-event {
-  position: absolute;
-  left: 4px; right: 4px;
-  border-radius: 6px;
-  padding: 4px 8px;
+
+.sched-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sched-section-label {
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  color: rgba(255,255,255,0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.sched-view-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sched-view-btn {
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sched-view-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.sched-view-btn.active {
+  background: #36845a;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.sched-dropdown {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.1);
   color: #ffffff;
   font-family: "Passion One", sans-serif;
-  font-weight: 400;
+  font-size: 18px;
   cursor: pointer;
-  z-index: 2;
 }
-.calendar-area {
+
+.sched-dropdown option {
+  background: #204631;
+  color: #ffffff;
+}
+
+.sched-main {
   flex: 1;
-  min-width: 0;
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+  min-width: 0;
 }
-.ev-title { font-weight: 700; font-size: 13px; }
-.ev-time  { font-size: 11px; opacity: 0.85; }
-.current-time-line {
-  position: absolute;
-  left: 0; right: 0;
-  height: 2px;
-  background: #ef4444;
-  z-index: 3;
-}
-.time-label { /*Times for calendar */
-  color: #000000;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 20px;
-  font-weight: 700;
+
+.sched-header-row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 62px;
-  padding-right: 8px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.sched-page-title {
+  font-family: "Passion One", sans-serif;
+  font-size: 42px;
+  color: #ffffff;
+}
+
+.sched-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sched-nav-btn {
+  background: #204631;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.sched-nav-btn:hover { background: #163320; }
+
+.sched-nav-label {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  color: #ffffff;
+  min-width: 160px;
+  text-align: center;
+}
+
+.sched-today-btn {
+  background: #ffffff;
+  color: #204631;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.sched-today-btn:hover { background: #f0f0f0; }
+
+.sched-calendar-card {
+  background: #f3f3f3;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  padding: 12px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 .dates {
   display: flex;
   flex-direction: row;
   width: calc(100% - 130px);
   margin-left: 130px;
-  position: relative;
   margin-top: 4px;
   padding: 0 8px;
 }
+
 .date-label {
   text-align: center;
   font-family: "Passion One", sans-serif;
@@ -120,342 +220,248 @@
   gap: 6px;
   color: #204631;
 }
+
 .date-day-name { color: #204631; font-family: "Passion One", sans-serif; font-weight: 700; }
 .date-number   { color: #000000; font-family: "Passion One", sans-serif; font-weight: 700; }
 .date-month    { color: #000000; font-family: "Passion One", sans-serif; font-weight: 400; }
 
-/*Navigation arrows*/
-.calendar-nav {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  position: relative;
-  z-index: 10;
-}
-.calendar-nav button {
-  background: #204631 !important;
-  color: #ffffff;
-  border-radius: 6px;
-  width: 100px;
-  height: 32px;
-  cursor: pointer;
-}
-#nav-label {
-  color: #204631;
-  font-family: "Passion One", sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-}
-.today-btn {
-  background: #f3f3f3 !important;
-  color: #204631;
-  font-family: "Passion One", sans-serif;
-  font-size: 16px;
-  border-radius: 6px;
-  padding: 4px 12px;
-  cursor: pointer;
-  height: 32px;
-}
-.today-btn:hover {
-  background: #ffffff !important;
-}
-
-/* Right Panel Sidebar*/
-.sidebar {
-  padding: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: center;
-  justify-content: flex-start;
-  flex: 0 0 270px;
-}
-.day_button,
-.day3_button, 
-.week_button { /* Style for the day, 3 day, and week buttons */
-  width: 250px;
-  height: 43px;
-  border-radius: 5px;
-  background: #f3f3f3;
-  cursor: pointer;
-  border: none;
-  font-family: "Passion One", sans-serif;
-  font-size: 20px;
-  font-weight: 400;
-  color: #36845a;
-}
-.day_button.active,
-.day3_button.active, 
-.week_button.active { /* Active state for all view buttons */
-  background: #204631;
-  color: #ffffff;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-}
-.staff-dropdown-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 0px;
-  width: 250px;
-}
-.sidebar-heading {
-  color: #ffffff;
-  font-family: "Passion One", sans-serif;
-  font-size: 20px;
-  text-align: center;
-  margin-top: 30px;
-  margin-bottom: 0px;
-}
-.staff-dropdown {
-  width: 250px;
-  padding: 6px 8px;
-  border-radius: 5px;
-  border: none;
-  background: #f3f3f3;
-  color: #36845a;
-  font-family: "Passion One", sans-serif;
-  font-size: 20px;
-  cursor: pointer;
-}
-@media (max-width: 900px) {
-  .calendar-background,
-  .calendar-nav,
-  .dates {
-    margin-left: 10px;
-  }
-  .sidebar {
-    position: relative;
-    left: auto;
-    top: auto;
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 10px;
-  }
-  .back-design {
-    height: 500px;
-  }
-}
-.page-layout {
+.back-design {
   display: flex;
   flex-direction: row;
-  gap: 16px;
-  padding: 16px;
+  align-items: flex-start;
   width: 100%;
-  box-sizing: border-box;
+  height: 600px;
+  overflow-y: scroll;
+  position: relative;
 }
-/* Staff Schedule End */
+
+.time-column { width: 130px; flex-shrink: 0; }
+
+.time-label {
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ededed;
+  border: 1px solid #a2a2a2;
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #000000;
+  padding-right: 8px;
+}
+
+.days-wrapper {
+  flex: 1;
+  display: flex;
+  min-width: 0;
+  width: 100%;
+}
+
+.day-col {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.day-cell {
+  height: 62px;
+  background: #ededed;
+  border: 1px solid #a2a2a2;
+}
+
+.cal-event {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: #ffffff;
+  font-family: "Passion One", sans-serif;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.ev-title { font-weight: 700; font-size: 13px; }
+.ev-time  { font-size: 11px; opacity: 0.85; }
+
+.current-time-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: #ef4444;
+  z-index: 3;
+}
+
 
 /* Event Details */
-/* Upcoming Events Panel*/
-.upcoming-events-background {
-  background: #ffffff;
-  border-radius: 15px;
-  width: 100%;
-  min-height: 600px;
-  position: relative;
-  box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
-}
-.upcoming-events-header {
-  color: #204631;
-  font-family: "Passion One", sans-serif;
-  font-size: 36px;
-  font-weight: 400;
-  padding: 20px 20px 10px 20px;
-}
-#eventsList {
-  padding: 0 10px;
-  width: 100%;
+.events-page { min-height: 100vh; background: #36845a; }
+
+.events-body {
+  padding: 24px 32px 48px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-/* Event selection side bar menu */
-.event-item {
+.page-heading {
+  font-family: "Passion One", sans-serif;
+  font-size: 42px;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.events-summary-row {
   display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 12px;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.event-summary-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  flex: 1;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
   cursor: pointer;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  border: 3px solid transparent;
+  transition: border-color 0.2s, transform 0.15s;
 }
-.event-item:hover { background: #f0f0f0; }
-.event-item.selected {
-  background: #e8f0eb;
-  border: 2px solid #36845a;
-  border-radius: 10px;
+
+.event-summary-card:hover {
+  transform: translateY(-2px);
+  border-color: #36845a;
 }
-.event-item-type {
+
+.event-summary-card.active {
+  border-color: #204631;
+  background: #f0f7f2;
+}
+
+.card-type {
   font-family: "Passion One", sans-serif;
   font-size: 20px;
-  color: #000;
+  color: #204631;
+  margin-bottom: 4px;
 }
-.event-item-date, .event-item-time {
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  color: #333;
+
+.card-date {
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  color: #555;
 }
-.ellipse {
+
+.card-time {
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  color: #888;
+}
+
+.card-dot {
+  width: 10px;
+  height: 10px;
   background: #36845a;
   border-radius: 50%;
-  width: 15px;
-  height: 15px;
+  display: inline-block;
+  margin-right: 6px;
   flex-shrink: 0;
-  margin-top: 6px;
-  align-items: center;
 }
 
-/* Event Details Panel */
-.event-details-background {
-  background: #ffffff;
-  border-radius: 15px;
-  width: 100%;
-  min-height: 600px;
-  position: relative;
-  box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
-}
-.event-details-frame {/*moves the name, event, etc,*/
+.detail-grid {
   display: grid;
-  gap: 12px;
-  row-gap: 0px;
-  grid-template-columns: repeat(2, fit-content(100%));
-  grid-template-rows: repeat(6, fit-content(100%));
-  align-items: center;
-  padding: 24px;
-}
-.event-desc {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  padding: 0 24px;
-  margin-top: 8px;
-}
-.available-staff-section {
-  padding: 0 24px;
-  margin-top: 8px;
-}
-.event-label { /* Heading titles for the event, name, etc details */
-  color: #36845a;
-  text-align: left;
-  font-family: "Passion One", sans-serif;
-  font-size: 36px;
-  font-weight: 400;
-}
-.event-value {
-  color: #000000;
-  text-align: left;
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-}
-.event-description {
-  color: #36845a;
-  text-align: left;
-  font-family: "Passion One", sans-serif;
-  font-size: 36px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-}
-.event-desc-text {
-  color: #000000;
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-}
-.staff-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-.staff-name {
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  color: #000;
-}
-@media (max-width: 768px) {
-  .page-content {
-    flex-direction: column;
-  }
-  .left-panel {
-    flex: none;
-    width: 100%;
-  }
-}
-.page-content {
-  display: flex;
-  flex-direction: row;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
-  padding: 20px;
-  margin-top: 10px;
 }
-.left-panel {
-  flex: 0 0 320px;
-}
-.right-panel {
-  flex: 1;
-}
-/* Event Details End */
 
-/* Navigation Bar */
-.staff-nav-bar {
-  background: #204631;
-  padding: 12px 24px;
-  display: flex;
-  flex-direction: row;
+@media (max-width: 900px) {
+  .detail-grid { grid-template-columns: 1fr; }
+}
+
+.detail-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.detail-card.full-width { grid-column: 1 / -1; }
+
+.detail-card-title {
+  font-family: "Passion One", sans-serif;
+  font-size: 26px;
+  color: #204631;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e8f0eb;
+}
+
+.info-table {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 16px;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  position: absolute;
-  left: 0px;
-  top: 0px;
 }
-.g-tlogo {
-  height: 46px;
-  width: auto;
-  object-fit: cover;
-}
-.schedule {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 22px;
-  font-weight: 400;
-}
-.events {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 22px;
-  font-weight: 400;
-}
-.navbar .nav-link,
-.navbar-brand {
-  font-family: "Passion One", sans-serif;
-  font-size: 22px;
-  color: #ffffff !important;
-  padding: 8px 14px;
-}
-.navbar .nav-link:hover {
-  color: #a8d5b5 !important;
-}
-.navbar {
-  background-color: #204631 !important;
-  padding: 12px 24px;
-}
-.navbar .btn-outline-light {
+
+.info-label {
   font-family: "Passion One", sans-serif;
   font-size: 20px;
-  border-radius: 12px;
-  padding: 6px 20px;
+  color: #36845a;
 }
 
-/* ========================
-   Staff Shift Page
-   ======================== */
+.info-value {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  color: #222;
+}
+
+.desc-text {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.staff-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.staff-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f0f7f2;
+  border-radius: 10px;
+  border: 1px solid #d4e8db;
+}
+
+.staff-avatar {
+  width: 36px;
+  height: 36px;
+  background: #204631;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 16px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.staff-row-name {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #204631;
+}
+
+/* Shift Page */
 .page-wrapper {
   padding: 32px 36px 48px;
   max-width: 1300px;
