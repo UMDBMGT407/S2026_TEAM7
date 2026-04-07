@@ -10,7 +10,7 @@ app.secret_key = "replace-this-with-a-real-secret-key"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'your password'
+app.config['MYSQL_PASSWORD'] = 'Candi050704!'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -612,6 +612,7 @@ def view_promos():
     calendar_data = {}
     for row in rows:
         day = row["date"].day
+
         if day not in calendar_data:
             calendar_data[day] = []
 
