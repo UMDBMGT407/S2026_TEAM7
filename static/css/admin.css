@@ -266,420 +266,338 @@ body {
 
 /*EDIT PROMOS*/
 
-edit-promos {
+.edit-promos {
   background: #36845a;
   min-height: 100vh;
-  padding: 40px 40px 60px;
+  padding: 60px 90px;
 }
 
-.insert-promotion-title-spacer {
-  height: 90px;
-}
-
-.insert-promotion-title {
-  text-align: center;
-  margin-bottom: 36px;
-}
-
-.insert-promotion h1 {
-  font-family: "Passion One", sans-serif;
-  font-size: 52px;
-  color: #ffffff;
-  text-decoration: none;
-  margin: 0;
-}
 .promotion-form {
-  max-width: 1100px;
+  max-width: 900px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(320px, 1fr));
-  gap: 28px 40px;
-  align-items: start;
 }
 
 .form-row {
+  margin-bottom: 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.form-row label {
-  font-family: "Passion One", sans-serif;
-  font-size: 28px;
-  color: #ffffff;
-  line-height: 1.1;
+  gap: 8px;
 }
 
 .form-row input,
 .form-row select,
 .form-row textarea {
   width: 100%;
-  min-height: 54px;
-  padding: 14px 16px;
-  border: none;
-  border-radius: 10px;
-  background: #e6e6e6;
-  color: #1f1f1f;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   font-size: 16px;
-  font-family: "Roboto", sans-serif;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
-}
-
-.form-row textarea {
-  min-height: 140px;
-  resize: vertical;
-}
-
-.form-row input:focus,
-.form-row select:focus,
-.form-row textarea:focus {
-  outline: 3px solid rgba(255, 255, 255, 0.35);
-  background: #f3f3f3;
 }
 
 .menu-items-box {
-  width: 100%;
-  min-height: 140px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
   max-height: 220px;
   overflow-y: auto;
-  padding: 14px 16px;
-  border: none;
-  border-radius: 10px;
-  background: #e6e6e6;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+  background: #fff;
 }
 
 .menu-item-option {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
-  font-family: "Roboto", sans-serif;
-  font-size: 15px;
-  color: #1f1f1f;
-}
-
-.menu-items-box p {
-  margin: 0;
-  font-family: "Roboto", sans-serif;
-  color: #444;
+  margin-bottom: 8px;
 }
 
 .apply-wrap {
-  grid-column: 1 / -1;
+  margin-top: 24px;
   display: flex;
-  justify-content: center;
-  gap: 18px;
-  margin-top: 12px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
-.apply-promotion-button,
-.secondary-button {
-  min-width: 220px;
-  height: 56px;
-  padding: 0 24px;
+.apply-promotion-button {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background-color: #204631;
+  color: white;
+  text-decoration: none;
   border: none;
-  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.secondary-button {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background-color: #6c757d;
+  color: white;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+.insert-promotion {
+  font-family: "Passion One", sans-serif;
+  font-size: 48px;
+  color: white;
+  text-decoration: underline;
+  margin-bottom: 40px;
+}
+
+
+
+.promotion-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 140px;
+  row-gap: 30px;
+  margin-top: 40px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+
+
+.form-row label {
+  font-family: "Passion One", sans-serif;
+  font-size: 24px;
+  color: white;
+  white-space: nowrap;
+  width: 200px;
+}
+
+
+.form-row input {
+  width: 220px;
+  height: 40px;
+  background: #d9d9d9;
+  border-radius: 6px;
+  padding-left: 10px;
+  font-size: 14px;
+  font-family: "Roboto", sans-serif;
+  box-shadow: 0px 3px 4px rgba(0,0,0,0.25);
+}
+
+.apply-wrap{
+  max-width: 900px;     
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end; 
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.apply-promotion-button{
+  background: #204631;
+  color: white;
+  font-family: "Passion One", sans-serif;
+  font-size: 24px;
+  padding: 14px 20px;
+  border-radius: 8px;
+  box-shadow: 0px 6px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  text-decoration: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
+}
+
+.apply-promotion-button:hover {
+  background: #173a28;
+  transform: translateY(-2px);
+}
+
+.apply-promo-text {
+  background: #1f4a34;
+  padding: 12px 20px;
+  border-radius: 8px;
   font-family: "Passion One", sans-serif;
-  font-size: 28px;
-  color: #ffffff;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  font-size: 24px;
+  color: white;
+  box-shadow: 0px 6px 6px rgba(0,0,0,0.3);
 }
 
-.apply-promotion-button {
-  background: #204631;
-}
+/*EVENT DETAILS ADMIN*/
+/* ========================
+   Event Details Page
+   ======================== */
+.events-page { min-height: 100vh; background: #36845a; }
 
-.secondary-button {
-  background: #204631;
-}
-
-.edit-promos {
-  background: #36845a;
-  min-height: 100vh;
-  padding: 40px 40px 60px;
-}
-
-.insert-promotion-title-spacer {
-  height: 90px;
-}
-
-.insert-promotion-title {
-  text-align: center;
-  margin-bottom: 36px;
-}
-
-.insert-promotion h1 {
-  font-family: "Passion One", sans-serif;
-  font-size: 52px;
-  color: #ffffff;
-  text-decoration: none;
-  margin: 0;
-}
-
-.promotion-form {
-  max-width: 1100px;
+.events-body {
+  padding: 24px 32px 48px;
+  max-width: 1400px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(320px, 1fr));
-  gap: 28px 40px;
-  align-items: start;
 }
 
-.form-row {
+.page-heading {
+  font-family: "Passion One", sans-serif;
+  font-size: 42px;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.events-summary-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.event-summary-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 16px 20px;
+  flex: 1;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: border-color 0.2s, transform 0.15s;
+}
+
+.event-summary-card:hover {
+  transform: translateY(-2px);
+  border-color: #36845a;
+}
+
+.event-summary-card.active {
+  border-color: #204631;
+  background: #f0f7f2;
+}
+
+.card-type {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  color: #204631;
+  margin-bottom: 4px;
+}
+
+.card-date {
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  color: #555;
+}
+
+.card-time {
+  font-family: "Roboto", sans-serif;
+  font-size: 13px;
+  color: #888;
+}
+
+.card-dot {
+  width: 10px;
+  height: 10px;
+  background: #36845a;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .detail-grid { grid-template-columns: 1fr; }
+}
+
+.detail-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+.detail-card.full-width { grid-column: 1 / -1; }
+
+.detail-card-title {
+  font-family: "Passion One", sans-serif;
+  font-size: 26px;
+  color: #204631;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #e8f0eb;
+}
+
+.info-table {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 10px 16px;
+  align-items: center;
+}
+
+.info-label {
+  font-family: "Passion One", sans-serif;
+  font-size: 20px;
+  color: #36845a;
+}
+
+.info-value {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  color: #222;
+}
+
+.desc-text {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  color: #444;
+  line-height: 1.6;
+}
+
+.staff-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.form-row label {
-  font-family: "Passion One", sans-serif;
-  font-size: 28px;
-  color: #ffffff;
-  line-height: 1.1;
-}
-
-.form-row input,
-.form-row select,
-.form-row textarea,
-.menu-dropdown {
-  width: 100%;
-  min-height: 54px;
-  padding: 14px 16px;
-  border: none;
-  border-radius: 10px;
-  background: #e6e6e6;
-  color: #1f1f1f;
-  font-size: 16px;
-  font-family: "Roboto", sans-serif;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
-}
-
-.form-row textarea {
-  min-height: 140px;
-  resize: vertical;
-}
-
-.form-row input:focus,
-.form-row select:focus,
-.form-row textarea:focus,
-.menu-dropdown:focus {
-  outline: 3px solid rgba(255, 255, 255, 0.35);
-  background: #f3f3f3;
-}
-
-.apply-wrap {
-  grid-column: 1 / -1;
+.staff-row {
   display: flex;
-  justify-content: center;
-  gap: 18px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-
-.apply-promotion-button,
-.secondary-button {
-  min-width: 220px;
-  height: 56px;
-  padding: 0 24px;
-  border: none;
-  border-radius: 12px;
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-family: "Passion One", sans-serif;
-  font-size: 28px;
-  color: #ffffff;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
-  transition: transform 0.18s ease, opacity 0.18s ease;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #f0f7f2;
+  border-radius: 10px;
+  border: 1px solid #d4e8db;
 }
 
-.apply-promotion-button,
-.secondary-button {
+.staff-avatar {
+  width: 36px;
+  height: 36px;
   background: #204631;
-}
-
-.apply-promotion-button:hover,
-.secondary-button:hover {
-  transform: translateY(-2px);
-  opacity: 0.95;
-  color: #ffffff;
-}
-
-@media (max-width: 900px) {
-  .promotion-form {
-    grid-template-columns: 1fr;
-  }
-
-  .apply-wrap {
-    justify-content: center;
-  }
-}
-
-/*EVENT DETAILS ADMIN*/
-.event-details,
-.event-details * {
-  box-sizing: border-box;
-}
-.event-details {
-  background: #36845a;
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
-}
-
-.upcoming-events-background {
-  background: #ffffff;
-  border-radius: 15px;
-  width: 100%;
-  min-height: 600px;
-  position: relative;
-  box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
-}
-.upcoming-events-header {
-  color: #204631;
-  font-family: "Passion One", sans-serif;
-  font-size: 36px;
-  font-weight: 400;
-  padding: 20px 20px 10px 20px;
-}
-#eventsList {
-  padding: 0 10px;
-  width: 100%;
-}
-
-.event-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  padding: 12px;
-  cursor: pointer;
-  border-radius: 8px;
-  margin-bottom: 8px;
-}
-.event-item:hover { background: #f0f0f0; }
-.event-item.selected {
-  background: #e8f0eb;
-  border: 2px solid #36845a;
-  border-radius: 10px;
-}
-.event-item-type {
-  font-family: "Passion One", sans-serif;
-  font-size: 20px;
-  color: #000;
-}
-.event-item-date, .event-item-time {
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  color: #333;
-}
-.ellipse {
-  background: #36845a;
   border-radius: 50%;
-  width: 15px;
-  height: 15px;
-  flex-shrink: 0;
-  margin-top: 6px;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 16px;
+  color: #ffffff;
+  flex-shrink: 0;
 }
 
-.event-details-background {
-  background: #ffffff;
-  border-radius: 15px;
-  width: 100%;
-  min-height: 600px;
-  position: relative;
-  box-shadow: 0px 4px 4px 3px rgba(0, 0, 0, 0.25);
-}
-.event-details-frame {/*moves the name, event, etc,*/
-  display: grid;
-  gap: 12px;
-  row-gap: 0px;
-  grid-template-columns: repeat(2, fit-content(100%));
-  grid-template-rows: repeat(6, fit-content(100%));
-  align-items: center;
-  padding: 24px;
-}
-.event-desc {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  padding: 0 24px;
-  margin-top: 8px;
-}
-.available-staff-section {
-  padding: 0 24px;
-  margin-top: 8px;
-}
-.event-label { /* Heading titles for the event, name, etc details */
-  color: #36845a;
-  text-align: left;
-  font-family: "Passion One", sans-serif;
-  font-size: 36px;
-  font-weight: 400;
-}
-.event-value {
-  color: #000000;
-  text-align: left;
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-}
-.event-description {
-  color: #36845a;
-  text-align: left;
-  font-family: "Passion One", sans-serif;
-  font-size: 36px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-}
-.event-desc-text {
-  color: #000000;
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-}
-.staff-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-.staff-name {
-  font-family: "Inter", sans-serif;
-  font-size: 16px;
-  color: #000;
-}
-@media (max-width: 768px) {
-  .page-content {
-    flex-direction: column;
-  }
-  .left-panel {
-    flex: none;
-    width: 100%;
-  }
-}
-.page-content {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  padding: 20px;
-  margin-top: 10px;
-}
-.left-panel {
-  flex: 0 0 320px;
-}
-.right-panel {
-  flex: 1;
+.staff-row-name {
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #204631;
 }
 
 /*EVENTS*/
@@ -3937,295 +3855,182 @@ button {
 }
 
 /*VIEW PROMOS*/
-body {
-  margin: 0;
-  background: #36845a !important;
-  font-family: "Passion One", sans-serif;
+body,
+button,
+input,
+select,
+textarea,
+.navbar,
+.events {
+  font-family: "Passion One", sans-serif !important;
 }
 
-.view-promos-page {
-  padding: 110px 24px 50px;
+body{
+margin:0;
+font-family:"Passion One", sans-serif;
+background-color:#36845a !important;
 }
 
-.promo-toolbar {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 30px;
+.calendar{
+width:85%;
+max-width:1050px;
+margin:30px auto;
+padding:20px;
+background:white;
+border-radius:10px;
+box-shadow:0px 6px 20px rgba(0,0,0,0.25);
 }
 
-.promo-toolbar-card {
-  width: 100%;
-  max-width: 1200px;
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 24px 28px;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+.calendar-wrapper{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0px 6px 20px rgba(0,0,0,0.25);
 }
 
-.toolbar-title {
-  color: #204631;
-  font-size: 34px;
-  text-align: center;
-  margin: 0 0 20px 0;
+.calendar-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:16px;
+font-size:24px;
+color:#204631;
 }
 
-.promo-toolbar-form {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr auto;
-  gap: 16px;
-  align-items: end;
+.month-title{
+font-family:"Passion One", sans-serif;
+font-size:48px;
+color:#204631;
+text-align:center;
+background:white;
+padding:8px 60px;
+border-radius:100px;
+display:inline-block;
+margin-bottom:16px;
 }
 
-.toolbar-field {
-  display: flex;
-  flex-direction: column;
+.calendar-month-header{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:30px;
+margin-bottom:16px;
 }
 
-.toolbar-field label {
-  color: #204631;
-  font-size: 22px;
-  margin-bottom: 8px;
+.month-arrow{
+background:none;
+border:none;
+color:white;
+font-size:40px;
+cursor:pointer;
 }
 
-.promo-toolbar-form select,
-.promo-toolbar-form input {
-  min-height: 52px;
-  width: 100%;
-  border: 2px solid #d8e4dc;
-  border-radius: 12px;
-  padding: 0 14px;
-  font-family: "Roboto", sans-serif;
-  font-size: 15px;
-  background: #fff;
+.month-arrow:hover{
+transform:scale(1.1);
 }
 
-.promo-toolbar-form select:focus,
-.promo-toolbar-form input:focus {
-  outline: none;
-  border-color: #36845a;
-  box-shadow: 0 0 0 0.2rem rgba(54, 132, 90, 0.15);
+button{
+background:#204631;
+color:white;
+padding:8px 14px;
+font-size:16px;
+cursor:pointer;
+border:none;
+border-radius:8px;
+font-family:"Passion One", sans-serif;
+box-shadow:2px 6px 4px rgba(0,0,0,0.25);
 }
 
-.calendar-btn {
-  min-height: 52px;
-  border: none;
-  border-radius: 12px;
-  padding: 0 22px;
-  background: #204631;
-  color: #fff;
-  font-size: 22px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
-  cursor: pointer;
+button:hover{
+background:#1a3828;
 }
 
-.calendar-btn:hover {
-  background: #173726;
+.days{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+margin-top:10px;
 }
 
-.calendar-shell {
-  max-width: 1200px;
-  margin: 0 auto;
+.day-name{
+color:#204631;
+text-align:center;
+font-size:24px;
+padding:8px;
 }
 
-.calendar-month-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 22px;
-  margin-bottom: 20px;
+.date{
+background:white;
+border:2px solid #204631;
+height:90px;
+padding:6px;
+position:relative;
+font-family:"Passion One", sans-serif;
+color:#204631;
+display:flex;
+flex-direction:column;
 }
 
-.month-toggle {
-  width: 54px;
-  height: 54px;
-  border-radius: 14px;
-  background: #ffffff;
-  color: #204631;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-size: 30px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+.calendar-day{
+border:2px solid black;
+height:90px;
+padding:6px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
 }
 
-.month-toggle:hover {
-  background: #f3f7f4;
-  color: #204631;
+.date-number{
+font-family:"Passion One", sans-serif;
+font-size:20px;
+color:#204631;
 }
 
-.month-title-wrap {
-  background: #ffffff;
-  border-radius: 999px;
-  padding: 12px 36px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+.promo-card{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+gap:4px;
+font-size:12px;
+color:#204631;
+text-align:center;
+margin-top:auto;
 }
 
-.month-title {
-  margin: 0;
-  color: #204631;
-  font-size: 56px;
-  line-height: 1;
+.promo-buttons{
+display:flex;
+gap:6px;
 }
 
-.calendar-board {
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 24px;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+.btn-success{
+background:#36845a;
+border:none;
+font-family:"Passion One", sans-serif;
+font-size:6px;
+padding:3px 8px;
 }
 
-.calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 14px;
-  margin-bottom: 14px;
+.btn-success:hover{
+background:#204631;
 }
 
-.calendar-day-name {
-  text-align: center;
-  color: #204631;
-  font-size: 24px;
-  padding: 8px 0;
+.btn-danger{
+font-family:"Passion One", sans-serif;
+font-size:6px;
+padding:3px 8px;
 }
 
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 14px;
+.promo-buttons .btn{
+font-size:9px;
+padding:1px 4px;
+border-radius:3px;
+line-height:1;
+box-shadow:none;
 }
 
-.calendar-day {
-  min-height: 170px;
-  background: #ffffff;
-  border: 2px solid #d8e4dc;
-  border-radius: 16px;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-.empty-day {
-  background: #f7f7f7;
-  border-style: dashed;
-  opacity: 0.6;
-}
-
-.day-number {
-  color: #204631;
-  font-size: 22px;
-  margin-bottom: 8px;
-}
-
-.day-promos {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: auto;
-}
-
-.promo-card {
-  background: #eef6f0;
-  border: 1px solid #cfe0d4;
-  border-radius: 12px;
-  padding: 8px;
-}
-
-.promo-name {
-  color: #204631;
-  font-family: "Roboto", sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.3;
-  margin-bottom: 8px;
-  word-break: break-word;
-}
-
-.promo-action-btn {
-  width: 100%;
-  min-height: 32px;
-  border-radius: 8px;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-size: 14px;
-  margin-top: 6px;
-  cursor: pointer;
-}
-
-.info-btn {
-  background: #36845a;
-  color: #fff;
-}
-
-.info-btn:hover {
-  background: #204631;
-}
-
-.delete-btn {
-  background: #c84c4c;
-  color: #fff;
-}
-
-.delete-btn:hover {
-  background: #a53d3d;
-  color: #fff;
-}
-
-.promo-modal-content {
-  border: none;
-  border-radius: 18px;
-  overflow: hidden;
-}
-
-.promo-modal-header {
-  background: #204631;
-  color: #ffffff;
-}
-
-.promo-modal-body {
-  background: #ffffff;
-  padding: 24px;
-}
-
-.promo-modal-body p {
-  margin-bottom: 10px;
-  color: #204631;
-  font-family: "Roboto", sans-serif;
-  font-size: 16px;
-}
-
-@media (max-width: 1100px) {
-  .promo-toolbar-form {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .toolbar-submit {
-    grid-column: 1 / -1;
-  }
-
-  .month-title {
-    font-size: 42px;
-  }
-}
-
-@media (max-width: 768px) {
-  .promo-toolbar-form {
-    grid-template-columns: 1fr;
-  }
-
-  .calendar-grid,
-  .calendar-weekdays {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .calendar-day-name {
-    display: none;
-  }
-
-  .month-title {
-    font-size: 34px;
-  }
+.promo-buttons{
+display:flex;
+justify-content:center;
+gap:2px;
+margin-top:1px;
 }
