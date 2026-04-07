@@ -301,7 +301,19 @@ Schedule</a></li>
           <button class="submit-button" type="submit">SUBMIT</button>
         </form>
       </div>
+{% if message %}
+  <p>{{ message }}</p>
+{% endif %}
 
+{% if suppliers %}
+  <ul>
+    {% for s in suppliers %}
+      <li>
+        {{ s.SupplierName }} — {{ s.SupplierCity }}, {{ s.SupplierState }} ({{ s.SupplierSpecialty }})
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
       <div class="inventory-category-card">
         <img src="{{ url_for('static', filename='images/inventory_category_cost.png') }}" alt="Inventory Category Cost" class="inventory-category-cost" />
       </div>
