@@ -237,8 +237,7 @@ def loyalty_status():
 @app.route("/staff-scheduling-staff")
 @role_required("staff", "admin")
 def staff_scheduling_staff():
-    return render_template("staff_scheduling_staff.html", user_role=session.get("user_role"))
-
+    return redirect(url_for("staff_scheduling_admin"))
 
 @app.route("/schedule")
 @role_required("staff", "admin")
@@ -265,7 +264,8 @@ def staff_scheduling_admin():
                            user_role=session.get("user_role"))
 
 
-@app.route("/event-details")
+@app.route("/event-details", endpoint="event_details_staff")
+@app.route("/event-details", endpoint="event_details_admin")
 @role_required("staff", "admin")
 def event_details_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
