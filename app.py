@@ -361,6 +361,38 @@ def orders_and_sales():
 def inventory():
     return render_template("inventory.html", user_role=session.get("user_role"))
 
+@app.route("/submit-supplier-availability", methods=["POST"])
+@role_required("admin")
+def submit_supplier_availability():
+    supplier_search = request.form.get("supplier-search", "").strip()
+    date_availability = request.form.get("date-availability", "").strip()
+    time_availability = request.form.get("time-availability", "").strip()
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
+        FROM suppliers
+        WHERE SupplierName LIKE %s
+    """, (f"%{supplier_search}%",))
+
+    suppliers = cur.fetchall()
+
+    message = None
+
+    if suppliers:
+        message = "Supplier(s) found. Availability recorded (simulated)."
+    else:
+        message = "No suppliers found."
+
+    cur.close()
+
+    return render_template(
+        "inventory.html",
+        user_role=session.get("user_role"),
+        suppliers=suppliers,
+        message=message
+    )
 
 @app.route("/inventory-adjustments")
 @role_required("admin")
