@@ -574,7 +574,7 @@ def view_promos():
     if not year:
         year = today.year
 
-    dim = calendar.monthrange(year, month)[1]
+    first_weekday, dim = calendar.monthrange(year, month)
 
     prev_month = month - 1
     prev_year = year
@@ -612,7 +612,6 @@ def view_promos():
     calendar_data = {}
     for row in rows:
         day = row["date"].day
-
         if day not in calendar_data:
             calendar_data[day] = []
 
@@ -629,6 +628,7 @@ def view_promos():
         month=month,
         year=year,
         dim=dim,
+        first_weekday=first_weekday,
         prev_month=prev_month,
         prev_year=prev_year,
         next_month=next_month,
