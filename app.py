@@ -458,10 +458,14 @@ def loyalty_program():
 @role_required("admin")
 def promos_page():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT id, name FROM menu_items")
+
+
+    cur.execute("SELECT menu_item_id, name FROM menu_items")
     menu_items = cur.fetchall()
+
     cur.close()
-    return render_template("edit_promos.html", menu_items=menu_items,
+    return render_template("edit_promos.html",
+                           menu_items=menu_items,
                            user_role=session.get("user_role"))
 
 
@@ -484,6 +488,7 @@ def add_promotion():
         if not promotion_name or not menu_item_ids:
             return redirect(url_for("promos_page"))
 
+
         cur.execute("""
             INSERT INTO promotions
             (promotion_name, promotion_type, description, discount,
@@ -493,6 +498,8 @@ def add_promotion():
               start_date, end_date, start_time, end_time, recurring))
 
         promotion_id = cur.lastrowid
+
+
         for item_id in menu_item_ids:
             cur.execute("""
                 INSERT INTO promotion_items (promotion_id, menu_item_id)
@@ -500,13 +507,15 @@ def add_promotion():
             """, (promotion_id, item_id))
 
         mysql.connection.commit()
+
     except Exception as e:
         mysql.connection.rollback()
-        print(e)
+        print("ERROR ADDING PROMO:", e)
+
     finally:
         cur.close()
 
-    return redirect(url_for("promos_page"))
+    return redirect(url_for("view_promos"))
 
 
 @app.route("/view-promos")
@@ -514,6 +523,7 @@ def add_promotion():
 def view_promos():
     month = request.args.get("month", type=int)
     year  = request.args.get("year", type=int)
+
     today = datetime.today()
     if not month:
         month = today.month
@@ -521,31 +531,42 @@ def view_promos():
         year = today.year
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+   
     cur.execute("""
-        SELECT pc.date, p.id, p.promotion_name
+        SELECT pc.date, p.promotion_id, p.promotion_name
         FROM promotion_calendar pc
-        JOIN promotions p ON pc.promotion_id = p.id
+        JOIN promotions p ON pc.promotion_id = p.promotion_id
         WHERE MONTH(pc.date) = %s AND YEAR(pc.date) = %s
     """, (month, year))
+
     rows = cur.fetchall()
 
-    cur.execute("SELECT id, promotion_name FROM promotions")
+
+    cur.execute("SELECT promotion_id, promotion_name FROM promotions")
     promotions = cur.fetchall()
+
     cur.close()
 
+    # Build calendar dictionary
     calendar_data = {}
     for row in rows:
         day = row["date"].day
+
         if day not in calendar_data:
             calendar_data[day] = []
+
         calendar_data[day].append({
-            "id":   row["id"],
+            "id": row["promotion_id"],
             "name": row["promotion_name"],
             "date": row["date"]
         })
 
-    return render_template("view_promos.html", calendar_data=calendar_data,
-                           promotions=promotions, month=month, year=year,
+    return render_template("view_promos.html",
+                           calendar_data=calendar_data,
+                           promotions=promotions,
+                           month=month,
+                           year=year,
                            user_role=session.get("user_role"))
 
 
@@ -553,10 +574,16 @@ def view_promos():
 @role_required("admin")
 def promo_details(promo_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT * FROM promotions WHERE id = %s", (promo_id,))
+
+    cur.execute("SELECT * FROM promotions WHERE promotion_id = %s", (promo_id,))
     promo = cur.fetchone()
+
     cur.close()
-    return render_template("promo_details.html", promo=promo)
+
+    if not promo:
+        return {"error": "Promo not found"}, 404
+
+    return promo 
 
 
 @app.route("/delete-promo/<int:promo_id>")
@@ -565,20 +592,24 @@ def delete_promo(promo_id):
     date  = request.args.get("date")
     month = request.args.get("month")
     year  = request.args.get("year")
+
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
     cur.execute("""
         DELETE FROM promotion_calendar
         WHERE promotion_id = %s AND date = %s
     """, (promo_id, date))
+
     mysql.connection.commit()
     cur.close()
-    return redirect(url_for("view_promos", month=month, year=year))
 
+    return redirect(url_for("view_promos", month=month, year=year))
 
 @app.route("/add-promo-to-calendar", methods=["POST"])
 @role_required("admin")
 def add_promo_to_calendar():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
     try:
         promotion_id = request.form.get("promotion_id")
         start_date   = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
@@ -588,22 +619,28 @@ def add_promo_to_calendar():
             return redirect(url_for("view_promos"))
 
         current_date = start_date
+
         while current_date <= end_date:
+            # avoid duplicates
             cur.execute("""
                 SELECT 1 FROM promotion_calendar
                 WHERE promotion_id = %s AND date = %s
             """, (promotion_id, current_date))
+
             if not cur.fetchone():
                 cur.execute("""
                     INSERT INTO promotion_calendar (promotion_id, date)
                     VALUES (%s, %s)
                 """, (promotion_id, current_date))
+
             current_date += timedelta(days=1)
 
         mysql.connection.commit()
+
     except Exception as e:
         mysql.connection.rollback()
-        print(e)
+        print("ERROR ADDING TO CALENDAR:", e)
+
     finally:
         cur.close()
 
