@@ -564,3 +564,67 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-04-07 13:29:50
+
+
+
+-- Users table (for login and staff dropdown)
+CREATE TABLE IF NOT EXISTS users (
+    id       INT AUTO_INCREMENT PRIMARY KEY,
+    name     VARCHAR(100) NOT NULL,
+    email    VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role     ENUM('staff', 'admin') NOT NULL
+);
+
+-- Events table (confirmed booked events shown on event details pages)
+CREATE TABLE IF NOT EXISTS events (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    type        VARCHAR(100) NOT NULL,
+    name        VARCHAR(100) NOT NULL,
+    email       VARCHAR(150) NOT NULL,
+    guests      INT NOT NULL,
+    date        DATE NOT NULL,
+    time        VARCHAR(50) NOT NULL,
+    description TEXT
+);
+
+-- Event staff junction table (links staff to events)
+CREATE TABLE IF NOT EXISTS event_staff (
+    event_id INT NOT NULL,
+    user_id  INT NOT NULL,
+    PRIMARY KEY (event_id, user_id),
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE
+);
+
+-- Schedule table (shift blocks shown on the calendar)
+CREATE TABLE IF NOT EXISTS schedule (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    user_id    INT NOT NULL,
+    date       DATE NOT NULL,
+    role       VARCHAR(100) NOT NULL,
+    start_hour DECIMAL(4,2) NOT NULL,
+    end_hour   DECIMAL(4,2) NOT NULL,
+    color      VARCHAR(7) NOT NULL DEFAULT '#204631',
+    event_id   INT DEFAULT NULL,
+    FOREIGN KEY (user_id)  REFERENCES users(id)  ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE SET NULL
+);
+
+
+-- TEST DATA
+
+USE greene_turtle_db;
+
+INSERT INTO users (name, email, password, role) VALUES
+('Alyssa Chen', 'alyssa@gtstaff.com', 'test', 'staff'),
+('Matt Johnson', 'matt@gtstaff.com', 'test', 'staff');
+
+INSERT INTO events (type, name, email, guests, date, time, description) VALUES
+('Birthday', 'Benjamin King', 'bking@gmail.com', 20, '2026-05-07', '06:00pm-09:00pm', 'Birthday party.');
+
+INSERT INTO event_staff (event_id, user_id) VALUES (1, 1), (1, 2);
+
+INSERT INTO schedule (user_id, date, role, start_hour, end_hour, color) VALUES
+(1, CURDATE(), 'Hostess', 10.5, 15.0, '#204631'),
+(2, CURDATE(), 'Server', 12.0, 18.0, '#36845a');
