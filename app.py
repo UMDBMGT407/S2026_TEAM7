@@ -240,11 +240,11 @@ def staff_scheduling_staff():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
     staff_members = [row["name"] for row in cur.fetchall()]
-    cur.execute("SELECT date, title, start_hour, end_hour, color FROM schedule")
+    cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
     schedule_events = [
         {
             'date':  str(row["date"]),
-            'title': row["title"],
+            'role': row["role"],
             'start': float(row["start_hour"]),
             'end':   float(row["end_hour"]),
             'color': row["color"]
@@ -530,7 +530,7 @@ def add_promotion():
         menu_item_ids  = request.form.getlist("menu_item_ids")
 
         if not promotion_name or not menu_item_ids:
-            return redirect(url_for("promos_page"))
+            return redirect(url_for("edit_page"))
 
 
         cur.execute("""
@@ -739,6 +739,58 @@ def add_promo_to_calendar():
 @role_required("admin")
 def shift_management():
     return render_template("shift_management.html", user_role=session.get("user_role"))
+
+@app.route("/staff-scheduling-admin")
+@role_required("admin")
+def staff_scheduling_admin():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
+    staff_members = [row["name"] for row in cur.fetchall()]
+    cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
+    schedule_events = [
+        {
+            'date':  str(row["date"]),
+            'role':  row["role"],
+            'start': float(row["start_hour"]),
+            'end':   float(row["end_hour"]),
+            'color': row["color"]
+        }
+        for row in cur.fetchall()
+    ]
+    cur.close()
+    return render_template("staff_scheduling_admin.html",
+                           staff_members=staff_members,
+                           schedule_events=schedule_events,
+                           user_role=session.get("user_role"))
+
+@app.route("/event-details-admin")
+@role_required("admin")
+def event_details_admin():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT id, type, name, email, guests, date, time, description FROM events")
+    event_rows = cur.fetchall()
+    events = []
+    for row in event_rows:
+        cur.execute("""
+            SELECT u.name FROM users u
+            JOIN event_staff es ON u.id = es.user_id
+            WHERE es.event_id = %s
+        """, (row["id"],))
+        staff = [s["name"] for s in cur.fetchall()]
+        events.append({
+            'id':          row["id"],
+            'type':        row["type"],
+            'name':        row["name"],
+            'email':       row["email"],
+            'guests':      row["guests"],
+            'date':        str(row["date"]),
+            'time':        row["time"],
+            'description': row["description"],
+            'staff':       staff
+        })
+    cur.close()
+    return render_template("event_details_admin.html", events=events,
+                           user_role=session.get("user_role"))
 
 if __name__ == "__main__":
     app.run(debug=True)
