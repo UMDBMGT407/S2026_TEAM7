@@ -768,7 +768,6 @@ def delete_promo(promo_id):
 
     return redirect(url_for("view_promos", month=month, year=year))
 
-
 @app.route("/add-promo-to-calendar", methods=["POST"])
 @role_required("admin")
 def add_promo_to_calendar():
@@ -782,8 +781,15 @@ def add_promo_to_calendar():
         # use recurring day from this page if entered
         recurring = request.form.get("recurring") or None
 
-        if end_date < start_date:
+        if not promotion_id:
             return redirect(url_for("view_promos"))
+
+        if end_date < start_date:
+            return redirect(url_for(
+                "view_promos",
+                month=start_date.month,
+                year=start_date.year
+            ))
 
         # if no recurring day was chosen on the page, fall back to the promo's saved recurring_day
         if not recurring:
@@ -832,14 +838,20 @@ def add_promo_to_calendar():
 
         mysql.connection.commit()
 
+        # redirect to the month where the promotion starts
+        return redirect(url_for(
+            "view_promos",
+            month=start_date.month,
+            year=start_date.year
+        ))
+
     except Exception as e:
         mysql.connection.rollback()
         print("ERROR ADDING TO CALENDAR:", e)
+        return redirect(url_for("view_promos"))
 
     finally:
         cur.close()
-
-    return redirect(url_for("view_promos"))
 
 # Staff
 @app.route("/shift-management")
