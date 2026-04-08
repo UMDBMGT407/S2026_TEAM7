@@ -9,6 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "replace-this-with-a-real-secret-key"
+app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -103,6 +104,7 @@ def login():
         cur.close()
 
         if user and check_password_hash(user["password"], password):
+            session.permanent = False
             session["user_id"] = user["id"]
             session["user_role"] = user["role"]
             session["username"] = user["username"] or user["email"]
