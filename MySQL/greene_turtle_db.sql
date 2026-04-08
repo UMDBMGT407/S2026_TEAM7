@@ -52,34 +52,6 @@ LOCK TABLES `users` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `booked_events`
---
-
-DROP TABLE IF EXISTS `booked_events`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `booked_events` (
-  `event_id` int NOT NULL AUTO_INCREMENT,
-  `inquiry_id` int DEFAULT NULL,
-  `booked_datetime` datetime NOT NULL,
-  `event_status` varchar(20) DEFAULT 'booked',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`event_id`),
-  KEY `inquiry_id` (`inquiry_id`),
-  CONSTRAINT `booked_events_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `event_inquiries` (`inquiry_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `booked_events`
---
-
-LOCK TABLES `booked_events` WRITE;
-/*!40000 ALTER TABLE `booked_events` DISABLE KEYS */;
-/*!40000 ALTER TABLE `booked_events` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `event_inquiries`
 --
 
@@ -110,6 +82,37 @@ LOCK TABLES `event_inquiries` WRITE;
 /*!40000 ALTER TABLE `event_inquiries` DISABLE KEYS */;
 /*!40000 ALTER TABLE `event_inquiries` ENABLE KEYS */;
 UNLOCK TABLES;
+
+
+--
+-- Table structure for table `booked_events`
+--
+
+DROP TABLE IF EXISTS `booked_events`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booked_events` (
+  `event_id` int NOT NULL AUTO_INCREMENT,
+  `inquiry_id` int DEFAULT NULL,
+  `booked_datetime` datetime NOT NULL,
+  `event_status` varchar(20) DEFAULT 'booked',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`event_id`),
+  KEY `inquiry_id` (`inquiry_id`),
+  CONSTRAINT `booked_events_ibfk_1` FOREIGN KEY (`inquiry_id`) REFERENCES `event_inquiries` (`inquiry_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booked_events`
+--
+
+LOCK TABLES `booked_events` WRITE;
+/*!40000 ALTER TABLE `booked_events` DISABLE KEYS */;
+/*!40000 ALTER TABLE `booked_events` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
 
 --
 -- Table structure for table `ingredients`
