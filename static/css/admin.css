@@ -1762,12 +1762,14 @@ body {
 .loyalty-program * {
   box-sizing: border-box;
 }
+
 .loyalty-program {
   background: #36845a;
-  height: 1024px;
+  min-height: 1120px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
+
 .loyaltyidlookup {
   display: flex;
   flex-direction: row;
@@ -1778,6 +1780,7 @@ body {
   left: 29px;
   top: 179px;
 }
+
 .loyalty-program-id {
   color: #ffffff;
   text-align: center;
@@ -1788,13 +1791,21 @@ body {
   width: 317px;
   height: 43px;
 }
+
 .loyaltylookup {
-  background: #d9d9d9;
+  background: #d9d9d9 !important;
   flex-shrink: 0;
   width: 437px;
   height: 66px;
   position: relative;
+  border: none;
+  outline: none;
+  padding: 0 18px;
+  font-family: "Passion One", sans-serif;
+  font-size: 34px;
+  color: #204631;
 }
+
 .searchbutton {
   background: #204631;
   border-radius: 25px;
@@ -1811,6 +1822,7 @@ body {
   top: 171px;
   box-shadow: 2px 6px 4px 0px rgba(0, 0, 0, 0.25);
 }
+
 .search {
   color: #ffffff;
   text-align: center;
@@ -1819,6 +1831,7 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .divider {
   margin-top: -3px;
   border-style: solid;
@@ -1832,6 +1845,7 @@ body {
   transform-origin: 0 0;
   transform: rotate(-0.119deg) scale(1, 1);
 }
+
 .loyaltyprogramid {
   padding: 10px;
   display: flex;
@@ -1843,6 +1857,7 @@ body {
   left: 59.12px;
   top: 328px;
 }
+
 .loyalty-program-id2 {
   color: #ffffff;
   text-align: center;
@@ -1851,25 +1866,7 @@ body {
   font-weight: 400;
   position: relative;
 }
-.customerid {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59.12px;
-  top: 391.46px;
-}
-.customer-id {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
-}
+
 .phonenumber {
   padding: 10px;
   display: flex;
@@ -1879,8 +1876,9 @@ body {
   justify-content: center;
   position: absolute;
   left: 59.12px;
-  top: 518.37px;
+  top: 503px;
 }
+
 .phone-number {
   color: #ffffff;
   text-align: center;
@@ -1889,6 +1887,7 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .email {
   padding: 10px;
   display: flex;
@@ -1898,8 +1897,9 @@ body {
   justify-content: center;
   position: absolute;
   left: 59px;
-  top: 578px;
+  top: 590px;
 }
+
 .email2 {
   color: #ffffff;
   text-align: center;
@@ -1908,6 +1908,7 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .dob {
   padding: 10px;
   display: flex;
@@ -1917,8 +1918,9 @@ body {
   justify-content: center;
   position: absolute;
   left: 59.12px;
-  top: 645.28px;
+  top: 675px;
 }
+
 .dob2 {
   color: #ffffff;
   text-align: center;
@@ -1927,6 +1929,7 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .datejoined {
   padding: 10px;
   display: flex;
@@ -1936,8 +1939,9 @@ body {
   justify-content: center;
   position: absolute;
   left: 59.12px;
-  top: 708.73px;
+  top: 760px;
 }
+
 .date-joined {
   color: #ffffff;
   text-align: center;
@@ -1946,6 +1950,7 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .currentpoints {
   padding: 10px;
   display: flex;
@@ -1955,8 +1960,9 @@ body {
   justify-content: center;
   position: absolute;
   left: 59.12px;
-  top: 772.19px;
+  top: 845px;
 }
+
 .current-points {
   color: #ffffff;
   text-align: center;
@@ -1965,6 +1971,7 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .customername {
   padding: 10px;
   display: flex;
@@ -1974,8 +1981,9 @@ body {
   justify-content: center;
   position: absolute;
   left: 59.12px;
-  top: 454.91px;
+  top: 418px;
 }
+
 .customer-name {
   color: #ffffff;
   text-align: center;
@@ -1984,29 +1992,22 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .customernameinput {
   background: #204631;
-  padding: 7px 54px 7px 55px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
   align-items: center;
   justify-content: center;
-  width: 343px;
-  height: 54px;
+  width: 360px;
+  height: 68px;
   position: absolute;
   left: 372px;
-  top: 464px;
+  top: 428px;
 }
-.martha-lewis {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-  width: 269px;
-}
+
 .loyaltyprogramidinput {
   padding: 10px;
   display: flex;
@@ -2014,14 +2015,15 @@ body {
   gap: 10px;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 363px;
+  width: 420px;
   position: absolute;
   left: 408px;
-  top: 328px;
+  top: 322px;
 }
+
 .frame-41 {
   background: #204631;
-  padding: 7px 54px 7px 55px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -2029,18 +2031,10 @@ body {
   justify-content: center;
   align-self: stretch;
   flex-shrink: 0;
-  height: 54px;
+  height: 68px;
   position: relative;
 }
-._123456789 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-  width: 269px;
-}
+
 .currentpointsinput {
   padding: 10px;
   display: flex;
@@ -2051,11 +2045,12 @@ body {
   width: 225px;
   position: absolute;
   left: 323px;
-  top: 771px;
+  top: 846px;
 }
+
 .frame-42 {
   background: #204631;
-  padding: 7px 54px 7px 55px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -2063,18 +2058,10 @@ body {
   justify-content: center;
   align-self: stretch;
   flex-shrink: 0;
-  height: 51px;
+  height: 68px;
   position: relative;
 }
-._1-250 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-  width: 269px;
-}
+
 .datejoinedinput {
   padding: 10px;
   display: flex;
@@ -2082,14 +2069,15 @@ body {
   gap: 10px;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 363px;
+  width: 420px;
   position: absolute;
   left: 274px;
-  top: 707px;
+  top: 758px;
 }
+
 .frame-44 {
   background: #204631;
-  padding: 7px 54px 7px 55px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -2097,18 +2085,10 @@ body {
   justify-content: center;
   align-self: stretch;
   flex-shrink: 0;
-  height: 54px;
+  height: 68px;
   position: relative;
 }
-._12-march-2024 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-  width: 269px;
-}
+
 .dobinput {
   padding: 10px;
   display: flex;
@@ -2116,14 +2096,15 @@ body {
   gap: 10px;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 363px;
+  width: 360px;
   position: absolute;
   left: 156px;
-  top: 645px;
+  top: 672px;
 }
+
 .frame-43 {
   background: #204631;
-  padding: 7px 54px 7px 55px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -2131,97 +2112,40 @@ body {
   justify-content: center;
   align-self: stretch;
   flex-shrink: 0;
-  height: 54px;
+  height: 68px;
   position: relative;
 }
-._10-20-1980 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-  width: 269px;
-}
-.customeridinput {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 317px;
-  height: 75px;
-  position: absolute;
-  left: 290px;
-  top: 389px;
-}
-.frame-422 {
-  background: #204631;
-  padding: 7px 54px 7px 55px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 54px;
-  position: relative;
-}
-._123456 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-  width: 269px;
-}
+
 .phonenumberinput {
   background: #204631;
-  padding: 4px 54px 8px 54px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
   align-items: center;
   justify-content: center;
-  width: 352px;
-  height: 48px;
+  width: 360px;
+  height: 68px;
   position: absolute;
   left: 372px;
-  top: 530px;
+  top: 514px;
 }
-._301-111-4445 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-}
+
 .emailinput {
   background: #204631;
-  padding: 4px 14px 8px 20px;
+  padding: 8px 20px;
   display: flex;
   flex-direction: row;
   gap: 10px;
   align-items: center;
   justify-content: center;
-  width: 445.6px;
-  height: 48.29px;
+  width: 470px;
+  height: 68px;
   position: absolute;
   left: 210px;
-  top: 593px;
+  top: 600px;
 }
-.martha-lewis-gmail-com {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 38.77842712402344px;
-  font-weight: 400;
-  position: relative;
-}
+
 .statuspicture {
   padding: 10px;
   display: flex;
@@ -2230,9 +2154,10 @@ body {
   align-items: center;
   justify-content: flex-start;
   position: absolute;
-  left: 942px;
-  top: 493px;
+  left: 1005px;
+  top: 520px;
 }
+
 .winner-1 {
   flex-shrink: 0;
   width: 227.03px;
@@ -2241,6 +2166,7 @@ body {
   object-fit: cover;
   aspect-ratio: 1;
 }
+
 .frame-27 {
   padding: 10px;
   display: flex;
@@ -2249,9 +2175,10 @@ body {
   align-items: center;
   justify-content: center;
   position: absolute;
-  left: 942px;
-  top: 453px;
+  left: 965px;
+  top: 445px;
 }
+
 .status {
   color: #ffffff;
   text-align: center;
@@ -2260,48 +2187,35 @@ body {
   font-weight: 400;
   position: relative;
 }
-.deleteaccountbutton {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 354px;
+
+.loyalty-delete-wrap {
   position: absolute;
   left: 95px;
-  top: 850px;
-}
-.frame-36 {
+  top: 885px;
+  width: 354px;
+  height: 76px;
+  z-index: 999;
   background: #820707;
   border-radius: 14.1px;
-  padding: 10px 67px 26px 59px;
+  box-shadow: 1.41px 4.23px 2.82px 0px rgba(0, 0, 0, 0.25);
   display: flex;
-  flex-direction: row;
-  gap: 10px;
   align-items: center;
   justify-content: center;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 76px;
-  position: relative;
-  box-shadow: 1.41px 4.23px 2.82px 0px rgba(0, 0, 0, 0.25);
 }
-.delete-account {
-  color: #ffffff;
-  font-family: "Passion One", sans-serif;
-  font-size: 42px;
-  font-weight: 400;
-  text-align: center;
-  white-space: nowrap;
+
+.loyalty-delete-btn {
   width: 100%;
   height: 100%;
-  background: none;
-  border: none;
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  font-family: "Passion One", sans-serif;
+  font-size: 42px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 }
 
 .frame-38 {
@@ -2316,6 +2230,7 @@ body {
   height: 128px;
   position: relative;
 }
+
 .frame-37 {
   display: flex;
   flex-direction: column;
@@ -2326,6 +2241,7 @@ body {
   flex-shrink: 0;
   position: relative;
 }
+
 .text {
   color: #ffffff;
   text-align: left;
@@ -2334,6 +2250,7 @@ body {
   font-weight: 400;
   position: relative;
 }
+
 .statustier {
   color: #ffffff;
   text-align: center;
@@ -2342,7 +2259,242 @@ body {
   font-weight: 400;
   position: absolute;
   left: 1091px;
-  top: 464px;
+  top: 456px;
+}
+
+/*MENU*/
+.menu,
+.menu * {
+  box-sizing: border-box;
+}
+
+.menu {
+  background: #36845a;
+  min-height: 100vh;
+  padding: 120px 30px 60px;
+}
+
+.menu-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 420px 1fr 260px;
+  gap: 40px;
+  align-items: start;
+}
+
+.menu-left {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.menu-center {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.menu-right {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+
+.top-selling-items,
+.bottom-selling-items,
+.add-on-frequency {
+  background: #ffffff;
+  padding: 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  position: static;
+}
+
+.top-selling-items2,
+.bottom-selling-items2,
+.add-on-frequency2 {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 30px;
+  width: 100%;
+}
+
+.line-2,
+.line-3,
+.line-4 {
+  border-top: 1px solid #000000;
+  width: 100%;
+  height: 0;
+}
+
+.classic-cheeseburger-67-legendary-tenders-49-turkey-club-wrap-45-ultimate-nachos-38,
+.italian-cheesecake-3-apple-pecan-salad-4-crispy-cauliflower-8-penne-pasta-9,
+.side-upgrade-69-bacon-added-43-double-meat-35-make-it-crabby-style-54-make-it-pub-style-47 {
+  color: #000000;
+  font-family: "Roboto", sans-serif;
+  font-size: 23px;
+  line-height: 1.5;
+}
+
+.menu-category-frequency {
+  width: 100%;
+  max-width: 650px;
+  height: auto;
+  object-fit: contain;
+  position: static;
+}
+
+.waste-percentage {
+  background: #ffffff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  max-width: 240px;
+  position: static;
+}
+
+.waste-percentage2 {
+  color: #204631;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 32px;
+}
+
+.line-1 {
+  border-top: 1px solid #000000;
+  width: 100%;
+  height: 0;
+}
+
+._2-7 {
+  color: #618e2d;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-size: 64px;
+}
+
+.this-is-0-2-lower-than-last-week {
+  color: #000000;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+}
+
+.current-seasonal-items-sales {
+  max-width: 650px;
+  margin-top: 120px;
+  margin-left: 45%;
+  transform: translate(-10%, -500px); /* moves it up 500px */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.current-seasonal-items-sales2 {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Passion One", sans-serif;
+  font-size: 52px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.line-5 {
+  border-top: 1px solid #ffffff;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.seasonal-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.seasonal-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.seasonal-item-text {
+  color: #ffffff;
+  font-family: "Passion One", sans-serif;
+  font-size: 26px;
+}
+
+.delete-btn {
+  background-color: #204631;
+  color: white;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 8px 20px;
+  font-family: "Passion One", sans-serif;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  flex-shrink: 0;
+}
+
+.delete-btn:hover {
+  background-color: white;
+  color: #204631;
+}
+
+
+@media (max-width: 1200px) {
+  .menu-content {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .menu-left {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .top-selling-items,
+  .bottom-selling-items,
+  .add-on-frequency {
+    flex: 1 1 300px;
+  }
+
+  .menu-center {
+    order: -1;
+  }
+
+  .menu-right {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .menu {
+    padding: 110px 20px 50px;
+  }
+
+  .current-seasonal-items-sales2 {
+    font-size: 40px;
+  }
+
+  .seasonal-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .delete-btn {
+    width: 100%;
+  }
 }
 
 /* MENU ADJUSTMENTS*/
