@@ -266,170 +266,261 @@ body {
 
 /*EDIT PROMOS*/
 
-.edit-promos {
+edit-promos {
   background: #36845a;
   min-height: 100vh;
-  padding: 60px 90px;
+  padding: 40px 40px 60px;
 }
 
+.insert-promotion-title-spacer {
+  height: 90px;
+}
+
+.insert-promotion-title {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.insert-promotion h1 {
+  font-family: "Passion One", sans-serif;
+  font-size: 52px;
+  color: #ffffff;
+  text-decoration: none;
+  margin: 0;
+}
 .promotion-form {
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 28px 40px;
+  align-items: start;
 }
 
 .form-row {
-  margin-bottom: 18px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+}
+
+.form-row label {
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
+  color: #ffffff;
+  line-height: 1.1;
 }
 
 .form-row input,
 .form-row select,
 .form-row textarea {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  min-height: 54px;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #e6e6e6;
+  color: #1f1f1f;
   font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.form-row textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  outline: 3px solid rgba(255, 255, 255, 0.35);
+  background: #f3f3f3;
 }
 
 .menu-items-box {
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  padding: 12px;
+  width: 100%;
+  min-height: 140px;
   max-height: 220px;
   overflow-y: auto;
-  background: #fff;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #e6e6e6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
 }
 
 .menu-item-option {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  font-family: "Roboto", sans-serif;
+  font-size: 15px;
+  color: #1f1f1f;
+}
+
+.menu-items-box p {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  color: #444;
 }
 
 .apply-wrap {
-  margin-top: 24px;
+  grid-column: 1 / -1;
   display: flex;
-  gap: 12px;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 12px;
   flex-wrap: wrap;
 }
 
-.apply-promotion-button {
-  display: inline-block;
-  padding: 12px 20px;
-  border-radius: 10px;
-  background-color: #204631;
-  color: white;
-  text-decoration: none;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-
+.apply-promotion-button,
 .secondary-button {
-  display: inline-block;
-  padding: 12px 20px;
-  border-radius: 10px;
-  background-color: #6c757d;
-  color: white;
-  text-decoration: none;
+  min-width: 220px;
+  height: 56px;
+  padding: 0 24px;
   border: none;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-
-.insert-promotion {
-  font-family: "Passion One", sans-serif;
-  font-size: 48px;
-  color: white;
-  text-decoration: underline;
-  margin-bottom: 40px;
-}
-
-
-
-.promotion-form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  column-gap: 140px;
-  row-gap: 30px;
-  margin-top: 40px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-
-.form-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-
-
-.form-row label {
-  font-family: "Passion One", sans-serif;
-  font-size: 24px;
-  color: white;
-  white-space: nowrap;
-  width: 200px;
-}
-
-
-.form-row input {
-  width: 220px;
-  height: 40px;
-  background: #d9d9d9;
-  border-radius: 6px;
-  padding-left: 10px;
-  font-size: 14px;
-  font-family: "Roboto", sans-serif;
-  box-shadow: 0px 3px 4px rgba(0,0,0,0.25);
-}
-
-.apply-wrap{
-  max-width: 900px;     
-  margin-top: 30px;
-  display: flex;
-  justify-content: flex-end; 
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.apply-promotion-button{
-  background: #204631;
-  color: white;
-  font-family: "Passion One", sans-serif;
-  font-size: 24px;
-  padding: 14px 20px;
-  border-radius: 8px;
-  box-shadow: 0px 6px 8px rgba(0,0,0,0.3);
-  cursor: pointer;
-  text-decoration: none;
+  border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-}
-
-.apply-promotion-button:hover {
-  background: #173a28;
-  transform: translateY(-2px);
-}
-
-.apply-promo-text {
-  background: #1f4a34;
-  padding: 12px 20px;
-  border-radius: 8px;
+  text-decoration: none;
   font-family: "Passion One", sans-serif;
-  font-size: 24px;
-  color: white;
-  box-shadow: 0px 6px 6px rgba(0,0,0,0.3);
+  font-size: 28px;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.apply-promotion-button {
+  background: #204631;
+}
+
+.secondary-button {
+  background: #204631;
+}
+
+.edit-promos {
+  background: #36845a;
+  min-height: 100vh;
+  padding: 40px 40px 60px;
+}
+
+.insert-promotion-title-spacer {
+  height: 90px;
+}
+
+.insert-promotion-title {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.insert-promotion h1 {
+  font-family: "Passion One", sans-serif;
+  font-size: 52px;
+  color: #ffffff;
+  text-decoration: none;
+  margin: 0;
+}
+
+.promotion-form {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 28px 40px;
+  align-items: start;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-row label {
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
+  color: #ffffff;
+  line-height: 1.1;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea,
+.menu-dropdown {
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #e6e6e6;
+  color: #1f1f1f;
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.form-row textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus,
+.menu-dropdown:focus {
+  outline: 3px solid rgba(255, 255, 255, 0.35);
+  background: #f3f3f3;
+}
+
+.apply-wrap {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.apply-promotion-button,
+.secondary-button {
+  min-width: 220px;
+  height: 56px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+  transition: transform 0.18s ease, opacity 0.18s ease;
+}
+
+.apply-promotion-button,
+.secondary-button {
+  background: #204631;
+}
+
+.apply-promotion-button:hover,
+.secondary-button:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .promotion-form {
+    grid-template-columns: 1fr;
+  }
+
+  .apply-wrap {
+    justify-content: center;
+  }
 }
 
 /*EVENT DETAILS ADMIN*/
