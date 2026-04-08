@@ -4,13 +4,14 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from datetime import datetime, timedelta
 import calendar
+from flask import jsonify
 
 app = Flask(__name__)
 app.secret_key = "replace-this-with-a-real-secret-key"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'my password'
+app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -503,14 +504,19 @@ def loyalty_program():
 def edit_promos():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-
-    cur.execute("SELECT menu_item_id, name FROM menu_items")
+    cur.execute("""
+        SELECT menu_item_id, name
+        FROM menu_items
+        ORDER BY name
+    """)
     menu_items = cur.fetchall()
 
     cur.close()
-    return render_template("edit_promos.html",
-                           menu_items=menu_items,
-                           user_role=session.get("user_role"))
+    return render_template(
+        "edit_promos.html",
+        menu_items=menu_items,
+        user_role=session.get("user_role")
+    )
 
 
 @app.route("/admin/promos/add", methods=["POST"])
@@ -521,17 +527,17 @@ def add_promotion():
     try:
         promotion_name = (request.form.get("promotion_name") or "").strip()
         promotion_type = (request.form.get("promotion_type") or "").strip() or None
-        description    = (request.form.get("description") or "").strip() or None
-        discount_raw   = request.form.get("discount")
-        discount       = float(discount_raw) if discount_raw else None
+        description = (request.form.get("description") or "").strip() or None
+
+        discount_raw = (request.form.get("discount") or "").strip()
+        discount = float(discount_raw) if discount_raw else None
 
         start_date_raw = request.form.get("start_date") or None
-        end_date_raw   = request.form.get("end_date") or None
-        start_time     = request.form.get("start_time") or None
-        end_time       = request.form.get("end_time") or None
-        recurring      = request.form.get("recurring") or None
+        end_date_raw = request.form.get("end_date") or None
+        start_time = request.form.get("start_time") or None
+        end_time = request.form.get("end_time") or None
+        recurring = request.form.get("recurring") or None
 
-        # works for a single select or multi-select
         menu_item_ids = request.form.getlist("menu_item_ids")
         if not menu_item_ids:
             one_item = request.form.get("menu_item_ids")
@@ -547,8 +553,15 @@ def add_promotion():
              start_date, end_date, start_time, end_time, recurring_day)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-            promotion_name, promotion_type, description, discount,
-            start_date_raw, end_date_raw, start_time, end_time, recurring
+            promotion_name,
+            promotion_type,
+            description,
+            discount,
+            start_date_raw,
+            end_date_raw,
+            start_time,
+            end_time,
+            recurring
         ))
 
         promotion_id = cur.lastrowid
@@ -559,18 +572,42 @@ def add_promotion():
                 VALUES (%s, %s)
             """, (promotion_id, item_id))
 
-        # automatically place promo on calendar if dates were provided
+        # Auto-add to calendar if date range exists.
+        # Rule:
+        # - no recurring day -> every day in range
+        # - recurring day selected -> only matching weekday(s) in range
         if start_date_raw and end_date_raw:
             start_date = datetime.strptime(start_date_raw, "%Y-%m-%d").date()
             end_date = datetime.strptime(end_date_raw, "%Y-%m-%d").date()
 
             if end_date >= start_date:
+                weekday_map = {
+                    "Monday": 0,
+                    "Tuesday": 1,
+                    "Wednesday": 2,
+                    "Thursday": 3,
+                    "Friday": 4,
+                    "Saturday": 5,
+                    "Sunday": 6,
+                }
+
+                recurring_weekday = weekday_map.get(recurring) if recurring else None
                 current_date = start_date
+
                 while current_date <= end_date:
-                    cur.execute("""
-                        INSERT IGNORE INTO promotion_calendar (promotion_id, date)
-                        VALUES (%s, %s)
-                    """, (promotion_id, current_date))
+                    should_add = False
+
+                    if recurring_weekday is None:
+                        should_add = True
+                    elif current_date.weekday() == recurring_weekday:
+                        should_add = True
+
+                    if should_add:
+                        cur.execute("""
+                            INSERT IGNORE INTO promotion_calendar (promotion_id, date)
+                            VALUES (%s, %s)
+                        """, (promotion_id, current_date))
+
                     current_date += timedelta(days=1)
 
         mysql.connection.commit()
@@ -621,10 +658,16 @@ def view_promos():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("""
-        SELECT pc.date, p.promotion_id, p.promotion_name
+        SELECT
+            pc.date,
+            p.promotion_id,
+            p.promotion_name
         FROM promotion_calendar pc
-        JOIN promotions p ON pc.promotion_id = p.promotion_id
-        WHERE MONTH(pc.date) = %s AND YEAR(pc.date) = %s
+        JOIN promotions p
+            ON pc.promotion_id = p.promotion_id
+        WHERE MONTH(pc.date) = %s
+          AND YEAR(pc.date) = %s
+        ORDER BY pc.date, p.promotion_name
     """, (month, year))
     rows = cur.fetchall()
 
@@ -664,40 +707,58 @@ def view_promos():
         month_names=month_names,
         user_role=session.get("user_role")
     )
+
+
 @app.route("/promo/<int:promo_id>")
 @role_required("admin")
 def promo_details(promo_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    cur.execute("SELECT * FROM promotions WHERE promotion_id = %s", (promo_id,))
+    cur.execute("""
+        SELECT
+            promotion_id,
+            promotion_name,
+            promotion_type,
+            description,
+            discount,
+            start_date,
+            end_date,
+            start_time,
+            end_time,
+            recurring_day
+        FROM promotions
+        WHERE promotion_id = %s
+    """, (promo_id,))
     promo = cur.fetchone()
 
     cur.close()
 
     if not promo:
-        return {"error": "Promo not found"}, 404
+        return jsonify({"error": "Promo not found", "promo_id": promo_id}), 404
 
-    return promo 
+    return jsonify(promo)
 
 
 @app.route("/delete-promo/<int:promo_id>")
 @role_required("admin")
 def delete_promo(promo_id):
-    date  = request.args.get("date")
+    date = request.args.get("date")
     month = request.args.get("month")
-    year  = request.args.get("year")
+    year = request.args.get("year")
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("""
         DELETE FROM promotion_calendar
-        WHERE promotion_id = %s AND date = %s
+        WHERE promotion_id = %s
+          AND date = %s
     """, (promo_id, date))
 
     mysql.connection.commit()
     cur.close()
 
     return redirect(url_for("view_promos", month=month, year=year))
+
 
 @app.route("/add-promo-to-calendar", methods=["POST"])
 @role_required("admin")
@@ -706,24 +767,55 @@ def add_promo_to_calendar():
 
     try:
         promotion_id = request.form.get("promotion_id")
-        start_date   = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
-        end_date     = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d").date()
+        start_date = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
+        end_date = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d").date()
+
+        # use recurring day from this page if entered
+        recurring = request.form.get("recurring") or None
 
         if end_date < start_date:
             return redirect(url_for("view_promos"))
 
-        current_date = start_date
-
-        while current_date <= end_date:
-            # avoid duplicates
+        # if no recurring day was chosen on the page, fall back to the promo's saved recurring_day
+        if not recurring:
             cur.execute("""
-                SELECT 1 FROM promotion_calendar
-                WHERE promotion_id = %s AND date = %s
-            """, (promotion_id, current_date))
+                SELECT recurring_day
+                FROM promotions
+                WHERE promotion_id = %s
+            """, (promotion_id,))
+            promo = cur.fetchone()
 
-            if not cur.fetchone():
+            if not promo:
+                return redirect(url_for("view_promos"))
+
+            recurring = promo["recurring_day"]
+
+        weekday_map = {
+            "Monday": 0,
+            "Tuesday": 1,
+            "Wednesday": 2,
+            "Thursday": 3,
+            "Friday": 4,
+            "Saturday": 5,
+            "Sunday": 6,
+        }
+
+        recurring_weekday = weekday_map.get(recurring) if recurring else None
+
+        current_date = start_date
+        while current_date <= end_date:
+            should_add = False
+
+            # no recurring day -> every day in range
+            if recurring_weekday is None:
+                should_add = True
+            # recurring day selected -> only matching weekday in range
+            elif current_date.weekday() == recurring_weekday:
+                should_add = True
+
+            if should_add:
                 cur.execute("""
-                    INSERT INTO promotion_calendar (promotion_id, date)
+                    INSERT IGNORE INTO promotion_calendar (promotion_id, date)
                     VALUES (%s, %s)
                 """, (promotion_id, current_date))
 
@@ -773,30 +865,49 @@ def staff_scheduling_admin():
 @role_required("admin")
 def event_details_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT id, type, name, email, guests, date, time, description FROM events")
-    event_rows = cur.fetchall()
-    events = []
-    for row in event_rows:
-        cur.execute("""
-            SELECT u.name FROM users u
-            JOIN event_staff es ON u.id = es.user_id
-            WHERE es.event_id = %s
-        """, (row["id"],))
-        staff = [s["name"] for s in cur.fetchall()]
-        events.append({
-            'id':          row["id"],
-            'type':        row["type"],
-            'name':        row["name"],
-            'email':       row["email"],
-            'guests':      row["guests"],
-            'date':        str(row["date"]),
-            'time':        row["time"],
-            'description': row["description"],
-            'staff':       staff
-        })
+
+    cur.execute("""
+        SELECT
+            b.event_id,
+            b.booked_datetime,
+            e.inquiry_id,
+            e.full_name,
+            e.organization,
+            e.email,
+            e.phone,
+            e.guests,
+            e.event_description,
+            e.catering_package,
+            e.inquiry_status
+        FROM booked_events b
+        JOIN event_inquiries e
+            ON b.inquiry_id = e.inquiry_id
+        ORDER BY b.booked_datetime ASC
+    """)
+
+    events = cur.fetchall()
     cur.close()
-    return render_template("event_details_admin.html", events=events,
-                           user_role=session.get("user_role"))
+
+    return render_template(
+        "event_details_admin.html",
+        events=events,
+        user_role=session.get("user_role")
+    )
+
+@app.route("/event-complete/<int:event_id>")
+@role_required("admin")
+def complete_event(event_id):
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        DELETE FROM booked_events
+        WHERE event_id = %s
+    """, (event_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("event_details_admin"))
 
 if __name__ == "__main__":
     app.run(debug=True)
