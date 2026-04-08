@@ -2356,7 +2356,25 @@ body {
   position: relative;
   overflow: hidden;
 }
+<style>
+  .seasonal-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+  }
 
+  .seasonal-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .seasonal-item-text {
+    white-space: nowrap;
+  }
+</style>
 
 body {
   background: #36845a;
