@@ -169,6 +169,25 @@ a {
   display: none !important;
 }
 
+.sign-in-btn.active-signin.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 95px;
+  height: 56px;
+  padding: 11px 12px;
+  border: 2px solid white;
+  border-radius: 10px;
+  background: transparent !important;
+  color: white !important;
+  font-family: "Passion One", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: none;
+}
 /* =========================
    Homepage
    ========================= */
@@ -224,6 +243,7 @@ a {
   text-align: center;
 }
 
+/*no longer used because no more promo for now
 .promo-badge {
   width: 360px;
   max-width: 90%;
@@ -235,6 +255,7 @@ a {
   border-radius: 999px;
   padding: 26px 20px;
 }
+*/
 
 .info-grid {
   max-width: 1300px;
@@ -281,6 +302,7 @@ a {
   background: var(--gt-green-dark);
   color: var(--gt-white);
 }
+
 
 /* =========================
    Become a Member
