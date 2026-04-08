@@ -339,26 +339,109 @@ def menu():
 @app.route("/remove-seasonal-item", methods=["POST"])
 @role_required("admin")
 def remove_seasonal_item():
-    item_name = request.form.get("item_name")
+    item_name = request.form.get("item_name", "").strip()
+
+    if not item_name:
+        return jsonify({"success": False, "message": "Missing item name."}), 400
 
     cur = mysql.connection.cursor()
-
-    # Instead of deleting, change category
     cur.execute("""
         UPDATE menu_items
         SET category = 'regular'
         WHERE name = %s
     """, (item_name,))
-
     mysql.connection.commit()
+
+    affected_rows = cur.rowcount
     cur.close()
 
-    return {"success": True}
+    if affected_rows == 0:
+        return jsonify({"success": False, "message": f"No item found for {item_name}."}), 404
+
+    return jsonify({"success": True})
+
 
 @app.route("/menu-adjustments")
 @role_required("admin")
 def menu_adjustments():
-    return render_template("menu_adjustments.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        SELECT menu_item_id, name, category, price
+        FROM menu_items
+        ORDER BY category, name
+    """)
+
+    menu_items = cur.fetchall()
+    cur.close()
+
+    return render_template(
+        "menu_adjustments.html",
+        menu_items=menu_items,
+        user_role=session.get("user_role")
+    )
+@app.route("/menu-adjustments/add", methods=["POST"])
+@role_required("admin")
+def add_menu_item():
+    name = request.form.get("name", "").strip()
+    category = request.form.get("category", "").strip()
+    price = request.form.get("price", "").strip()
+
+    if not name or not category or not price:
+        return redirect(url_for("menu_adjustments"))
+
+    try:
+        price = float(price)
+    except ValueError:
+        return redirect(url_for("menu_adjustments"))
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+        INSERT INTO menu_items (name, category, price)
+        VALUES (%s, %s, %s)
+    """, (name, category, price))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("menu_adjustments"))
+    
+@app.route("/menu-adjustments/edit/<int:menu_item_id>", methods=["POST"])
+@role_required("admin")
+def edit_menu_item(menu_item_id):
+    name = request.form.get("name")
+    category = request.form.get("category")
+    price = request.form.get("price")
+
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+        UPDATE menu_items
+        SET name=%s, category=%s, price=%s
+        WHERE menu_item_id=%s
+    """, (name, category, price, menu_item_id))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("menu_adjustments"))
+
+
+@app.route("/menu-adjustments/delete/<int:menu_item_id>", methods=["POST"])
+@role_required("admin")
+def delete_menu_item(menu_item_id):
+    cur = mysql.connection.cursor()
+
+    cur.execute("""
+        DELETE FROM menu_items
+        WHERE menu_item_id = %s
+    """, (menu_item_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("menu_adjustments"))
 
 
 # Orders
