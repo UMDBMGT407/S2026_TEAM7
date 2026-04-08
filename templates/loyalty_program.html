@@ -101,7 +101,7 @@
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('staff_availability_admin') }}">Staff Schedule</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff Schedule</a></li>
               </ul>
             </li>
           </ul>
@@ -125,7 +125,7 @@
       {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('loyalty_program_search') }}">
+    <form method="POST" action="{{ url_for('loyalty_program') }}">
       <div class="loyaltyidlookup">
         <div class="loyalty-program-id">Loyalty Program ID:</div>
         <input
