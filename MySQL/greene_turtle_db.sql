@@ -657,3 +657,14 @@ INSERT INTO event_staff (event_id, user_id) VALUES
 INSERT INTO schedule (user_id, date, role, start_hour, end_hour, color) VALUES
 (1, CURDATE(), 'Hostess', 10.5, 15.0, '#204631'),
 (2, CURDATE(), 'Server',  12.0, 18.0, '#36845a');
+
+-- ========================
+-- MENU
+-- ========================
+INSERT INTO menu_items (name, price, category) VALUES 
+('Irish Stew', 14.99, 'Seasonal'),
+('Springy Market Salad', 12.50, 'Seasonal'),
+('Lucky Charms Bomb', 8.00, 'Seasonal'),
+('Clover’s Cheeseburger', 13.75, 'Seasonal'),
+('Corned Beef Handheld', 12.75, 'Seasonal'),
+('Guinness Float', 6.50, 'Seasonal');
