@@ -30,7 +30,51 @@ def role_required(*roles):
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
+    
+def empty_week_dict():
+    return {
+        "Monday": [],
+        "Tuesday": [],
+        "Wednesday": [],
+        "Thursday": [],
+        "Friday": [],
+        "Saturday": [],
+        "Sunday": []
+    }
 
+def day_key_from_date(date_value):
+    if isinstance(date_value, str):
+        date_value = datetime.strptime(date_value, "%Y-%m-%d")
+    return date_value.strftime("%A")
+
+def format_time_12hr(hour_value):
+    hour_value = float(hour_value)
+    hour = int(hour_value)
+    minute = int((hour_value - hour) * 60)
+
+    dt = datetime.strptime(f"{hour}:{minute:02d}", "%H:%M")
+    return dt.strftime("%I:%M %p").lstrip("0")
+
+def next_date_for_day(day_name):
+    days = {
+        "Monday": 0,
+        "Tuesday": 1,
+        "Wednesday": 2,
+        "Thursday": 3,
+        "Friday": 4,
+        "Saturday": 5,
+        "Sunday": 6
+    }
+
+    today = datetime.today()
+    target_day = days[day_name]
+    days_ahead = target_day - today.weekday()
+
+    if days_ahead < 0:
+        days_ahead += 7
+
+    next_day = today + timedelta(days=days_ahead)
+    return next_day.strftime("%Y-%m-%d")
 
 # ========================
 # AUTH ROUTES
@@ -1192,11 +1236,15 @@ def update_shift_request():
 # =========================
 # STAFF SCHEDULING ADMIN
 # =========================
-
+@app.route("/staff-scheduling-admin")
+@role_required("admin")
+def staff_scheduling_admin():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("""
         SELECT name
         FROM users
+        WHERE role IN ('staff', 'admin')
         ORDER BY name
     """)
     staff_members = [row["name"] for row in cur.fetchall()]
@@ -1205,6 +1253,7 @@ def update_shift_request():
         SELECT u.name, s.date, s.start_hour, s.end_hour, s.color
         FROM schedule s
         JOIN users u ON s.user_id = u.id
+        ORDER BY s.date, s.start_hour
     """)
     rows = cur.fetchall()
 
@@ -1226,15 +1275,6 @@ def update_shift_request():
         staff_members=staff_members,
         schedule_events=schedule_events
     )
-
-@app.route("/staff-scheduling-admin")
-@role_required("admin")
-def staff_scheduling_admin():
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    # roles for dropdown (matches your schedule.role column)
-    cur.execute("SELECT DISTINCT role FROM schedule")
-    staff_members = [row["role"] for row in cur.fetchall()]
 
 @app.route("/event-details-admin")
 @role_required("admin")
