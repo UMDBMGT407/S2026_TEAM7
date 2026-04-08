@@ -5,13 +5,14 @@ import MySQLdb.cursors
 from datetime import datetime, timedelta, date
 import calendar
 from flask import jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "replace-this-with-a-real-secret-key"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'enter your password'
+app.config['MYSQL_PASSWORD'] = 'madelyn11!'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -47,24 +48,36 @@ def login():
                 user_role=session.get("user_role")
             )
 
-        # TEMP PLACEHOLDER LOGIC
-        if username.endswith("@gtstaff.com"):
-            session["user_role"] = "staff"
-            session["username"] = username
-            return redirect(url_for("staff_scheduling_staff"))
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute("""
+            SELECT id, first_name, last_name, name, email, username, password, role
+            FROM users
+            WHERE email = %s OR username = %s
+            LIMIT 1
+        """, (username, username))
+        user = cur.fetchone()
+        cur.close()
 
-        elif username.endswith("@gtadmin.com"):
-            session["user_role"] = "admin"
-            session["username"] = username
-            return redirect(url_for("dashboard"))
+        if user and check_password_hash(user["password"], password):
+            session["user_id"] = user["id"]
+            session["user_role"] = user["role"]
+            session["username"] = user["username"] or user["email"]
+            session["name"] = user["name"]
 
-        else:
-            session["user_role"] = "customer"
-            session["username"] = username
-            return redirect(url_for("home"))
+            if user["role"] == "admin":
+                return redirect(url_for("dashboard"))
+            elif user["role"] == "staff":
+                return redirect(url_for("staff_scheduling_staff"))
+            else:
+                return redirect(url_for("home"))
+
+        return render_template(
+            "login.html",
+            error="Invalid username or password.",
+            user_role=session.get("user_role")
+        )
 
     return render_template("login.html", user_role=session.get("user_role"))
-
 
 @app.route("/logout")
 def logout():
@@ -239,7 +252,7 @@ def loyalty_status():
 @role_required("staff", "admin")
 def staff_scheduling_staff():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
+    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('staff', 'admin')")
     staff_members = [row["name"] for row in cur.fetchall()]
     cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
     schedule_events = [
