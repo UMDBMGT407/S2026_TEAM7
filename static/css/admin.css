@@ -1194,44 +1194,50 @@ body {
 
 .inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value {
   text-align: left;
-  font-family: "Roboto", sans-serif;
+  font-family: "Passion One", sans-serif;
   font-size: 28px;
   font-weight: 400;
-  line-height: 1.35;
+  line-height: 1.5;
   position: absolute;
-  left: 35px;
-  top: 95px;
+  left: 25px;
+  top: 110px;
   width: 68%;
 }
 
 .inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value-span {
   color: #FFFFFF;
+   font-family: "Passion One", sans-serif;
+  font-size: 28px;
 }
 
 .inventory-turnover-stock-out-rate-website-conversion-rate-order-fulfillment-time-average-order-value-span2 {
   color: #FFFFFF;
+  
 }
 
 ._30-25-2-5-10-min-18 {
   text-align: right;
-  font-family: "Roboto", sans-serif;
-  font-size: 30px;
+  font-family: "Passion One", sans-serif;
+  font-size: 28px;
   font-weight: 400;
   line-height: 1.35;
   position: absolute;
-  right: 35px;
+  right: 40px;
   top: 105px;
   width: 120px;
 }
 
 ._30-25-2-5-10-min-18-span {
-  color: #FFFFFF;
+  color: #000000;
+   font-family: "Passion One", sans-serif;
+  font-size: 26px;
 }
 
 ._30-25-2-5-10-min-18-span2 {
-  color: #FFFFFF;
+  color: #204631;
+   font-family: "Passion One", sans-serif;
+  font-size: 26px;
 }
-
 .line-4 {
   display: none;
 }
