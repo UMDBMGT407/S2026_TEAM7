@@ -1,28 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loyalty Program</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="{{ url_for('static', filename='vars.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 
   <style>
-    a,
-    button,
-    input,
-    select,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    * {
+    a, button, input, select, h1, h2, h3, h4, h5, * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
@@ -37,9 +30,101 @@
       margin: 0;
       padding: 0;
     }
-  </style>
 
-  <title>Loyalty Program</title>
+    .readonly-box {
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      border: none;
+      padding: 0;
+      font-family: "Passion One", sans-serif;
+      font-size: 38px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .editable-input {
+      width: 100%;
+      height: 100%;
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0;
+      padding: 0;
+      font-family: "Passion One", sans-serif;
+      font-size: 38px;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .editable-input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+
+    .action-btn {
+      background: none !important;
+      color: #ffffff !important;
+      font-family: "Passion One", sans-serif;
+      font-size: 40px;
+      cursor: pointer;
+    }
+
+    .delete-btn {
+      width: 100%;
+      height: 100%;
+      background: none !important;
+      color: #ffffff !important;
+      font-family: "Passion One", sans-serif;
+      font-size: 42px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+
+    .update-btn-wrap {
+      position: absolute;
+      left: 470px;
+      top: 910px;
+      z-index: 30;
+    }
+
+    .update-btn-box {
+      background: #204631;
+      border-radius: 14px;
+      padding: 12px 40px 18px 40px;
+      box-shadow: 1.41px 4.23px 2.82px 0px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 220px;
+      height: 76px;
+    }
+
+    .deleteaccountbutton {
+      position: absolute;
+      left: 95px;
+      top: 910px;
+      width: 354px;
+      height: 76px;
+      z-index: 30;
+    }
+
+    .frame-36 {
+      background: #820707;
+      border-radius: 14.1px;
+      width: 100%;
+      height: 100%;
+      box-shadow: 1.41px 4.23px 2.82px 0px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
 </head>
 
 <body>
@@ -50,15 +135,14 @@
         <a class="navbar-brand" href="{{ url_for('dashboard') }}">
           <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
         </a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
 
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
@@ -77,16 +161,12 @@
               </ul>
             </li>
 
-                <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('event_details_admin') }}">All Event Details</a></li>
-          </ul>
-        </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('event_details_admin') }}">Events</a>
+            </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
+              <a class="nav-link active" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
             </li>
 
             <li class="nav-item dropdown">
@@ -117,15 +197,15 @@
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}
-        <div style="position:absolute; top:120px; left:30px; z-index:20; color:white; font-family:'Passion One', sans-serif; font-size:28px;">
+        <div class="container mt-3">
           {% for message in messages %}
-            <div>{{ message }}</div>
+            <div class="alert alert-info">{{ message }}</div>
           {% endfor %}
         </div>
       {% endif %}
     {% endwith %}
 
-    <form method="POST" action="{{ url_for('loyalty_program') }}">
+    <form method="POST" action="{{ url_for('loyalty_program_search') }}">
       <div class="loyaltyidlookup">
         <div class="loyalty-program-id">Loyalty Program ID:</div>
         <input
@@ -139,88 +219,58 @@
       </div>
 
       <div class="searchbutton">
-        <button type="submit" class="search">SEARCH</button>
+        <button type="submit" class="action-btn">SEARCH</button>
       </div>
     </form>
 
     <div class="divider"></div>
 
-    <div class="loyaltyprogramid">
-      <div class="loyalty-program-id2">Loyalty Program ID:</div>
-    </div>
-
-    <div class="customerid">
-      <div class="customer-id">Customer ID:</div>
-    </div>
-
-    <div class="phonenumber">
-      <div class="phone-number">Phone Number:</div>
-    </div>
-
-    <div class="email">
-      <div class="email2">Email:</div>
-    </div>
-
-    <div class="dob">
-      <div class="dob2">DOB:</div>
-    </div>
-
-    <div class="datejoined">
-      <div class="date-joined">Date Joined:</div>
-    </div>
-
-    <div class="currentpoints">
-      <div class="current-points">Current Points:</div>
-    </div>
-
-    <div class="customername">
-      <div class="customer-name">Customer Name:</div>
-    </div>
+    <div class="loyaltyprogramid"><div class="loyalty-program-id2">Loyalty Program ID:</div></div>
+    <div class="phonenumber"><div class="phone-number">Phone Number:</div></div>
+    <div class="email"><div class="email2">Email:</div></div>
+    <div class="dob"><div class="dob2">DOB:</div></div>
+    <div class="datejoined"><div class="date-joined">Date Joined:</div></div>
+    <div class="currentpoints"><div class="current-points">Current Points:</div></div>
+    <div class="customername"><div class="customer-name">Customer Name:</div></div>
 
     {% if member %}
     <form method="POST" action="{{ url_for('loyalty_program_update') }}">
       <input type="hidden" name="member_id" value="{{ member.member_id }}">
 
       <div class="customernameinput">
-        <input type="text" name="customer_name" class="martha-lewis" value="{{ member.customer_name }}">
+        <input type="text" name="customer_name" class="editable-input" value="{{ member.customer_name }}" required>
       </div>
 
       <div class="loyaltyprogramidinput">
         <div class="frame-41">
-          <div class="_123456789">{{ member.member_id }}</div>
+          <div class="readonly-box">{{ member.member_id }}</div>
         </div>
       </div>
 
       <div class="currentpointsinput">
         <div class="frame-42">
-          <div class="_1-250">{{ member.points }}</div>
+          <div class="readonly-box">{{ member.points }}</div>
         </div>
       </div>
 
       <div class="datejoinedinput">
         <div class="frame-44">
-          <div class="_12-march-2024">{{ member.join_date }}</div>
+          <div class="readonly-box">{{ member.join_date }}</div>
         </div>
       </div>
 
       <div class="dobinput">
         <div class="frame-43">
-          <div class="_10-20-1980">{{ member.date_of_birth }}</div>
-        </div>
-      </div>
-
-      <div class="customeridinput">
-        <div class="frame-422">
-          <div class="_123456">{{ member.customer_id }}</div>
+          <div class="readonly-box">{{ member.date_of_birth }}</div>
         </div>
       </div>
 
       <div class="phonenumberinput">
-        <input type="text" name="phone" class="_301-111-4445" value="{{ member.phone }}">
+        <input type="text" name="phone" class="editable-input" value="{{ member.phone or '' }}">
       </div>
 
       <div class="emailinput">
-        <input type="email" name="email" class="martha-lewis-gmail-com" value="{{ member.email }}">
+        <input type="email" name="email" class="editable-input" value="{{ member.email or '' }}">
       </div>
 
       <div class="statuspicture">
@@ -233,72 +283,56 @@
 
       <div class="statustier">{{ status_tier }}</div>
 
-      <div style="position:absolute; left:470px; top:860px; z-index:15;">
-        <button type="submit" class="search">UPDATE</button>
-      </div>
-    </form>
-
-    <form method="POST" action="{{ url_for('loyalty_program_delete') }}" onsubmit="return confirm('Confirm to delete this account?');">
-      <input type="hidden" name="member_id" value="{{ member.member_id }}">
-      <div class="deleteaccountbutton">
-        <div class="frame-36">
-          <button type="submit" class="delete-account">DELETE ACCOUNT</button>
+      <div class="update-btn-wrap">
+        <div class="update-btn-box">
+          <button type="submit" class="action-btn">UPDATE</button>
         </div>
       </div>
     </form>
 
-    {% else %}
+    <form method="POST" action="{{ url_for('loyalty_program_delete') }}" onsubmit="return confirm('Confirm to delete this account?');">
+  <input type="hidden" name="member_id" value="{{ member.member_id }}">
+  <div class="loyalty-delete-wrap">
+    <button type="submit" class="loyalty-delete-btn">DELETE ACCOUNT</button>
+  </div>
+</form>
 
-      <div class="customernameinput">
-        <input type="text" class="martha-lewis" value="" readonly>
-      </div>
+    {% else %}
+      <div class="customernameinput"><input type="text" class="editable-input" value="" readonly></div>
 
       <div class="loyaltyprogramidinput">
         <div class="frame-41">
-          <div class="_123456789"></div>
+          <div class="readonly-box"></div>
         </div>
       </div>
 
       <div class="currentpointsinput">
         <div class="frame-42">
-          <div class="_1-250"></div>
+          <div class="readonly-box"></div>
         </div>
       </div>
 
       <div class="datejoinedinput">
         <div class="frame-44">
-          <div class="_12-march-2024"></div>
+          <div class="readonly-box"></div>
         </div>
       </div>
 
       <div class="dobinput">
         <div class="frame-43">
-          <div class="_10-20-1980"></div>
+          <div class="readonly-box"></div>
         </div>
       </div>
 
-      <div class="customeridinput">
-        <div class="frame-422">
-          <div class="_123456"></div>
-        </div>
-      </div>
-
-      <div class="phonenumberinput">
-        <input type="text" class="_301-111-4445" value="" readonly>
-      </div>
-
-      <div class="emailinput">
-        <input type="email" class="martha-lewis-gmail-com" value="" readonly>
-      </div>
+      <div class="phonenumberinput"><input type="text" class="editable-input" value="" readonly></div>
+      <div class="emailinput"><input type="email" class="editable-input" value="" readonly></div>
 
       <div class="frame-27">
         <div class="status">Status:</div>
       </div>
 
       <div class="statustier"></div>
-
     {% endif %}
-
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
