@@ -1,0 +1,31 @@
+﻿BMGT407: Greene Turtle Project
+Explanation of Changes from ERD to Final Tables
+* The original ERD contained broader entities, which were split into more detailed tables:
+   * The “Staff” entity was expanded into staff, staff_availability, staff_shifts, staff_schedule, and shift_requests to support scheduling, availability tracking, and shift management.
+* Many-to-many relationships in the ERD were converted into junction tables:
+   * promotion_items was created to connect promotions and menu items.
+   * order_items was created to connect orders and menu items.
+   * menu_recipe was added to connect menu items and ingredients.
+* The original “Promotions” structure was expanded to support functionality:
+   * promotion_items links promotions to specific menu items.
+   * promotion_calendar was added to store which dates promotions apply, enabling the calendar view in the application.
+* The “Events” entity was separated into two tables to reflect workflow:
+   * event_inquiries stores customer requests.
+   * booked_events stores only confirmed/approved events.
+* The original “User” entity was divided into two distinct tables:
+   * members for customers (loyalty program, account info).
+   * staff for employees (roles, scheduling).
+   * This allows different attributes and permissions for each group.
+* The ERD did not fully represent inventory and supply tracking, so new tables were added:
+   * inventory to track stock levels, expiration dates, and reorder data.
+   * ingredients and suppliers to support inventory relationships and sourcing.
+* Attributes were expanded and refined for application use:
+   * Added status fields such as inquiry_status, shift_status, and event_status.
+   * Added timestamps like created_at, join_date for tracking activity.
+   * Added constraints such as NOT NULL, UNIQUE, and default values for data validation.
+* The “Orders” portion of the ERD was refined:
+   * orders stores transaction-level data.
+   * order_items stores individual items within each order.
+* The schema was modified to align with Flask application functionality:
+   * Separate tables were needed to support features like calendar views, staff scheduling UI, and promotion filtering.
+   * Data structure was adjusted to match how routes and queries are implemented in the backend.
