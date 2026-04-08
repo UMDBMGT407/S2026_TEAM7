@@ -734,7 +734,16 @@ def promo_details(promo_id):
     cur.close()
 
     if not promo:
-        return jsonify({"error": "Promo not found", "promo_id": promo_id}), 404
+        return jsonify({"error": "Promo not found"}), 404
+
+    # 🔥 FIX: convert date/time fields to strings
+    for key in ["start_date", "end_date"]:
+        if promo[key]:
+            promo[key] = promo[key].strftime("%Y-%m-%d")
+
+    for key in ["start_time", "end_time"]:
+        if promo[key]:
+            promo[key] = str(promo[key])
 
     return jsonify(promo)
 
