@@ -312,7 +312,7 @@ def staff_scheduling_staff():
         for row in cur.fetchall()
     ]
     cur.close()
-    # Admins see admin navbar, staff see staff navbar
+   
     template = "staff_scheduling_admin.html" if session.get("user_role") == "admin" else "staff_scheduling_staff.html"
     return render_template(template, staff_members=staff_members,
                            schedule_events=schedule_events,
