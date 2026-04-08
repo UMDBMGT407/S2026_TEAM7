@@ -2,7 +2,7 @@ from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, session, abort, flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import calendar
 from flask import jsonify
 
