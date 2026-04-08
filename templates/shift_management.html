@@ -47,9 +47,13 @@
             </ul>
           </li>
 
-          <li class="nav-item">
-            <a class="nav-link" href="./events.html">Events</a>
-          </li>
+              <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('event_details_admin') }}">All Event Details</a></li>
+          </ul>
+        </li>
 
           <li class="nav-item">
             <a class="nav-link" href="./loyalty_program.html">Loyalty Program</a>
