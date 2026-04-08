@@ -17,6 +17,40 @@
 SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
 SET @@SESSION.SQL_LOG_BIN= 0;
 
+
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('customer', 'staff', 'admin') NOT NULL,
+    date_of_birth DATE DEFAULT NULL,
+    phone VARCHAR(20) DEFAULT NULL,
+    preferred_channel VARCHAR(20) DEFAULT NULL,
+    promo_opt_in TINYINT(1) DEFAULT 0,
+    join_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    points INT DEFAULT 0
+);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
 --
 -- Table structure for table `booked_events`
 --
@@ -139,41 +173,6 @@ CREATE TABLE `inventory` (
 LOCK TABLES `inventory` WRITE;
 /*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
 /*!40000 ALTER TABLE `inventory` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `members`
---
-
-DROP TABLE IF EXISTS `members`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `members` (
-  `member_id` int NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
-  `date_of_birth` date NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `preferred_channel` varchar(20) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `promo_opt_in` tinyint(1) DEFAULT '0',
-  `join_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `points` int DEFAULT '0',
-  PRIMARY KEY (`member_id`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `members`
---
-
-LOCK TABLES `members` WRITE;
-/*!40000 ALTER TABLE `members` DISABLE KEYS */;
-/*!40000 ALTER TABLE `members` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -560,16 +559,6 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 -- Dump completed on 2026-04-07 13:29:50
 
 
-
--- Users table (for login and staff dropdown)
-CREATE TABLE IF NOT EXISTS users (
-    id       INT AUTO_INCREMENT PRIMARY KEY,
-    name     VARCHAR(100) NOT NULL,
-    email    VARCHAR(150) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role     ENUM('staff', 'admin') NOT NULL
-);
-
 -- Events table (confirmed booked events shown on event details pages)
 CREATE TABLE IF NOT EXISTS events (
     id          INT AUTO_INCREMENT PRIMARY KEY,
@@ -621,13 +610,15 @@ TRUNCATE TABLE events;
 TRUNCATE TABLE users;
 
 SET FOREIGN_KEY_CHECKS = 1;
-
 -- ========================
 -- USERS
 -- ========================
-INSERT INTO users (name, email, password, role) VALUES
-('Alyssa Chen', 'alyssa@gtstaff.com', 'test', 'staff'),
-('Matt Johnson', 'matt@gtstaff.com', 'test', 'staff');
+INSERT INTO users (
+    first_name, last_name, name, email, username, password, role,
+    date_of_birth, phone, preferred_channel, promo_opt_in, points
+) VALUES
+('Alyssa', 'Chen', 'Alyssa Chen', 'alyssa@gtstaff.com', 'alyssa', 'test', 'staff', NULL, NULL, NULL, 0, 0),
+('Matt', 'Johnson', 'Matt Johnson', 'matt@gtstaff.com', 'matt', 'test', 'staff', NULL, NULL, NULL, 0, 0);
 
 -- ========================
 -- EVENTS
