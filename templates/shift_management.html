@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Staff Scheduling Admin</title>
+  <title>Shift Management</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&display=swap" rel="stylesheet">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-   <link rel="stylesheet" href="./vars.css">
-  <link rel="stylesheet" href="./css/admin.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='vars.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-dark admin-nav">
     <div class="container-fluid px-3 px-lg-4">
-      <a class="navbar-brand" href="./dashboard.html">
-        <img src="./images/logo.png" alt="Logo" class="nav-logo">
+      <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="nav-logo">
       </a>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -27,58 +27,54 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link" href="./dashboard.html">Dashboard</a>
+            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
           </li>
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="./menu.html">Menu</a></li>
-              <li><a class="dropdown-item" href="./menu_adjustments.html">Menu Adjustments</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('menu') }}">Menu</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('menu_adjustments') }}">Menu Adjustments</a></li>
             </ul>
           </li>
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="./orders_and_sales.html">Orders & Sales</a></li>
-              <li><a class="dropdown-item" href="./inventory.html">Inventory</a></li>
-              <li><a class="dropdown-item" href="./inventory_adjustments.html">Inventory Adjustments</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('orders_and_sales') }}">Orders & Sales</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('inventory') }}">Inventory</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('inventory_adjustments') }}">Inventory Adjustments</a></li>
             </ul>
           </li>
 
-              <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('event_details_admin') }}">All Event Details</a></li>
-          </ul>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('events') }}">Events</a>
+          </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="./loyalty_program.html">Loyalty Program</a>
+            <a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
           </li>
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="./edit_promos.html">Edit Promos</a></li>
-              <li><a class="dropdown-item" href="./view_promos.html">View Promos</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('edit_promos') }}">Edit Promos</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('view_promos') }}">View Promos</a></li>
             </ul>
           </li>
 
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
             <ul class="dropdown-menu">
-             <li><a class="dropdown-item" href="./staff_scheduling_admin.html">Staff Schedule</a></li>
-              <li><a class="dropdown-item" href="./shift_management.html">Shift Management</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff Schedule</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
             </ul>
           </li>
         </ul>
 
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="btn btn-outline-light signout-btn" href="./index.html">Sign Out</a>
+            <a class="btn btn-outline-light signout-btn" href="{{ url_for('logout') }}">Sign Out</a>
           </li>
         </ul>
       </div>
@@ -97,17 +93,27 @@
     <main class="main-content">
       <div class="topbar">
         <div class="topbar-heading">
-          <h2>Staff Scheduling</h2>
+          <h2>Shift Management</h2>
           <p class="subtext" id="selectedStaffText">Select a staff member</p>
         </div>
 
         <div class="topbar-buttons">
-          <button class="light-btn" id="prevWeekBtn">Previous Week</button>
-          <button class="light-btn" id="nextWeekBtn">Next Week</button>
-          <a href="./staff_scheduling_admin.html" class="light-btn view-schedule-btn">View Schedule</a>
-          <button class="primary-btn" id="publishBtn">Publish Schedule</button>
+          <button class="light-btn" id="prevWeekBtn" type="button">Previous Week</button>
+          <button class="light-btn" id="nextWeekBtn" type="button">Next Week</button>
+          <a href="{{ url_for('staff_scheduling_admin') }}" class="light-btn view-schedule-btn">View Schedule</a>
+          <button class="primary-btn" id="publishBtn" type="button">Publish Schedule</button>
         </div>
       </div>
+
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div style="margin: 10px 0 20px 0;">
+            {% for message in messages %}
+              <div class="alert alert-info">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
 
       <section class="summary-row" id="summaryRow"></section>
 
@@ -115,7 +121,7 @@
         <section class="panel">
           <div class="panel-header">
             <h3>Availability Calendar</h3>
-            <span>Week of March 16 - March 22</span>
+            <span id="weekLabel">Current Week</span>
           </div>
 
           <div class="calendar-legend">
@@ -136,37 +142,54 @@
           <section class="panel">
             <h3>Create Shift</h3>
 
-            <div class="form-group">
-              <label>Staff Member</label>
-              <select id="shiftStaff"></select>
-            </div>
-
-            <div class="form-group">
-              <label>Day</label>
-              <select id="shiftDay">
-                <option value="mon">Monday</option>
-                <option value="tue">Tuesday</option>
-                <option value="wed">Wednesday</option>
-                <option value="thu">Thursday</option>
-                <option value="fri">Friday</option>
-                <option value="sat">Saturday</option>
-                <option value="sun">Sunday</option>
-              </select>
-            </div>
-
-            <div class="time-row">
+            <form method="POST" action="{{ url_for('add_shift') }}">
               <div class="form-group">
-                <label>Start Time</label>
-                <input type="time" id="shiftStart" value="09:00" />
+                <label>Staff Member</label>
+                <select id="shiftStaff" name="user_id" required>
+                  {% for staff in staff_data %}
+                  <option value="{{ staff.id }}">{{ staff.name }}</option>
+                  {% endfor %}
+                </select>
               </div>
 
               <div class="form-group">
-                <label>End Time</label>
-                <input type="time" id="shiftEnd" value="17:00" />
+                <label>Role</label>
+                <select id="shiftRole" name="role" required>
+                  <option value="">Select Role</option>
+                  <option value="Server">Server</option>
+                  <option value="Host">Host</option>
+                  <option value="Bartender">Bartender</option>
+                  <option value="Manager">Manager</option>
+                </select>
               </div>
-            </div>
 
-            <button class="dark-btn full-width" id="addShiftBtn">Add Shift</button>
+              <div class="form-group">
+                <label>Day</label>
+                <select id="shiftDay" name="shift_day" required>
+                  <option value="mon">Monday</option>
+                  <option value="tue">Tuesday</option>
+                  <option value="wed">Wednesday</option>
+                  <option value="thu">Thursday</option>
+                  <option value="fri">Friday</option>
+                  <option value="sat">Saturday</option>
+                  <option value="sun">Sunday</option>
+                </select>
+              </div>
+
+              <div class="time-row">
+                <div class="form-group">
+                  <label>Start Time</label>
+                  <input type="time" id="shiftStart" name="start_time" value="09:00" required />
+                </div>
+
+                <div class="form-group">
+                  <label>End Time</label>
+                  <input type="time" id="shiftEnd" name="end_time" value="17:00" required />
+                </div>
+              </div>
+
+              <button type="submit" class="dark-btn full-width">Add Shift</button>
+            </form>
           </section>
 
           <section class="panel">
@@ -178,107 +201,37 @@
     </main>
   </div>
 
+  <script id="staff-data" type="application/json">
+    {{ staff_data | tojson | safe }}
+  </script>
+
+  <script id="shift-requests-data" type="application/json">
+    {{ shift_requests | tojson | safe }}
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     const days = [
-      { key: "mon", label: "Monday", date: "Mar 16" },
-      { key: "tue", label: "Tuesday", date: "Mar 17" },
-      { key: "wed", label: "Wednesday", date: "Mar 18" },
-      { key: "thu", label: "Thursday", date: "Mar 19" },
-      { key: "fri", label: "Friday", date: "Mar 20" },
-      { key: "sat", label: "Saturday", date: "Mar 21" },
-      { key: "sun", label: "Sunday", date: "Mar 22" }
+      { key: "mon", label: "Monday", date: "Mon" },
+      { key: "tue", label: "Tuesday", date: "Tue" },
+      { key: "wed", label: "Wednesday", date: "Wed" },
+      { key: "thu", label: "Thursday", date: "Thu" },
+      { key: "fri", label: "Friday", date: "Fri" },
+      { key: "sat", label: "Saturday", date: "Sat" },
+      { key: "sun", label: "Sunday", date: "Sun" }
     ];
 
-    const staffData = [
-      {
-        id: 1,
-        name: "Maya Patel",
-        role: "Server",
-        status: "Full-Time",
-        hours: 32,
-        availability: {
-          mon: ["10:00 AM - 6:00 PM"],
-          tue: ["12:00 PM - 8:00 PM"],
-          wed: ["9:00 AM - 3:00 PM"],
-          thu: ["Unavailable"],
-          fri: ["11:00 AM - 7:00 PM"],
-          sat: ["2:00 PM - 10:00 PM"],
-          sun: ["2:00 PM - 8:00 PM"]
-        },
-        shifts: {
-          tue: ["12:00 PM - 6:00 PM"],
-          sat: ["4:00 PM - 10:00 PM"]
-        }
-      },
-      {
-        id: 2,
-        name: "Jordan Kim",
-        role: "Host",
-        status: "Part-Time",
-        hours: 18,
-        availability: {
-          mon: ["4:00 PM - 10:00 PM"],
-          tue: ["4:00 PM - 10:00 PM"],
-          wed: ["Unavailable"],
-          thu: ["4:00 PM - 10:00 PM"],
-          fri: ["3:00 PM - 11:00 PM"],
-          sat: ["10:00 AM - 6:00 PM"],
-          sun: ["Unavailable"]
-        },
-        shifts: {
-          mon: ["5:00 PM - 10:00 PM"],
-          fri: ["4:00 PM - 9:00 PM"]
-        }
-      },
-      {
-        id: 3,
-        name: "Sofia Nguyen",
-        role: "Bartender",
-        status: "Full-Time",
-        hours: 28,
-        availability: {
-          mon: ["8:00 AM - 2:00 PM"],
-          tue: ["8:00 AM - 2:00 PM"],
-          wed: ["8:00 AM - 2:00 PM"],
-          thu: ["8:00 AM - 2:00 PM"],
-          fri: ["Unavailable"],
-          sat: ["Unavailable"],
-          sun: ["10:00 AM - 4:00 PM"]
-        },
-        shifts: {
-          wed: ["9:00 AM - 2:00 PM"],
-          thu: ["9:00 AM - 1:00 PM"]
-        }
-      }
-    ];
+    const staffData = JSON.parse(document.getElementById("staff-data").textContent);
+    let requests = JSON.parse(document.getElementById("shift-requests-data").textContent);
 
-    let requests = [
-      {
-        id: 1,
-        staff: "Maya Patel",
-        text: "Dropped Shift · Saturday · 4:00 PM - 10:00 PM"
-      },
-      {
-        id: 2,
-        staff: "Jordan Kim",
-        text: "Pickup Request · Friday · 4:00 PM - 9:00 PM"
-      }
-    ];
-
-    let selectedStaffId = 1;
+    let selectedStaffId = staffData.length > 0 ? staffData[0].id : null;
 
     const staffList = document.getElementById("staffList");
     const selectedStaffText = document.getElementById("selectedStaffText");
     const summaryRow = document.getElementById("summaryRow");
     const calendarGrid = document.getElementById("calendarGrid");
     const requestList = document.getElementById("requestList");
-    const shiftStaff = document.getElementById("shiftStaff");
-    const shiftDay = document.getElementById("shiftDay");
-    const shiftStart = document.getElementById("shiftStart");
-    const shiftEnd = document.getElementById("shiftEnd");
-    const addShiftBtn = document.getElementById("addShiftBtn");
     const staffSearch = document.getElementById("staffSearch");
 
     function getSelectedStaff() {
@@ -316,13 +269,18 @@
 
     function renderSummary() {
       const staff = getSelectedStaff();
+      if (!staff) {
+        selectedStaffText.textContent = "Select a staff member";
+        summaryRow.innerHTML = "";
+        return;
+      }
 
       selectedStaffText.textContent = `${staff.name} · ${staff.role}`;
 
       summaryRow.innerHTML = `
         <div class="summary-box">
           <label>Employee ID</label>
-          <strong>#EMP00${staff.id}</strong>
+          <strong>${staff.employee_code || ''}</strong>
         </div>
         <div class="summary-box">
           <label>Status</label>
@@ -343,12 +301,18 @@
       const staff = getSelectedStaff();
       calendarGrid.innerHTML = "";
 
+      if (!staff) return;
+
       days.forEach(day => {
         const dayCard = document.createElement("div");
         dayCard.className = "day-card";
 
         let availabilityHTML = "";
-        staff.availability[day.key].forEach(slot => {
+        const availabilitySlots = staff.availability && staff.availability[day.key]
+          ? staff.availability[day.key]
+          : [];
+
+        availabilitySlots.forEach(slot => {
           if (slot === "Unavailable") {
             availabilityHTML += `<div class="unavailable-slot">${slot}</div>`;
           } else {
@@ -357,16 +321,21 @@
         });
 
         let shiftsHTML = "";
-        if (staff.shifts[day.key]) {
-          staff.shifts[day.key].forEach((shift, index) => {
-            shiftsHTML += `
-              <div class="shift-chip">
-                <span>${shift}</span>
-                <button class="delete-shift-btn" onclick="deleteShift(${staff.id}, '${day.key}', ${index})">×</button>
-              </div>
-            `;
-          });
-        }
+        const dayShifts = staff.shifts && staff.shifts[day.key]
+          ? staff.shifts[day.key]
+          : [];
+
+        dayShifts.forEach((shift) => {
+          shiftsHTML += `
+            <div class="shift-chip">
+              <span>${shift.text}</span>
+              <form method="POST" action="{{ url_for('delete_shift') }}" style="display:inline;">
+                <input type="hidden" name="shift_id" value="${shift.shift_id}">
+                <button type="submit" class="delete-shift-btn">×</button>
+              </form>
+            </div>
+          `;
+        });
 
         dayCard.innerHTML = `
           <h4>${day.label}</h4>
@@ -379,22 +348,6 @@
       });
     }
 
-    function renderShiftStaffOptions() {
-      shiftStaff.innerHTML = "";
-
-      staffData.forEach(staff => {
-        const option = document.createElement("option");
-        option.value = staff.id;
-        option.textContent = staff.name;
-
-        if (staff.id === selectedStaffId) {
-          option.selected = true;
-        }
-
-        shiftStaff.appendChild(option);
-      });
-    }
-
     function renderRequests() {
       requestList.innerHTML = "";
 
@@ -403,76 +356,25 @@
         item.className = "request-item";
 
         item.innerHTML = `
-          <strong>${request.staff}</strong>
+          <strong>${request.staff_name}</strong>
           <p>${request.text}</p>
           <div class="request-actions">
-            <button class="primary-btn accept-btn">Accept</button>
-            <button class="danger-btn decline-btn">Decline</button>
+            <form method="POST" action="{{ url_for('update_shift_request') }}" style="display:inline;">
+              <input type="hidden" name="request_id" value="${request.id}">
+              <input type="hidden" name="request_status" value="accepted">
+              <button type="submit" class="primary-btn accept-btn">Accept</button>
+            </form>
+            <form method="POST" action="{{ url_for('update_shift_request') }}" style="display:inline;">
+              <input type="hidden" name="request_id" value="${request.id}">
+              <input type="hidden" name="request_status" value="declined">
+              <button type="submit" class="danger-btn decline-btn">Decline</button>
+            </form>
           </div>
         `;
-
-        const acceptBtn = item.querySelector(".accept-btn");
-        const declineBtn = item.querySelector(".decline-btn");
-
-        acceptBtn.addEventListener("click", function () {
-          requests = requests.filter(r => r.id !== request.id);
-          renderRequests();
-        });
-
-        declineBtn.addEventListener("click", function () {
-          requests = requests.filter(r => r.id !== request.id);
-          renderRequests();
-        });
 
         requestList.appendChild(item);
       });
     }
-
-    function convertTo12Hour(time24) {
-      const parts = time24.split(":");
-      let hour = parseInt(parts[0]);
-      const minute = parts[1];
-      const ampm = hour >= 12 ? "PM" : "AM";
-
-      hour = hour % 12;
-      if (hour === 0) {
-        hour = 12;
-      }
-
-      return `${hour}:${minute} ${ampm}`;
-    }
-
-    function deleteShift(staffId, dayKey, shiftIndex) {
-      const staff = staffData.find(s => s.id === staffId);
-
-      if (!staff || !staff.shifts[dayKey]) return;
-
-      staff.shifts[dayKey].splice(shiftIndex, 1);
-
-      if (staff.shifts[dayKey].length === 0) {
-        delete staff.shifts[dayKey];
-      }
-
-      renderPage();
-    }
-
-    addShiftBtn.addEventListener("click", function () {
-      const staffId = parseInt(shiftStaff.value);
-      const dayKey = shiftDay.value;
-      const start = convertTo12Hour(shiftStart.value);
-      const end = convertTo12Hour(shiftEnd.value);
-      const shiftText = `${start} - ${end}`;
-
-      const staff = staffData.find(s => s.id === staffId);
-
-      if (!staff.shifts[dayKey]) {
-        staff.shifts[dayKey] = [];
-      }
-
-      staff.shifts[dayKey].push(shiftText);
-      selectedStaffId = staffId;
-      renderPage();
-    });
 
     staffSearch.addEventListener("input", function () {
       renderStaffList(staffSearch.value);
@@ -482,7 +384,6 @@
       renderStaffList(staffSearch.value);
       renderSummary();
       renderCalendar();
-      renderShiftStaffOptions();
       renderRequests();
     }
 
