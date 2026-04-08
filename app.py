@@ -37,30 +37,42 @@ def role_required(*roles):
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username", "").strip().lower()
+        login_value = request.form.get("username", "").strip().lower()
         password = request.form.get("password", "").strip()
 
-        if not username or not password:
+        if not login_value or not password:
             return render_template(
                 "login.html",
                 error="Please enter both a username and password.",
                 user_role=session.get("user_role")
             )
 
-        # TEMP PLACEHOLDER LOGIC
-        if username.endswith("@gtstaff.com"):
-            session["user_role"] = "staff"
-            session["username"] = username
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute("""
+            SELECT id, username, email, password, role
+            FROM users
+            WHERE username = %s OR email = %s
+            LIMIT 1
+        """, (login_value, login_value))
+        user = cur.fetchone()
+        cur.close()
+
+        if not user or user["password"] != password:
+            return render_template(
+                "login.html",
+                error="Invalid username/email or password.",
+                user_role=session.get("user_role")
+            )
+
+        session["user_id"] = user["id"]
+        session["user_role"] = user["role"]
+        session["username"] = user["username"] if user["username"] else user["email"]
+
+        if user["role"] == "staff":
             return redirect(url_for("staff_scheduling_staff"))
-
-        elif username.endswith("@gtadmin.com"):
-            session["user_role"] = "admin"
-            session["username"] = username
+        elif user["role"] == "admin":
             return redirect(url_for("dashboard"))
-
         else:
-            session["user_role"] = "customer"
-            session["username"] = username
             return redirect(url_for("home"))
 
     return render_template("login.html", user_role=session.get("user_role"))
@@ -174,11 +186,24 @@ def become_a_member():
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute("""
-            INSERT INTO members
-            (first_name, last_name, date_of_birth, email, phone, preferred_channel, username, password, promo_opt_in)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (first_name, last_name, birthday, email, phone,
-              preferred_channel, username, password, promo_opt_in))
+            INSERT INTO users
+            (first_name, last_name, name, email, username, password, role,
+             date_of_birth, phone, preferred_channel, promo_opt_in, points)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            first_name,
+            last_name,
+            f"{first_name} {last_name}",
+            email,
+            username,
+            password,
+            "customer",
+            birthday,
+            phone,
+            preferred_channel,
+            promo_opt_in,
+            0
+        ))
         mysql.connection.commit()
         cur.close()
 
@@ -194,7 +219,7 @@ def become_a_member():
 @app.route("/loyalty-status")
 def loyalty_status():
     user_role = session.get("user_role")
-    username  = session.get("username")
+    username = session.get("username")
 
     if not user_role or not username:
         return render_template(
@@ -214,11 +239,15 @@ def loyalty_status():
         )
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT first_name, points FROM members WHERE username = %s", (username,))
-    member = cur.fetchone()
+    cur.execute("""
+        SELECT first_name, points
+        FROM users
+        WHERE username = %s AND role = 'customer'
+    """, (username,))
+    user = cur.fetchone()
     cur.close()
 
-    points            = member["points"]
+    points = user["points"]
     redeemable_credit = points / 100
 
     return render_template(
@@ -226,10 +255,227 @@ def loyalty_status():
         user_role=user_role,
         logged_in=True,
         customer_view=True,
-        first_name=member["first_name"],
+        first_name=user["first_name"],
         points=points,
         redeemable_credit=redeemable_credit
     )
+3. Your loyalty program admin routes still use members
+
+You merged members into users, but these routes still query members:
+
+loyalty_program_search()
+loyalty_program_update()
+loyalty_program_delete()
+
+Those all need to change to users.
+
+loyalty_program_search()
+
+Use:
+
+@app.route("/loyalty-program/search", methods=["POST"])
+@role_required("admin")
+def loyalty_program_search():
+    member_id = request.form["member_id"]
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        SELECT
+            id AS member_id,
+            first_name,
+            last_name,
+            phone,
+            email,
+            date_of_birth,
+            join_date,
+            points
+        FROM users
+        WHERE id = %s AND role = 'customer'
+    """, (member_id,))
+    member = cur.fetchone()
+    cur.close()
+
+    if not member:
+        flash("No loyalty member found with that ID.")
+        return redirect(url_for("loyalty_program"))
+
+    member["customer_name"] = f'{member["first_name"]} {member["last_name"]}'
+
+    points = member["points"] if member["points"] is not None else 0
+
+    if points >= 1000:
+        status_tier = "Gold"
+    elif points >= 500:
+        status_tier = "Silver"
+    else:
+        status_tier = "Bronze"
+
+    return render_template("loyalty_program.html", member=member, status_tier=status_tier)
+loyalty_program_update()
+
+Use:
+
+@app.route("/loyalty-program/update", methods=["POST"])
+@role_required("admin")
+def loyalty_program_update():
+    member_id = request.form["member_id"]
+    customer_name = request.form["customer_name"].strip()
+    phone = request.form["phone"].strip()
+    email = request.form["email"].strip()
+
+    name_parts = customer_name.split(maxsplit=1)
+    first_name = name_parts[0] if len(name_parts) > 0 else ""
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE users
+        SET first_name = %s,
+            last_name = %s,
+            name = %s,
+            phone = %s,
+            email = %s
+        WHERE id = %s AND role = 'customer'
+    """, (first_name, last_name, customer_name, phone, email, member_id))
+    mysql.connection.commit()
+    cur.close()
+
+    flash("Loyalty member updated successfully.")
+    return redirect(url_for("loyalty_program"))
+loyalty_program_delete()
+
+Use:
+
+@app.route("/loyalty-program/delete", methods=["POST"])
+@role_required("admin")
+def loyalty_program_delete():
+    member_id = request.form["member_id"]
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM users WHERE id = %s AND role = 'customer'", (member_id,))
+    mysql.connection.commit()
+    cur.close()
+
+    flash("Loyalty member deleted successfully.")
+    return redirect(url_for("loyalty_program"))
+4. event_details endpoint name is mismatched
+
+You currently have:
+
+@app.route("/event-details")
+def event_details_staff():
+
+That means the endpoint name is event_details_staff, not event_details.
+
+If your templates use url_for('event_details'), they will break. Earlier your staff template did exactly that. So either:
+
+rename the function back to event_details, or
+update the templates to use url_for('event_details_staff')
+
+The easier fix is:
+
+@app.route("/event-details")
+@role_required("staff", "admin")
+def event_details():
+    ...
+5. There is broken stray code before @app.route("/staff-scheduling-admin")
+
+You have a chunk of code that starts with:
+
+    cur.execute("""
+        SELECT name
+        FROM users
+        ORDER BY name
+    """)
+
+but it is not inside a function. That will break the file.
+
+Delete that whole stray block up until:
+
+@app.route("/staff-scheduling-admin")
+
+because it looks like leftover code pasted in the wrong place.
+
+6. staff_scheduling_admin() is incomplete
+
+Right now it starts, opens a cursor, runs one query, and then stops. There is no fetch, no second query, no return. That route is incomplete.
+
+You need a full function. Use this:
+
+@app.route("/staff-scheduling-admin")
+@role_required("admin")
+def staff_scheduling_admin():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        SELECT DISTINCT name
+        FROM users
+        WHERE role IN ('staff', 'admin')
+        ORDER BY name
+    """)
+    staff_members = [row["name"] for row in cur.fetchall()]
+
+    cur.execute("""
+        SELECT u.name, s.date, s.start_hour, s.end_hour, s.color
+        FROM schedule s
+        JOIN users u ON s.user_id = u.id
+        ORDER BY s.date
+    """)
+    rows = cur.fetchall()
+    cur.close()
+
+    schedule_events = []
+    for row in rows:
+        schedule_events.append({
+            "date": row["date"].strftime("%Y-%m-%d"),
+            "title": row["name"],
+            "start": float(row["start_hour"]),
+            "end": float(row["end_hour"]),
+            "color": row["color"]
+        })
+
+    return render_template(
+        "staff_scheduling_admin.html",
+        staff_members=staff_members,
+        schedule_events=schedule_events,
+        user_role=session.get("user_role")
+    )
+7. staff_scheduling_staff() is probably using the wrong field name for the template
+
+Right now you build:
+
+{
+    'date': ...,
+    'role': row["role"],
+    'start': ...,
+    'end': ...,
+    'color': ...
+}
+
+But your calendar templates usually expect title, not role. Earlier your staff scheduling template filtered on e.title. So I would change 'role' to 'title':
+
+schedule_events = [
+    {
+        'date': str(row["date"]),
+        'title': row["role"],
+        'start': float(row["start_hour"]),
+        'end': float(row["end_hour"]),
+        'color': row["color"]
+    }
+    for row in cur.fetchall()
+]
+Biggest priorities
+
+Fix these first, in order:
+
+replace login()
+replace loyalty_status()
+change all members references in loyalty admin routes to users
+rename event_details_staff() back to event_details
+remove the stray broken block before staff_scheduling_admin()
+finish staff_scheduling_admin()
+
+If you want, I can turn your whole current file into one cleaned-up corrected version.
 
 
 # ========================
@@ -239,7 +485,7 @@ def loyalty_status():
 @role_required("staff", "admin")
 def staff_scheduling_staff():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
+    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('staff', 'admin')")
     staff_members = [row["name"] for row in cur.fetchall()]
     cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
     schedule_events = [
@@ -588,16 +834,17 @@ def loyalty_program_search():
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
-        SELECT member_id,
-               first_name,
-               last_name,
-               phone,
-               email,
-               date_of_birth,
-               join_date,
-               points
-        FROM members
-        WHERE member_id = %s
+        SELECT
+            id AS member_id,
+            first_name,
+            last_name,
+            phone,
+            email,
+            date_of_birth,
+            join_date,
+            points
+        FROM users
+        WHERE id = %s AND role = 'customer'
     """, (member_id,))
     member = cur.fetchone()
     cur.close()
@@ -634,13 +881,14 @@ def loyalty_program_update():
 
     cur = mysql.connection.cursor()
     cur.execute("""
-        UPDATE members
+        UPDATE users
         SET first_name = %s,
             last_name = %s,
+            name = %s,
             phone = %s,
             email = %s
-        WHERE member_id = %s
-    """, (first_name, last_name, phone, email, member_id))
+        WHERE id = %s AND role = 'customer'
+    """, (first_name, last_name, customer_name, phone, email, member_id))
     mysql.connection.commit()
     cur.close()
 
@@ -654,7 +902,7 @@ def loyalty_program_delete():
     member_id = request.form["member_id"]
 
     cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM members WHERE member_id = %s", (member_id,))
+    cur.execute("DELETE FROM users WHERE id = %s AND role = 'customer'", (member_id,))
     mysql.connection.commit()
     cur.close()
 
@@ -1192,34 +1440,6 @@ def update_shift_request():
 # =========================
 # STAFF SCHEDULING ADMIN
 # =========================
-
-
-    cur.execute("""
-        SELECT name
-        FROM users
-        ORDER BY name
-    """)
-    staff_members = [row["name"] for row in cur.fetchall()]
-
-    cur.execute("""
-        SELECT u.name, s.date, s.start_hour, s.end_hour, s.color
-        FROM schedule s
-        JOIN users u ON s.user_id = u.id
-    """)
-    rows = cur.fetchall()
-
-    schedule_events = []
-
-    for row in rows:
-        schedule_events.append({
-            "date": row["date"].strftime("%Y-%m-%d"),
-            "title": row["name"],
-            "start": float(row["start_hour"]),
-            "end": float(row["end_hour"]),
-            "color": row["color"]
-        })
-
-    cur.close()
 
     return render_template(
         "staff_scheduling_admin.html",
