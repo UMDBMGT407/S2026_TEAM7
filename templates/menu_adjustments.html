@@ -139,191 +139,42 @@
             <th>Delete</th>
           </tr>
         </thead>
+#this is page pulling menu items from actual SQL DB & lets each row be edited and deleted
+       <tbody>
+  {% for item in menu_items %}
+  <tr>
+    <td>{{ item.name }}</td>
+    <td>{{ item.category }}</td>
+    <td>{{ "%.2f"|format(item.price if item.price is not none else 0) }}</td>
 
-        <tbody>
-          <tr>
-            <td>Hand-Breaded Legendary Tenders</td>
-            <td>Shareables</td>
-            <td>14.49</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
+    <td>
+      <form action="{{ url_for('edit_menu_item', menu_item_id=item.menu_item_id) }}" method="POST">
+        <div class="edit-fields">
+          <input type="text" name="name" value="{{ item.name }}" required>
+          <input type="text" name="category" value="{{ item.category }}" required>
+          <input type="number" name="price" step="0.01" value="{{ item.price }}" required>
+          <button class="save-btn" type="submit">Save</button>
+        </div>
+      </form>
+    </td>
 
-          <tr>
-            <td>World Famous Crab Dip</td>
-            <td>Shareables</td>
-            <td>15.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Classic Cheeseburger</td>
-            <td>Burgers</td>
-            <td>13.49</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Double-Stacked Burger</td>
-            <td>Burgers</td>
-            <td>16.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Turkey Club Wrap</td>
-            <td>Handhelds</td>
-            <td>13.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Classic Chicken Sandwich</td>
-            <td>Handhelds</td>
-            <td>14.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Cajun Shrimp Pasta</td>
-            <td>Mains</td>
-            <td>19.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Crab Cake Duo</td>
-            <td>Mains</td>
-            <td>33.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Funnel Cake Fries</td>
-            <td>Sweets</td>
-            <td>8.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>Turtle Cheesecake</td>
-            <td>Sweets</td>
-            <td>9.99</td>
-            <td>
-              <div class="edit-fields">
-                <input type="text" placeholder="Edit item name">
-                <input type="text" placeholder="Edit category">
-                <input type="number" step="0.01" placeholder="Edit price">
-                <button class="save-btn">Save</button>
-              </div>
-            </td>
-            <td>
-              <button class="delete-btn" onclick="confirmDelete(this)">Delete</button>
-            </td>
-          </tr>
-        </tbody>
+    <td>
+      <form action="{{ url_for('delete_menu_item', menu_item_id=item.menu_item_id) }}" method="POST" onsubmit="return confirmDelete();">
+        <button class="delete-btn" type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
       </table>
     </div>
   </main>
 
-  <script>
-    function confirmDelete(button) {
-      const confirmed = confirm("Confirm to delete this item?");
-      if (confirmed) {
-        const row = button.closest("tr");
-        row.remove();
-      }
-    }
-  </script>
+ <script>
+  function confirmDelete() {
+    return confirm("Confirm to delete this item?");
+  }
+</script>
 
 </body>
 </html>
