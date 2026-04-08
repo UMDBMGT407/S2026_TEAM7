@@ -12,7 +12,7 @@ app.secret_key = "replace-this-with-a-real-secret-key"
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'madelyn11!'
+app.config['MYSQL_PASSWORD'] = 'INSERT YOUR PASSWORD'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
