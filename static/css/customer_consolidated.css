@@ -169,7 +169,8 @@ a {
   display: none !important;
 }
 
-.sign-in-btn.active-signin.admin-btn {
+.sign-in-btn.active-signin.admin-btn,
+.sign-in-btn.active-signin.staff-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
