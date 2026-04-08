@@ -656,3 +656,119 @@ INSERT INTO menu_items (name, price, category) VALUES
 ('Clover’s Cheeseburger', 13.75, 'Seasonal'),
 ('Corned Beef Handheld', 12.75, 'Seasonal'),
 ('Guinness Float', 6.50, 'Seasonal');
+
+INSERT INTO event_inquiries
+(full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
+VALUES
+('Sarah Mitchell', 'UMD Marketing Club', 60, 'sarah.mitchell@example.com', '301-555-1122', '2026-05-20 17:30:00', 'End of semester celebration with appetizers and drinks', 'Gold', 'pending');
+
+INSERT INTO event_inquiries
+(full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
+VALUES
+('James Rodriguez', 'Rodriguez Family', 25, 'jrodriguez@example.com', '240-555-3344', '2026-06-05 13:00:00', 'Family birthday party with lunch service', 'Silver', 'pending');
+
+INSERT INTO event_inquiries
+(full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
+VALUES
+('Olivia Chen', 'Tech Startup Meetup', 80, 'olivia.chen@example.com', '202-555-7788', '2026-07-12 18:00:00', 'Networking event with light catering and presentations', 'Platinum', 'pending');
+
+-- 1. Add a menu item (required for promotions)
+INSERT INTO menu_items (name, price, category)
+VALUES ('Burger', 12.99, 'Entree');
+
+-- 2. Add a promotion
+INSERT INTO promotions
+(promotion_name, promotion_type, description, discount, start_date, end_date, start_time, end_time, recurring_day)
+VALUES
+('Happy Hour', 'Discount', '20% off appetizers', 20.00, '2026-04-07', '2026-04-10', '15:00:00', '18:00:00', NULL);
+
+-- 3. Link promotion to menu item
+INSERT INTO promotion_items (promotion_id, menu_item_id)
+VALUES (1, 1);
+
+-- 4. Add promotion to calendar (THIS is why it shows on calendar)
+INSERT INTO promotion_calendar (promotion_id, date)
+VALUES 
+(1, '2026-04-07'),
+(1, '2026-04-08'),
+(1, '2026-04-09'),
+(1, '2026-04-10');
+
+INSERT INTO event_inquiries
+(full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
+VALUES
+('Emily Johnson', 'UMD Alumni Association', 75, 'emily.johnson@example.com', '301-555-1234', '2026-05-15 18:30:00', 'Graduation celebration with buffet and drinks', 'Gold', 'pending');
+
+INSERT INTO event_inquiries
+(full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
+VALUES
+('Michael Carter', 'Carter Consulting Group', 40, 'mcarter@example.com', '240-555-5678', '2026-06-10 12:00:00', 'Corporate luncheon and networking event', 'Silver', 'pending');
+
+-- =========================
+-- MENU ITEMS
+-- =========================
+INSERT INTO menu_items (name, price, category) VALUES
+('Cheeseburger', 10.99, 'Entree'),
+('Chicken Wings', 12.99, 'Appetizer'),
+('Fries', 4.99, 'Side'),
+('Caesar Salad', 8.99, 'Salad'),
+('Fish Tacos', 11.99, 'Entree'),
+('Mozzarella Sticks', 7.99, 'Appetizer');
+
+-- =========================
+-- PROMOTIONS
+-- =========================
+INSERT INTO promotions 
+(promotion_name, promotion_type, description, discount, start_date, end_date, start_time, end_time, recurring_day)
+VALUES
+('Happy Hour', 'Discount', 'Half off appetizers', 50.00, '2026-04-01', '2026-04-30', '15:00:00', '18:00:00', 'Friday'),
+('Wing Night', 'BOGO', 'Buy one get one free wings', NULL, '2026-04-01', '2026-05-01', '17:00:00', '21:00:00', 'Wednesday'),
+('Lunch Special', 'Discount', '20% off lunch items', 20.00, '2026-04-01', '2026-06-01', '11:00:00', '14:00:00', 'Monday');
+
+-- =========================
+-- PROMOTION ITEMS
+-- (Make sure IDs match your DB)
+-- =========================
+INSERT INTO promotion_items (promotion_id, menu_item_id) VALUES
+(1, 2),
+(1, 6),
+(2, 2),
+(3, 1),
+(3, 5);
+
+-- =========================
+-- EVENT INQUIRIES
+-- =========================
+INSERT INTO event_inquiries 
+(full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
+VALUES
+('John Smith', 'ABC Corp', 25, 'john@example.com', '555-1234', '2026-05-10 18:00:00', 'Company dinner event', 'Gold', 'pending'),
+('Sarah Johnson', NULL, 10, 'sarah@example.com', '555-5678', '2026-05-15 12:00:00', 'Birthday party', 'Silver', 'pending'),
+('Mike Brown', 'Local Club', 40, 'mike@example.com', '555-9999', '2026-06-01 19:30:00', 'Fundraising event', 'Platinum', 'approved');
+
+INSERT INTO promotion_items (promotion_id, menu_item_id)
+SELECT p.promotion_id, m.menu_item_id
+FROM promotions p, menu_items m
+WHERE p.promotion_name = 'Happy Hour' AND m.name = 'Chicken Wings';
+
+INSERT INTO promotion_items (promotion_id, menu_item_id)
+SELECT p.promotion_id, m.menu_item_id
+FROM promotions p, menu_items m
+WHERE p.promotion_name = 'Happy Hour' AND m.name = 'Mozzarella Sticks';
+
+INSERT INTO promotion_items (promotion_id, menu_item_id)
+SELECT p.promotion_id, m.menu_item_id
+FROM promotions p, menu_items m
+WHERE p.promotion_name = 'Wing Night' AND m.name = 'Chicken Wings';
+
+INSERT INTO promotion_items (promotion_id, menu_item_id)
+SELECT p.promotion_id, m.menu_item_id
+FROM promotions p, menu_items m
+WHERE p.promotion_name = 'Lunch Special' AND m.name = 'Cheeseburger';
+
+INSERT INTO promotion_items (promotion_id, menu_item_id)
+SELECT p.promotion_id, m.menu_item_id
+FROM promotions p, menu_items m
+WHERE p.promotion_name = 'Lunch Special' AND m.name = 'Fish Tacos';
+
+
