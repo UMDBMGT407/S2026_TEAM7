@@ -67,7 +67,7 @@
                 <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
 
               {% elif user_role == "admin" %}
-                <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('dashboard') }}">Admin</a>
+                <a class="sign-in-btn active-signin admin-btn" id="navAccountButton" href="{{ url_for('dashboard') }}">Admin</a>
                 <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
 
               {% else %}
@@ -114,11 +114,6 @@
       <br />
       <br />
       HOW IT WORKS: Every 100 points converts to $1 you can use at checkout.
-    </div>
-
-  {% elif logged_in and not customer_view %}
-    <div class="loyalty-info">
-      {{ message }}
     </div>
   {% endif %}
   </div>
