@@ -68,7 +68,7 @@ def login():
                 return redirect(url_for("dashboard"))
             elif user["role"] == "staff":
                 return redirect(url_for("staff_scheduling_staff"))
-            else:
+            elif user["role"] == "customer":
                 return redirect(url_for("home"))
 
         return render_template(
