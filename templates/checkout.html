@@ -64,8 +64,8 @@
                 <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
 
               {% elif user_role == "staff" %}
-                <a class="sign-in-btn active-signin" id="navAccountButton" href="{{ url_for('staff_scheduling_staff') }}">Staff</a>
-                <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
+              <a class="sign-in-btn active-signin staff-btn" id="navAccountButton" href="{{ url_for('staff_scheduling_staff') }}">Staff</a>
+              <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
 
               {% elif user_role == "admin" %}
                 <a class="sign-in-btn active-signin admin-btn" id="navAccountButton" href="{{ url_for('dashboard') }}">Admin</a>
