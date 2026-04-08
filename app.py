@@ -574,11 +574,79 @@ def reject_event(inquiry_id):
     return redirect(url_for("events"))
 
 
-# Loyalty Program
+# LOYALTY PROGRAM
 @app.route("/loyalty-program")
 @role_required("admin")
 def loyalty_program():
-    return render_template("loyalty_program.html", user_role=session.get("user_role"))
+    return render_template("loyalty_program.html", member=None, status_tier="")
+
+
+@app.route("/loyalty-program/search", methods=["POST"])
+@role_required("admin")
+def loyalty_program_search():
+    member_id = request.form["member_id"]
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        SELECT member_id, customer_id, customer_name, phone, email,
+               date_of_birth, join_date, points
+        FROM loyalty_program
+        WHERE member_id = %s
+    """, (member_id,))
+    member = cur.fetchone()
+    cur.close()
+
+    if not member:
+        flash("No loyalty member found with that ID.")
+        return redirect(url_for("loyalty_program"))
+
+    points = member["points"] if member["points"] is not None else 0
+
+    if points >= 1000:
+        status_tier = "Gold"
+    elif points >= 500:
+        status_tier = "Silver"
+    else:
+        status_tier = "Bronze"
+
+    return render_template("loyalty_program.html", member=member, status_tier=status_tier)
+
+
+@app.route("/loyalty-program/update", methods=["POST"])
+@role_required("admin")
+def loyalty_program_update():
+    member_id = request.form["member_id"]
+    customer_name = request.form["customer_name"]
+    phone = request.form["phone"]
+    email = request.form["email"]
+
+    cur = mysql.connection.cursor()
+    cur.execute("""
+        UPDATE loyalty_program
+        SET customer_name = %s,
+            phone = %s,
+            email = %s
+        WHERE member_id = %s
+    """, (customer_name, phone, email, member_id))
+    mysql.connection.commit()
+    cur.close()
+
+    flash("Loyalty member updated successfully.")
+    return redirect(url_for("loyalty_program_search"), code=307)
+
+
+@app.route("/loyalty-program/delete", methods=["POST"])
+@role_required("admin")
+def loyalty_program_delete():
+    member_id = request.form["member_id"]
+
+    cur = mysql.connection.cursor()
+    cur.execute("DELETE FROM loyalty_program WHERE member_id = %s", (member_id,))
+    mysql.connection.commit()
+    cur.close()
+
+    flash("Loyalty member deleted successfully.")
+    return redirect(url_for("loyalty_program"))
 
 
 # Promos
@@ -936,34 +1004,224 @@ def add_promo_to_calendar():
     finally:
         cur.close()
 
-# Staff
-@app.route("/shift-management")
-@role_required("admin")
+# =========================
+# SHIFT MANAGEMENT PAGE
+# =========================
+@app.route("/shift-management", methods=["GET"])
 def shift_management():
-    return render_template("shift_management.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # GET USERS
+    cur.execute("""
+        SELECT id, name, email, role
+        FROM users
+        WHERE role IN ('staff', 'admin')
+        ORDER BY name
+    """)
+    users = cur.fetchall()
+
+    # GET SCHEDULE
+    cur.execute("""
+        SELECT id, user_id, date, start_hour, end_hour, color
+        FROM schedule
+        ORDER BY date
+    """)
+    schedule_rows = cur.fetchall()
+
+    staff_lookup = {}
+
+    for user in users:
+        staff_lookup[user["id"]] = {
+            "id": user["id"],
+            "name": user["name"],
+            "employee_code": f"EMP{user['id']:03d}",
+            "role": user["role"].title(),
+            "status": "Active",
+            "hours": 0,
+            "availability": empty_week_dict(),
+            "shifts": empty_week_dict()
+        }
+
+    for row in schedule_rows:
+        user_id = row["user_id"]
+
+        if user_id not in staff_lookup:
+            continue
+
+        day_key = day_key_from_date(row["date"])
+
+        start = float(row["start_hour"])
+        end = float(row["end_hour"])
+
+        start_text = format_time_12hr(start)
+        end_text = format_time_12hr(end)
+
+        staff_lookup[user_id]["shifts"][day_key].append({
+            "shift_id": row["id"],
+            "text": f"{start_text} - {end_text}"
+        })
+
+        staff_lookup[user_id]["hours"] += (end - start)
+
+    for staff in staff_lookup.values():
+        for day in staff["shifts"]:
+            if staff["shifts"][day]:
+                staff["availability"][day] = [s["text"] for s in staff["shifts"][day]]
+            else:
+                staff["availability"][day] = ["Unavailable"]
+
+        staff["hours"] = round(staff["hours"], 1)
+
+    staff_data = list(staff_lookup.values())
+
+    shift_requests = []
+
+    cur.close()
+
+    return render_template(
+        "shift_management.html",
+        staff_data=staff_data,
+        shift_requests=shift_requests
+    )
+
+
+# =========================
+# ADD SHIFT
+# =========================
+
+@app.route("/add-shift", methods=["POST"])
+def add_shift():
+    user_id = request.form.get("user_id")
+    role = request.form.get("role")
+    shift_day = request.form.get("shift_day")
+    start_time = request.form.get("start_time")
+    end_time = request.form.get("end_time")
+
+    if not user_id or not role or not shift_day or not start_time or not end_time:
+        flash("Missing shift info")
+        return redirect(url_for("shift_management"))
+
+    try:
+        shift_date = next_date_for_day(shift_day)
+
+        start_hour = int(start_time.split(":")[0]) + int(start_time.split(":")[1]) / 60
+        end_hour = int(end_time.split(":")[0]) + int(end_time.split(":")[1]) / 60
+    except:
+        flash("Invalid time format")
+        return redirect(url_for("shift_management"))
+
+    if end_hour <= start_hour:
+        flash("End must be after start")
+        return redirect(url_for("shift_management"))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        INSERT INTO schedule (user_id, role, date, start_hour, end_hour, color)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """, (user_id, role, shift_date, start_hour, end_hour, "#204631"))
+
+    mysql.connection.commit()
+    cur.close()
+
+    flash("Shift added")
+    return redirect(url_for("shift_management"))
+
+
+# =========================
+# DELETE SHIFT
+# =========================
+
+@app.route("/delete-shift", methods=["POST"])
+def delete_shift():
+    shift_id = request.form.get("shift_id")
+
+    if not shift_id:
+        flash("Missing shift ID")
+        return redirect(url_for("shift_management"))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("DELETE FROM schedule WHERE id = %s", (shift_id,))
+    mysql.connection.commit()
+
+    cur.close()
+
+    flash("Shift deleted")
+    return redirect(url_for("shift_management"))
+
+
+# =========================
+# UPDATE REQUEST (OPTIONAL)
+# =========================
+
+@app.route("/update-shift-request", methods=["POST"])
+def update_shift_request():
+    request_id = request.form.get("request_id")
+    request_status = request.form.get("request_status")
+
+    if not request_id:
+        return redirect(url_for("shift_management"))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        UPDATE shift_requests
+        SET request_status = %s
+        WHERE request_id = %s
+    """, (request_status, request_id))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("shift_management"))
+
+# =========================
+# STAFF SCHEDULING ADMIN
+# =========================
+
+
+    cur.execute("""
+        SELECT name
+        FROM users
+        ORDER BY name
+    """)
+    staff_members = [row["name"] for row in cur.fetchall()]
+
+    cur.execute("""
+        SELECT u.name, s.date, s.start_hour, s.end_hour, s.color
+        FROM schedule s
+        JOIN users u ON s.user_id = u.id
+    """)
+    rows = cur.fetchall()
+
+    schedule_events = []
+
+    for row in rows:
+        schedule_events.append({
+            "date": row["date"].strftime("%Y-%m-%d"),
+            "title": row["name"],
+            "start": float(row["start_hour"]),
+            "end": float(row["end_hour"]),
+            "color": row["color"]
+        })
+
+    cur.close()
+
+    return render_template(
+        "staff_scheduling_admin.html",
+        staff_members=staff_members,
+        schedule_events=schedule_events
+    )
 
 @app.route("/staff-scheduling-admin")
 @role_required("admin")
 def staff_scheduling_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('Staff', 'Admin')")
-    staff_members = [row["name"] for row in cur.fetchall()]
-    cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
-    schedule_events = [
-        {
-            'date':  str(row["date"]),
-            'role':  row["role"],
-            'start': float(row["start_hour"]),
-            'end':   float(row["end_hour"]),
-            'color': row["color"]
-        }
-        for row in cur.fetchall()
-    ]
-    cur.close()
-    return render_template("staff_scheduling_admin.html",
-                           staff_members=staff_members,
-                           schedule_events=schedule_events,
-                           user_role=session.get("user_role"))
+
+    # roles for dropdown (matches your schedule.role column)
+    cur.execute("SELECT DISTINCT role FROM schedule")
+    staff_members = [row["role"] for row in cur.fetchall()]
 
 @app.route("/event-details-admin")
 @role_required("admin")
