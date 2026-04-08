@@ -94,6 +94,8 @@ def login():
             )
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        # First check staff/admin users table
         cur.execute("""
             SELECT id, first_name, last_name, name, email, username, password, role
             FROM users
@@ -101,9 +103,9 @@ def login():
             LIMIT 1
         """, (username, username))
         user = cur.fetchone()
-        cur.close()
 
         if user and check_password_hash(user["password"], password):
+            cur.close()
             session.permanent = False
             session["user_id"] = user["id"]
             session["user_role"] = user["role"]
@@ -114,8 +116,24 @@ def login():
                 return redirect(url_for("dashboard"))
             elif user["role"] == "staff":
                 return redirect(url_for("staff_scheduling_staff"))
-            elif user["role"] == "customer":
-                return redirect(url_for("home"))
+
+        # If not found in users, check members table for customers
+        cur.execute("""
+            SELECT member_id, first_name, last_name, email, username, password
+            FROM members
+            WHERE email = %s OR username = %s
+            LIMIT 1
+        """, (username, username))
+        member = cur.fetchone()
+        cur.close()
+
+        if member and check_password_hash(member["password"], password):
+            session.permanent = False
+            session["member_id"] = member["member_id"]
+            session["user_role"] = "customer"
+            session["username"] = member["username"] or member["email"]
+            session["name"] = f"{member['first_name']} {member['last_name']}"
+            return redirect(url_for("home"))
 
         return render_template(
             "login.html",
@@ -124,6 +142,7 @@ def login():
         )
 
     return render_template("login.html", user_role=session.get("user_role"))
+    
 
 @app.route("/logout")
 def logout():
@@ -214,15 +233,16 @@ def event_inquiry():
 @app.route("/become-a-member", methods=["GET", "POST"])
 def become_a_member():
     if request.method == "POST":
-        first_name        = request.form.get("firstName", "").strip()
-        last_name         = request.form.get("lastName", "").strip()
-        birthday          = request.form.get("birthday", "").strip()
-        email             = request.form.get("email", "").strip()
-        phone             = request.form.get("phone", "").strip()
+        first_name = request.form.get("firstName", "").strip()
+        last_name = request.form.get("lastName", "").strip()
+        birthday = request.form.get("birthday", "").strip()
+        email = request.form.get("email", "").strip()
+        phone = request.form.get("phone", "").strip()
         preferred_channel = request.form.get("preferredChannel", "").strip()
-        username          = request.form.get("username", "").strip()
-        password          = request.form.get("password", "").strip()
-        promo_opt_in      = 1 if request.form.get("promoOptIn") else 0
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "").strip()
+        hashed_password = generate_password_hash(password)
+        promo_opt_in = 1 if request.form.get("promoOptIn") else 0
 
         if not all([first_name, last_name, birthday, email, phone, preferred_channel, username, password]):
             return render_template(
@@ -236,8 +256,17 @@ def become_a_member():
             INSERT INTO members
             (first_name, last_name, date_of_birth, email, phone, preferred_channel, username, password, promo_opt_in)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (first_name, last_name, birthday, email, phone,
-              preferred_channel, username, password, promo_opt_in))
+        """, (
+            first_name,
+            last_name,
+            birthday,
+            email,
+            phone,
+            preferred_channel,
+            username,
+            hashed_password,
+            promo_opt_in
+        ))
         mysql.connection.commit()
         cur.close()
 
@@ -248,7 +277,7 @@ def become_a_member():
         )
 
     return render_template("become_a_member.html", user_role=session.get("user_role"))
-
+    
 
 @app.route("/loyalty-status")
 def loyalty_status():
