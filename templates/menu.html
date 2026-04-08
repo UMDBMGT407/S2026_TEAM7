@@ -191,7 +191,7 @@ Schedule</a></li>
 
       <div class="seasonal-items-list">
         <div class="seasonal-item-row">
-          <div class="seasonal-item-text">Springy Market Salad -- 23</div>
+<div class="seasonal-item-text">Springy Market Salad -- 23</div>
           <button class="delete-btn" type="button">Delete</button>
         </div>
 
@@ -223,37 +223,45 @@ Schedule</a></li>
     </div>
   </div>
 
- <script>
-document.querySelectorAll('.delete-btn').forEach(button => {
-  button.addEventListener('click', async () => {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
 
-    const row = button.closest('.seasonal-item-row');
-    const itemText = row.querySelector('.seasonal-item-text').innerText;
+  document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', async () => {
 
-    // Extract name (before the -- number)
-    const itemName = itemText.split('--')[0].trim();
+      const row = button.closest('.seasonal-item-row');
+      const itemName = row.dataset.itemName;  // ✅ THIS FIXES EVERYTHING
 
-    const confirmed = confirm(`Remove ${itemName} from seasonal items?`);
-    if (!confirmed) return;
+      const confirmed = confirm(`Remove ${itemName} from seasonal items?`);
+      if (!confirmed) return;
 
-    const response = await fetch("{{ url_for('remove_seasonal_item') }}", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: new URLSearchParams({
-        item_name: itemName
-      })
+      try {
+        const response = await fetch("{{ url_for('remove_seasonal_item') }}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            item_name: itemName
+          })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          row.remove();  // ✅ THIS WILL NOW WORK
+        } else {
+          alert("Failed to update item.");
+        }
+
+      } catch (error) {
+        console.error(error);
+        alert("Error deleting item.");
+      }
+
     });
-
-    const result = await response.json();
-
-    if (result.success) {
-      row.remove();
-    } else {
-      alert("Failed to update item.");
-    }
   });
+
 });
 </script>
 
