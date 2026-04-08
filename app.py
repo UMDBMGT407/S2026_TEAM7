@@ -588,9 +588,15 @@ def loyalty_program_search():
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
-        SELECT member_id, customer_id, customer_name, phone, email,
-               date_of_birth, join_date, points
-        FROM loyalty_program
+        SELECT member_id,
+               first_name,
+               last_name,
+               phone,
+               email,
+               date_of_birth,
+               join_date,
+               points
+        FROM members
         WHERE member_id = %s
     """, (member_id,))
     member = cur.fetchone()
@@ -599,6 +605,8 @@ def loyalty_program_search():
     if not member:
         flash("No loyalty member found with that ID.")
         return redirect(url_for("loyalty_program"))
+
+    member["customer_name"] = f'{member["first_name"]} {member["last_name"]}'
 
     points = member["points"] if member["points"] is not None else 0
 
@@ -616,23 +624,28 @@ def loyalty_program_search():
 @role_required("admin")
 def loyalty_program_update():
     member_id = request.form["member_id"]
-    customer_name = request.form["customer_name"]
-    phone = request.form["phone"]
-    email = request.form["email"]
+    customer_name = request.form["customer_name"].strip()
+    phone = request.form["phone"].strip()
+    email = request.form["email"].strip()
+
+    name_parts = customer_name.split(maxsplit=1)
+    first_name = name_parts[0] if len(name_parts) > 0 else ""
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
 
     cur = mysql.connection.cursor()
     cur.execute("""
-        UPDATE loyalty_program
-        SET customer_name = %s,
+        UPDATE members
+        SET first_name = %s,
+            last_name = %s,
             phone = %s,
             email = %s
         WHERE member_id = %s
-    """, (customer_name, phone, email, member_id))
+    """, (first_name, last_name, phone, email, member_id))
     mysql.connection.commit()
     cur.close()
 
     flash("Loyalty member updated successfully.")
-    return redirect(url_for("loyalty_program_search"), code=307)
+    return redirect(url_for("loyalty_program"))
 
 
 @app.route("/loyalty-program/delete", methods=["POST"])
@@ -641,7 +654,7 @@ def loyalty_program_delete():
     member_id = request.form["member_id"]
 
     cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM loyalty_program WHERE member_id = %s", (member_id,))
+    cur.execute("DELETE FROM members WHERE member_id = %s", (member_id,))
     mysql.connection.commit()
     cur.close()
 
