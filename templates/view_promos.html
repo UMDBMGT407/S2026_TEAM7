@@ -130,33 +130,50 @@ Schedule</a></li>
     <div class="promo-toolbar-card">
       <h2 class="toolbar-title">Add Existing Promotion to Calendar</h2>
 
-      <form method="POST" action="{{ url_for('add_promo_to_calendar') }}" class="promo-toolbar-form">
-        <div class="toolbar-field">
-          <label for="promotion_id">Promotion</label>
-          <select name="promotion_id" id="promotion_id" required>
-            <option value="">Select promotion</option>
-            {% for promo in promotions %}
-              <option value="{{ promo.promotion_id }}">
-                {{ promo.promotion_name }} (ID {{ promo.promotion_id }})
-              </option>
-            {% endfor %}
-          </select>
-        </div>
+<form method="POST" action="{{ url_for('add_promo_to_calendar') }}" class="promo-toolbar-form">
 
-        <div class="toolbar-field">
-          <label for="start_date">Start Date</label>
-          <input type="date" name="start_date" id="start_date" required>
-        </div>
+  <div class="toolbar-field">
+    <label for="promotion_id">Promotion</label>
+    <select name="promotion_id" id="promotion_id" required>
+      <option value="">Select promotion</option>
+      {% for promo in promotions %}
+        <option value="{{ promo.promotion_id }}">
+          {{ promo.promotion_name }} (ID {{ promo.promotion_id }})
+        </option>
+      {% endfor %}
+    </select>
+  </div>
 
-        <div class="toolbar-field">
-          <label for="end_date">End Date</label>
-          <input type="date" name="end_date" id="end_date" required>
-        </div>
+  <div class="toolbar-field">
+    <label for="start_date">Start Date</label>
+    <input type="date" name="start_date" id="start_date" required>
+  </div>
 
-        <div class="toolbar-field toolbar-submit">
-          <button type="submit" class="calendar-btn">Add to Calendar</button>
-        </div>
-      </form>
+  <div class="toolbar-field">
+    <label for="end_date">End Date</label>
+    <input type="date" name="end_date" id="end_date" required>
+  </div>
+
+  <!-- NEW: Recurring Day -->
+  <div class="toolbar-field">
+    <label for="recurring">Recurring Day</label>
+    <select name="recurring" id="recurring">
+      <option value="">Every day in range</option>
+      <option value="Sunday">Sunday</option>
+      <option value="Monday">Monday</option>
+      <option value="Tuesday">Tuesday</option>
+      <option value="Wednesday">Wednesday</option>
+      <option value="Thursday">Thursday</option>
+      <option value="Friday">Friday</option>
+      <option value="Saturday">Saturday</option>
+    </select>
+  </div>
+
+  <div class="toolbar-field toolbar-submit">
+    <button type="submit" class="calendar-btn">Add to Calendar</button>
+  </div>
+
+</form>
     </div>
   </div>
 
