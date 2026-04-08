@@ -517,32 +517,41 @@ def edit_promos():
 @role_required("admin")
 def add_promotion():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
     try:
-        promotion_name = request.form.get("promotion_name")
-        promotion_type = request.form.get("promotion_type")
-        description    = request.form.get("description")
-        discount       = float(request.form.get("discount")) if request.form.get("discount") else None
-        start_date     = request.form.get("start_date") or None
-        end_date       = request.form.get("end_date") or None
+        promotion_name = (request.form.get("promotion_name") or "").strip()
+        promotion_type = (request.form.get("promotion_type") or "").strip() or None
+        description    = (request.form.get("description") or "").strip() or None
+        discount_raw   = request.form.get("discount")
+        discount       = float(discount_raw) if discount_raw else None
+
+        start_date_raw = request.form.get("start_date") or None
+        end_date_raw   = request.form.get("end_date") or None
         start_time     = request.form.get("start_time") or None
         end_time       = request.form.get("end_time") or None
-        recurring      = request.form.get("recurring")
-        menu_item_ids  = request.form.getlist("menu_item_ids")
+        recurring      = request.form.get("recurring") or None
 
-        if not promotion_name or not menu_item_ids:
-            return redirect(url_for("edit_page"))
+        # works for a single select or multi-select
+        menu_item_ids = request.form.getlist("menu_item_ids")
+        if not menu_item_ids:
+            one_item = request.form.get("menu_item_ids")
+            if one_item:
+                menu_item_ids = [one_item]
 
+        if not promotion_name:
+            return redirect(url_for("edit_promos"))
 
         cur.execute("""
             INSERT INTO promotions
             (promotion_name, promotion_type, description, discount,
              start_date, end_date, start_time, end_time, recurring_day)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (promotion_name, promotion_type, description, discount,
-              start_date, end_date, start_time, end_time, recurring))
+        """, (
+            promotion_name, promotion_type, description, discount,
+            start_date_raw, end_date_raw, start_time, end_time, recurring
+        ))
 
         promotion_id = cur.lastrowid
-
 
         for item_id in menu_item_ids:
             cur.execute("""
@@ -550,11 +559,26 @@ def add_promotion():
                 VALUES (%s, %s)
             """, (promotion_id, item_id))
 
+        # automatically place promo on calendar if dates were provided
+        if start_date_raw and end_date_raw:
+            start_date = datetime.strptime(start_date_raw, "%Y-%m-%d").date()
+            end_date = datetime.strptime(end_date_raw, "%Y-%m-%d").date()
+
+            if end_date >= start_date:
+                current_date = start_date
+                while current_date <= end_date:
+                    cur.execute("""
+                        INSERT IGNORE INTO promotion_calendar (promotion_id, date)
+                        VALUES (%s, %s)
+                    """, (promotion_id, current_date))
+                    current_date += timedelta(days=1)
+
         mysql.connection.commit()
 
     except Exception as e:
         mysql.connection.rollback()
         print("ERROR ADDING PROMO:", e)
+        return redirect(url_for("edit_promos"))
 
     finally:
         cur.close()
@@ -604,7 +628,11 @@ def view_promos():
     """, (month, year))
     rows = cur.fetchall()
 
-    cur.execute("SELECT promotion_id, promotion_name FROM promotions")
+    cur.execute("""
+        SELECT promotion_id, promotion_name
+        FROM promotions
+        ORDER BY promotion_name
+    """)
     promotions = cur.fetchall()
 
     cur.close()
@@ -612,7 +640,6 @@ def view_promos():
     calendar_data = {}
     for row in rows:
         day = row["date"].day
-
         if day not in calendar_data:
             calendar_data[day] = []
 
@@ -637,28 +664,6 @@ def view_promos():
         month_names=month_names,
         user_role=session.get("user_role")
     )
-    # Build calendar dictionary
-    calendar_data = {}
-    for row in rows:
-        day = row["date"].day
-
-        if day not in calendar_data:
-            calendar_data[day] = []
-
-        calendar_data[day].append({
-            "id": row["promotion_id"],
-            "name": row["promotion_name"],
-            "date": row["date"]
-        })
-
-    return render_template("view_promos.html",
-                           calendar_data=calendar_data,
-                           promotions=promotions,
-                           month=month,
-                           year=year,
-                           user_role=session.get("user_role"))
-
-
 @app.route("/promo/<int:promo_id>")
 @role_required("admin")
 def promo_details(promo_id):
