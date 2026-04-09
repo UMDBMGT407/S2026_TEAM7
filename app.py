@@ -32,50 +32,69 @@ def role_required(*roles):
         return decorated_view
     return wrapper
     
+
 def empty_week_dict():
     return {
-        "Monday": [],
-        "Tuesday": [],
-        "Wednesday": [],
-        "Thursday": [],
-        "Friday": [],
-        "Saturday": [],
-        "Sunday": []
+        "mon": [],
+        "tue": [],
+        "wed": [],
+        "thu": [],
+        "fri": [],
+        "sat": [],
+        "sun": []
+    }
+def format_time_12hr(hour_float):
+    hour = int(hour_float)
+    minute = int((hour_float - hour) * 60)
+
+    suffix = "AM"
+    if hour >= 12:
+        suffix = "PM"
+
+    if hour > 12:
+        hour -= 12
+    if hour == 0:
+        hour = 12
+
+    return f"{hour}:{minute:02d} {suffix}"
+
+def day_key_from_date(some_date):
+    weekday_index = some_date.weekday()  # Monday = 0, Sunday = 6
+
+    day_keys = {
+        0: "mon",
+        1: "tue",
+        2: "wed",
+        3: "thu",
+        4: "fri",
+        5: "sat",
+        6: "sun"
     }
 
-def day_key_from_date(date_value):
-    if isinstance(date_value, str):
-        date_value = datetime.strptime(date_value, "%Y-%m-%d")
-    return date_value.strftime("%A")
+    return day_keys[weekday_index]
 
-def format_time_12hr(hour_value):
-    hour_value = float(hour_value)
-    hour = int(hour_value)
-    minute = int((hour_value - hour) * 60)
-
-    dt = datetime.strptime(f"{hour}:{minute:02d}", "%H:%M")
-    return dt.strftime("%I:%M %p").lstrip("0")
-
-def next_date_for_day(day_name):
-    days = {
-        "Monday": 0,
-        "Tuesday": 1,
-        "Wednesday": 2,
-        "Thursday": 3,
-        "Friday": 4,
-        "Saturday": 5,
-        "Sunday": 6
+def next_date_for_day(day_code):
+    day_map = {
+        "mon": 0,
+        "tue": 1,
+        "wed": 2,
+        "thu": 3,
+        "fri": 4,
+        "sat": 5,
+        "sun": 6
     }
 
-    today = datetime.today()
-    target_day = days[day_name]
+    if day_code not in day_map:
+        raise ValueError(f"Invalid day code: {day_code}")
+
+    today = date.today()
+    target_day = day_map[day_code]
     days_ahead = target_day - today.weekday()
 
     if days_ahead < 0:
         days_ahead += 7
 
-    next_day = today + timedelta(days=days_ahead)
-    return next_day.strftime("%Y-%m-%d")
+    return today + timedelta(days=days_ahead)
 
 # ========================
 # AUTH ROUTES
@@ -643,21 +662,12 @@ def approve_event(inquiry_id):
 
     if inquiry:
         cur.execute("""
-            SELECT event_id
-            FROM booked_events
-            WHERE inquiry_id = %s
-        """, (inquiry_id,))
-        existing = cur.fetchone()
-
-        if not existing:
-            cur.execute("""
-                INSERT INTO booked_events (inquiry_id, booked_datetime)
-                VALUES (%s, %s)
-            """, (inquiry_id, inquiry["preferred_datetime"]))
+            INSERT INTO booked_events (inquiry_id, booked_datetime)
+            VALUES (%s, %s)
+        """, (inquiry_id, inquiry["preferred_datetime"]))
 
         cur.execute("""
-            UPDATE event_inquiries
-            SET inquiry_status = 'approved'
+            DELETE FROM event_inquiries
             WHERE inquiry_id = %s
         """, (inquiry_id,))
 
@@ -665,6 +675,7 @@ def approve_event(inquiry_id):
 
     cur.close()
     return redirect(url_for("events"))
+
 
 @app.route("/event-reject/<int:inquiry_id>")
 @role_required("admin")
@@ -680,19 +691,20 @@ def reject_event(inquiry_id):
 
 
 # =========================
-# LOYALTY PROGRAM
+# LOYALTY PROGRAM ADMIN PAGE
 # =========================
-@app.route("/loyalty-program")
+@app.route("/loyalty-program", methods=["GET"])
 @role_required("admin")
 def loyalty_program():
     return render_template("loyalty_program.html", member=None, status_tier="")
 
 
-@app.route("/loyalty-program/search", methods=["POST"])
+# =========================
+# VIEW ONE LOYALTY MEMBER
+# =========================
+@app.route("/loyalty-program/member/<int:member_id>", methods=["GET"])
 @role_required("admin")
-def loyalty_program_search():
-    member_id = request.form["member_id"]
-
+def loyalty_program_member(member_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
         SELECT
@@ -710,7 +722,7 @@ def loyalty_program_search():
     cur.close()
 
     if not member:
-        flash("No loyalty member found with that ID.")
+        flash("No loyalty member found with that ID.", "warning")
         return redirect(url_for("loyalty_program"))
 
     points = member["points"] if member["points"] is not None else 0
@@ -725,15 +737,50 @@ def loyalty_program_search():
     return render_template("loyalty_program.html", member=member, status_tier=status_tier)
 
 
+# =========================
+# SEARCH LOYALTY MEMBER
+# =========================
+@app.route("/loyalty-program/search", methods=["POST"])
+@role_required("admin")
+def loyalty_program_search():
+    member_id = request.form.get("member_id")
+
+    if not member_id:
+        flash("Please enter a member ID.", "warning")
+        return redirect(url_for("loyalty_program"))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("SELECT member_id FROM members WHERE member_id = %s", (member_id,))
+    member = cur.fetchone()
+    cur.close()
+
+    if not member:
+        flash("No loyalty member found with that ID.", "warning")
+        return redirect(url_for("loyalty_program"))
+
+    return redirect(url_for("loyalty_program_member", member_id=member_id))
+
+
+# =========================
+# UPDATE LOYALTY MEMBER
+# =========================
 @app.route("/loyalty-program/update", methods=["POST"])
 @role_required("admin")
 def loyalty_program_update():
-    member_id = request.form["member_id"]
-    customer_name = request.form["customer_name"]
-    phone = request.form["phone"]
-    email = request.form["email"]
+    member_id = request.form.get("member_id")
+    customer_name = request.form.get("customer_name", "").strip()
+    phone = request.form.get("phone", "").strip()
+    email = request.form.get("email", "").strip()
 
-    name_parts = customer_name.strip().split(" ", 1)
+    if not member_id:
+        flash("Missing member ID.", "warning")
+        return redirect(url_for("loyalty_program"))
+
+    if not customer_name:
+        flash("Customer name cannot be empty.", "warning")
+        return redirect(url_for("loyalty_program_member", member_id=member_id))
+
+    name_parts = customer_name.split(" ", 1)
     first_name = name_parts[0]
     last_name = name_parts[1] if len(name_parts) > 1 else ""
 
@@ -749,23 +796,29 @@ def loyalty_program_update():
     mysql.connection.commit()
     cur.close()
 
-    flash("Loyalty member updated successfully.")
-    return redirect(url_for("loyalty_program_search"), code=307)
+    flash("Loyalty member updated successfully.", "success")
+    return redirect(url_for("loyalty_program_member", member_id=member_id))
 
 
+# =========================
+# DELETE LOYALTY MEMBER
+# =========================
 @app.route("/loyalty-program/delete", methods=["POST"])
 @role_required("admin")
 def loyalty_program_delete():
-    member_id = request.form["member_id"]
+    member_id = request.form.get("member_id")
+
+    if not member_id:
+        flash("Missing member ID.", "warning")
+        return redirect(url_for("loyalty_program"))
 
     cur = mysql.connection.cursor()
     cur.execute("DELETE FROM members WHERE member_id = %s", (member_id,))
     mysql.connection.commit()
     cur.close()
 
-    flash("Loyalty member deleted successfully.")
+    flash("Loyalty member deleted successfully.", "success")
     return redirect(url_for("loyalty_program"))
-
 
 # Promos
 @app.route("/admin/promos", methods=["GET"])
@@ -1122,14 +1175,18 @@ def add_promo_to_calendar():
     finally:
         cur.close()
 
+from datetime import datetime
+
 # =========================
 # SHIFT MANAGEMENT PAGE
 # =========================
 @app.route("/shift-management", methods=["GET"])
+@role_required("admin")
 def shift_management():
+    selected_staff_id = request.args.get("selected_staff_id", type=int)
+
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    # GET USERS
     cur.execute("""
         SELECT id, name, email, role
         FROM users
@@ -1138,11 +1195,10 @@ def shift_management():
     """)
     users = cur.fetchall()
 
-    # GET SCHEDULE
     cur.execute("""
-        SELECT id, user_id, date, start_hour, end_hour, color
+        SELECT id, user_id, date, role, start_hour, end_hour, color
         FROM schedule
-        ORDER BY date
+        ORDER BY date, start_hour
     """)
     schedule_rows = cur.fetchall()
 
@@ -1168,6 +1224,10 @@ def shift_management():
 
         day_key = day_key_from_date(row["date"])
 
+        if day_key not in staff_lookup[user_id]["shifts"]:
+            print("BAD DAY KEY:", day_key, "for date:", row["date"])
+            continue
+
         start = float(row["start_hour"])
         end = float(row["end_hour"])
 
@@ -1176,22 +1236,19 @@ def shift_management():
 
         staff_lookup[user_id]["shifts"][day_key].append({
             "shift_id": row["id"],
-            "text": f"{start_text} - {end_text}"
+            "text": f"{row['role']}: {start_text} - {end_text}"
         })
 
         staff_lookup[user_id]["hours"] += (end - start)
 
     for staff in staff_lookup.values():
-        for day in staff["shifts"]:
-            if staff["shifts"][day]:
-                staff["availability"][day] = [s["text"] for s in staff["shifts"][day]]
-            else:
-                staff["availability"][day] = ["Unavailable"]
+        for day in ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]:
+            if not staff["availability"][day]:
+                staff["availability"][day] = []
 
         staff["hours"] = round(staff["hours"], 1)
 
     staff_data = list(staff_lookup.values())
-
     shift_requests = []
 
     cur.close()
@@ -1199,38 +1256,53 @@ def shift_management():
     return render_template(
         "shift_management.html",
         staff_data=staff_data,
-        shift_requests=shift_requests
+        shift_requests=shift_requests,
+        selected_staff_id=selected_staff_id
     )
-
 
 # =========================
 # ADD SHIFT
 # =========================
-
 @app.route("/add-shift", methods=["POST"])
+@role_required("admin")
 def add_shift():
     user_id = request.form.get("user_id")
     role = request.form.get("role")
     shift_day = request.form.get("shift_day")
     start_time = request.form.get("start_time")
     end_time = request.form.get("end_time")
+    selected_staff_id = request.form.get("selected_staff_id") or user_id
 
     if not user_id or not role or not shift_day or not start_time or not end_time:
         flash("Missing shift info")
-        return redirect(url_for("shift_management"))
+        return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
+
+    valid_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+    if shift_day not in valid_days:
+        flash("Invalid day selected")
+        return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
     try:
         shift_date = next_date_for_day(shift_day)
+    except Exception as e:
+        print("DAY ERROR:", e)
+        flash("Problem finding the selected day")
+        return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
-        start_hour = int(start_time.split(":")[0]) + int(start_time.split(":")[1]) / 60
-        end_hour = int(end_time.split(":")[0]) + int(end_time.split(":")[1]) / 60
-    except:
+    try:
+        start_dt = datetime.strptime(start_time, "%H:%M")
+        end_dt = datetime.strptime(end_time, "%H:%M")
+
+        start_hour = start_dt.hour + start_dt.minute / 60
+        end_hour = end_dt.hour + end_dt.minute / 60
+    except Exception as e:
+        print("TIME ERROR:", e)
         flash("Invalid time format")
-        return redirect(url_for("shift_management"))
+        return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
     if end_hour <= start_hour:
-        flash("End must be after start")
-        return redirect(url_for("shift_management"))
+        flash("End time must be after start time")
+        return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
@@ -1242,15 +1314,15 @@ def add_shift():
     mysql.connection.commit()
     cur.close()
 
-    flash("Shift added")
-    return redirect(url_for("shift_management"))
+    flash("Shift added successfully")
+    return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
 
 # =========================
 # DELETE SHIFT
 # =========================
-
 @app.route("/delete-shift", methods=["POST"])
+@role_required("admin")
 def delete_shift():
     shift_id = request.form.get("shift_id")
 
@@ -1259,10 +1331,8 @@ def delete_shift():
         return redirect(url_for("shift_management"))
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
     cur.execute("DELETE FROM schedule WHERE id = %s", (shift_id,))
     mysql.connection.commit()
-
     cur.close()
 
     flash("Shift deleted")
@@ -1272,8 +1342,8 @@ def delete_shift():
 # =========================
 # UPDATE REQUEST (OPTIONAL)
 # =========================
-
 @app.route("/update-shift-request", methods=["POST"])
+@role_required("admin")
 def update_shift_request():
     request_id = request.form.get("request_id")
     request_status = request.form.get("request_status")
@@ -1294,6 +1364,7 @@ def update_shift_request():
 
     return redirect(url_for("shift_management"))
 
+
 # =========================
 # STAFF SCHEDULING ADMIN
 # =========================
@@ -1311,7 +1382,7 @@ def staff_scheduling_admin():
     staff_members = [row["name"] for row in cur.fetchall()]
 
     cur.execute("""
-        SELECT u.name, s.date, s.start_hour, s.end_hour, s.color
+        SELECT u.name, s.role, s.date, s.start_hour, s.end_hour, s.color
         FROM schedule s
         JOIN users u ON s.user_id = u.id
         ORDER BY s.date, s.start_hour
@@ -1323,7 +1394,8 @@ def staff_scheduling_admin():
     for row in rows:
         schedule_events.append({
             "date": row["date"].strftime("%Y-%m-%d"),
-            "title": row["name"],
+            "staff_name": row["name"],
+            "role": row["role"],
             "start": float(row["start_hour"]),
             "end": float(row["end_hour"]),
             "color": row["color"]
