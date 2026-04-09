@@ -643,12 +643,21 @@ def approve_event(inquiry_id):
 
     if inquiry:
         cur.execute("""
-            INSERT INTO booked_events (inquiry_id, booked_datetime)
-            VALUES (%s, %s)
-        """, (inquiry_id, inquiry["preferred_datetime"]))
+            SELECT event_id
+            FROM booked_events
+            WHERE inquiry_id = %s
+        """, (inquiry_id,))
+        existing = cur.fetchone()
+
+        if not existing:
+            cur.execute("""
+                INSERT INTO booked_events (inquiry_id, booked_datetime)
+                VALUES (%s, %s)
+            """, (inquiry_id, inquiry["preferred_datetime"]))
 
         cur.execute("""
-            DELETE FROM event_inquiries
+            UPDATE event_inquiries
+            SET inquiry_status = 'approved'
             WHERE inquiry_id = %s
         """, (inquiry_id,))
 
@@ -656,7 +665,6 @@ def approve_event(inquiry_id):
 
     cur.close()
     return redirect(url_for("events"))
-
 
 @app.route("/event-reject/<int:inquiry_id>")
 @role_required("admin")
