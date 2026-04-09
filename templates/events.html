@@ -44,9 +44,7 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
@@ -65,7 +63,7 @@
           </ul>
         </li>
 
-            <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
@@ -73,9 +71,7 @@
           </ul>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a></li>
 
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
@@ -125,54 +121,20 @@
           <div class="request-card">
             <div class="request-card-title">Customer Details</div>
 
-            <div class="info-row">
-              <div class="info-label">Customer Name</div>
-              <div class="info-value">{{ inquiry.full_name }}</div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-label">Customer Phone</div>
-              <div class="info-value">{{ inquiry.phone or 'N/A' }}</div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-label">Customer Email</div>
-              <div class="info-value">{{ inquiry.email }}</div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-label">Organization</div>
-              <div class="info-value">{{ inquiry.organization or 'N/A' }}</div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-label">Party Size</div>
-              <div class="info-value">{{ inquiry.guests }}</div>
-            </div>
+            <div class="info-row"><div class="info-label">Customer Name</div><div class="info-value">{{ inquiry.full_name }}</div></div>
+            <div class="info-row"><div class="info-label">Customer Phone</div><div class="info-value">{{ inquiry.phone or 'N/A' }}</div></div>
+            <div class="info-row"><div class="info-label">Customer Email</div><div class="info-value">{{ inquiry.email }}</div></div>
+            <div class="info-row"><div class="info-label">Organization</div><div class="info-value">{{ inquiry.organization or 'N/A' }}</div></div>
+            <div class="info-row"><div class="info-label">Party Size</div><div class="info-value">{{ inquiry.guests }}</div></div>
           </div>
 
           <div class="request-card">
             <div class="request-card-title">Event Details</div>
 
-            <div class="info-row">
-              <div class="info-label">Event Date</div>
-              <div class="info-value">{{ inquiry.preferred_datetime.strftime('%m/%d/%Y') }}</div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-label">Event Time</div>
-              <div class="info-value">{{ inquiry.preferred_datetime.strftime('%I:%M %p') }}</div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-label">Catering Package</div>
-              <div class="info-value">{{ inquiry.catering_package or 'N/A' }}</div>
-            </div>
-
-            <div class="info-row">
-              <div class="info-label">Status</div>
-              <div class="info-value">{{ inquiry.inquiry_status }}</div>
-            </div>
+            <div class="info-row"><div class="info-label">Event Date</div><div class="info-value">{{ inquiry.preferred_datetime.strftime('%m/%d/%Y') }}</div></div>
+            <div class="info-row"><div class="info-label">Event Time</div><div class="info-value">{{ inquiry.preferred_datetime.strftime('%I:%M %p') }}</div></div>
+            <div class="info-row"><div class="info-label">Catering Package</div><div class="info-value">{{ inquiry.catering_package or 'N/A' }}</div></div>
+            <div class="info-row"><div class="info-label">Status</div><div class="info-value">{{ inquiry.inquiry_status }}</div></div>
           </div>
 
           <div class="request-card full-width">
@@ -181,20 +143,27 @@
           </div>
         </div>
 
-        <div class="action-row">
-          <a
-            class="action-button accept-button"
-            href="{{ url_for('approve_event', inquiry_id=inquiry.inquiry_id) }}"
-            onclick="return confirmAction('approve')">
-            Accept
-          </a>
 
-          <a
-            class="action-button deny-button"
-            href="{{ url_for('reject_event', inquiry_id=inquiry.inquiry_id) }}"
-            onclick="return confirmAction('reject')">
-            Deny
-          </a>
+        <div class="action-row">
+
+          <form action="{{ url_for('approve_event', inquiry_id=inquiry.inquiry_id) }}"
+                method="POST"
+                style="display:inline;"
+                onsubmit="return confirmAction('approve')">
+            <button type="submit" class="action-button accept-button">
+              Accept
+            </button>
+          </form>
+
+          <form action="{{ url_for('reject_event', inquiry_id=inquiry.inquiry_id) }}"
+                method="POST"
+                style="display:inline;"
+                onsubmit="return confirmAction('reject')">
+            <button type="submit" class="action-button deny-button">
+              Deny
+            </button>
+          </form>
+
         </div>
 
         {% if count > 1 %}
@@ -202,7 +171,6 @@
           {% if index > 0 %}
             <a class="nav-button" href="{{ url_for('view_event', index=index - 1) }}#requests">Back</a>
           {% endif %}
-
           {% if index < count - 1 %}
             <a class="nav-button" href="{{ url_for('view_event', index=index + 1) }}#requests">Next</a>
           {% endif %}
