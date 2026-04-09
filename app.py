@@ -633,18 +633,27 @@ def view_event(index):
 @role_required("admin")
 def approve_event(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT preferred_datetime FROM event_inquiries WHERE inquiry_id = %s", (inquiry_id,))
+
+    cur.execute("""
+        SELECT inquiry_id, preferred_datetime
+        FROM event_inquiries
+        WHERE inquiry_id = %s AND inquiry_status = 'pending'
+    """, (inquiry_id,))
     inquiry = cur.fetchone()
+
     if inquiry:
         cur.execute("""
             INSERT INTO booked_events (inquiry_id, booked_datetime)
             VALUES (%s, %s)
         """, (inquiry_id, inquiry["preferred_datetime"]))
+
         cur.execute("""
-            UPDATE event_inquiries SET inquiry_status = 'approved'
+            DELETE FROM event_inquiries
             WHERE inquiry_id = %s
         """, (inquiry_id,))
-    mysql.connection.commit()
+
+        mysql.connection.commit()
+
     cur.close()
     return redirect(url_for("events"))
 
