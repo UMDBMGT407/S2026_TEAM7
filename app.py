@@ -671,7 +671,9 @@ def reject_event(inquiry_id):
     return redirect(url_for("events"))
 
 
+# =========================
 # LOYALTY PROGRAM
+# =========================
 @app.route("/loyalty-program")
 @role_required("admin")
 def loyalty_program():
@@ -685,9 +687,15 @@ def loyalty_program_search():
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("""
-        SELECT member_id, customer_id, customer_name, phone, email,
-               date_of_birth, join_date, points
-        FROM loyalty_program
+        SELECT
+            member_id,
+            CONCAT(first_name, ' ', last_name) AS customer_name,
+            phone,
+            email,
+            date_of_birth,
+            join_date,
+            points
+        FROM members
         WHERE member_id = %s
     """, (member_id,))
     member = cur.fetchone()
@@ -704,7 +712,7 @@ def loyalty_program_search():
     elif points >= 500:
         status_tier = "Silver"
     else:
-        status_tier = "Bronze"
+        status_tier = "Green"
 
     return render_template("loyalty_program.html", member=member, status_tier=status_tier)
 
@@ -717,14 +725,19 @@ def loyalty_program_update():
     phone = request.form["phone"]
     email = request.form["email"]
 
+    name_parts = customer_name.strip().split(" ", 1)
+    first_name = name_parts[0]
+    last_name = name_parts[1] if len(name_parts) > 1 else ""
+
     cur = mysql.connection.cursor()
     cur.execute("""
-        UPDATE loyalty_program
-        SET customer_name = %s,
+        UPDATE members
+        SET first_name = %s,
+            last_name = %s,
             phone = %s,
             email = %s
         WHERE member_id = %s
-    """, (customer_name, phone, email, member_id))
+    """, (first_name, last_name, phone, email, member_id))
     mysql.connection.commit()
     cur.close()
 
@@ -738,7 +751,7 @@ def loyalty_program_delete():
     member_id = request.form["member_id"]
 
     cur = mysql.connection.cursor()
-    cur.execute("DELETE FROM loyalty_program WHERE member_id = %s", (member_id,))
+    cur.execute("DELETE FROM members WHERE member_id = %s", (member_id,))
     mysql.connection.commit()
     cur.close()
 
