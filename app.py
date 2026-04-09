@@ -13,7 +13,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'INSERT YOUR PASSWORD'
+app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -692,6 +692,7 @@ def reject_event(inquiry_id):
 
     cur.close()
     return redirect(url_for("events"))
+
 
 
 # =========================
@@ -1419,25 +1420,13 @@ def event_details_admin():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("""
-        SELECT
-            b.event_id,
-            b.booked_datetime,
-            e.inquiry_id,
-            e.full_name,
-            e.organization,
-            e.email,
-            e.phone,
-            e.guests,
-            e.event_description,
-            e.catering_package,
-            e.inquiry_status
-        FROM booked_events b
-        JOIN event_inquiries e
-            ON b.inquiry_id = e.inquiry_id
-        ORDER BY b.booked_datetime ASC
+        SELECT *
+        FROM event_inquiries
+        WHERE inquiry_status = 'approved'
+        ORDER BY preferred_datetime ASC
     """)
-
     events = cur.fetchall()
+
     cur.close()
 
     return render_template(
@@ -1446,19 +1435,26 @@ def event_details_admin():
         user_role=session.get("user_role")
     )
 
-@app.route("/event-complete/<int:event_id>")
+@app.route("/complete_event/<int:inquiry_id>", methods=["POST"])
 @role_required("admin")
-def complete_event(event_id):
+def complete_event(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    cur.execute("""
-        DELETE FROM booked_events
-        WHERE event_id = %s
-    """, (event_id,))
+    try:
+        cur.execute("""
+            UPDATE event_inquiries
+            SET inquiry_status = 'completed'
+            WHERE inquiry_id = %s
+        """, (inquiry_id,))
 
-    mysql.connection.commit()
+        mysql.connection.commit()
+
+    except Exception as e:
+        mysql.connection.rollback()
+        cur.close()
+        return f"Complete event failed: {e}", 500
+
     cur.close()
-
     return redirect(url_for("event_details_admin"))
 
 if __name__ == "__main__":
