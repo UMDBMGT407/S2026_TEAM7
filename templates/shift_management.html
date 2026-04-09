@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -144,6 +143,8 @@
             <h3>Create Shift</h3>
 
             <form method="POST" action="{{ url_for('add_shift') }}">
+              <input type="hidden" name="selected_staff_id" id="selectedStaffHidden">
+
               <div class="form-group">
                 <label>Staff Member</label>
                 <select id="shiftStaff" name="user_id" required>
@@ -226,7 +227,8 @@
     const staffData = JSON.parse(document.getElementById("staff-data").textContent);
     let requests = JSON.parse(document.getElementById("shift-requests-data").textContent);
 
-    let selectedStaffId = staffData.length > 0 ? staffData[0].id : null;
+    const initialSelectedStaffId = JSON.parse('{{ (selected_staff_id or 0) | tojson | safe }}');
+let selectedStaffId = initialSelectedStaffId || (staffData.length > 0 ? staffData[0].id : null);
 
     const staffList = document.getElementById("staffList");
     const selectedStaffText = document.getElementById("selectedStaffText");
@@ -234,9 +236,21 @@
     const calendarGrid = document.getElementById("calendarGrid");
     const requestList = document.getElementById("requestList");
     const staffSearch = document.getElementById("staffSearch");
+    const shiftStaffDropdown = document.getElementById("shiftStaff");
+    const selectedStaffHidden = document.getElementById("selectedStaffHidden");
 
     function getSelectedStaff() {
-      return staffData.find(staff => staff.id === selectedStaffId);
+      return staffData.find(staff => Number(staff.id) === Number(selectedStaffId));
+    }
+
+    function syncDropdownWithSelectedStaff() {
+      if (shiftStaffDropdown && selectedStaffId) {
+        shiftStaffDropdown.value = selectedStaffId;
+      }
+
+      if (selectedStaffHidden && selectedStaffId) {
+        selectedStaffHidden.value = selectedStaffId;
+      }
     }
 
     function renderStaffList(filterText = "") {
@@ -250,17 +264,24 @@
         const card = document.createElement("div");
         card.className = "staff-card";
 
-        if (staff.id === selectedStaffId) {
+        if (Number(staff.id) === Number(selectedStaffId)) {
           card.classList.add("active");
         }
+
+        let totalShifts = 0;
+        Object.keys(staff.shifts || {}).forEach(day => {
+          totalShifts += staff.shifts[day].length;
+        });
 
         card.innerHTML = `
           <strong>${staff.name}</strong>
           <span>${staff.role} · ${staff.status}</span>
+          <small>${staff.hours} hrs · ${totalShifts} shift${totalShifts !== 1 ? "s" : ""}</small>
         `;
 
         card.addEventListener("click", function () {
           selectedStaffId = staff.id;
+          syncDropdownWithSelectedStaff();
           renderPage();
         });
 
@@ -270,6 +291,7 @@
 
     function renderSummary() {
       const staff = getSelectedStaff();
+
       if (!staff) {
         selectedStaffText.textContent = "Select a staff member";
         summaryRow.innerHTML = "";
@@ -339,11 +361,11 @@
         });
 
         dayCard.innerHTML = `
-          <h4>${day.label}</h4>
-          <small>${day.date}</small>
-          ${availabilityHTML}
-          ${shiftsHTML}
-        `;
+  <h4>${day.label}</h4>
+  <small>${day.date}</small>
+  ${availabilityHTML}
+  ${shiftsHTML || '<div class="unavailable-slot">No shift</div>'}
+`;
 
         calendarGrid.appendChild(dayCard);
       });
@@ -377,11 +399,20 @@
       });
     }
 
+    if (shiftStaffDropdown) {
+      shiftStaffDropdown.addEventListener("change", function () {
+        selectedStaffId = parseInt(this.value);
+        syncDropdownWithSelectedStaff();
+        renderPage();
+      });
+    }
+
     staffSearch.addEventListener("input", function () {
       renderStaffList(staffSearch.value);
     });
 
     function renderPage() {
+      syncDropdownWithSelectedStaff();
       renderStaffList(staffSearch.value);
       renderSummary();
       renderCalendar();
