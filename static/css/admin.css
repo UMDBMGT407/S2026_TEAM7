@@ -1763,512 +1763,132 @@ body {
   }
 }
 
-/*LOYALTY PROGRAM*/
-.loyalty-program,
-.loyalty-program * {
-  box-sizing: border-box;
-}
+/* =========================
+   LOYALTY PROGRAM ADMIN
+   ========================= */
 
-.loyalty-program {
+.loyalty-admin-page {
+  min-height: 100vh;
   background: #36845a;
-  min-height: 1120px;
-  position: relative;
-  overflow: visible;
+  padding: 120px 20px 40px;
 }
 
-.loyaltyidlookup {
-  display: flex;
-  flex-direction: row;
-  gap: 26px;
-  align-items: center;
-  justify-content: flex-start;
-  position: absolute;
-  left: 29px;
-  top: 179px;
+.loyalty-admin-box {
+  background: #ffffff;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 32px;
+  border-radius: 18px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
 }
 
-.loyalty-program-id {
-  color: #ffffff;
+.loyalty-admin-title {
+  font-family: "Passion One", sans-serif;
+  font-size: 48px;
+  color: #204631;
   text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 40px;
-  font-weight: 400;
-  position: relative;
-  width: 317px;
-  height: 43px;
+  margin-bottom: 24px;
 }
 
-.loyaltylookup {
-  background: #d9d9d9 !important;
-  flex-shrink: 0;
-  width: 437px;
-  height: 66px;
-  position: relative;
-  border: none;
-  outline: none;
-  padding: 0 18px;
+.loyalty-admin-label {
   font-family: "Passion One", sans-serif;
-  font-size: 34px;
+  font-size: 24px;
+  color: #204631;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.loyalty-admin-box .form-control {
+  min-height: 50px;
+  border-radius: 10px;
+  border: 1px solid #cfcfcf;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
   color: #204631;
 }
 
-.searchbutton {
+.loyalty-admin-box .form-control[readonly] {
+  background: #f1f1f1;
+}
+
+.loyalty-tier-text {
+  font-family: "Passion One", sans-serif;
+  font-size: 32px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.loyalty-tier-gold {
+  color: gold;
+}
+
+.loyalty-tier-silver {
+  color: gray;
+}
+
+.loyalty-tier-green {
+  color: green;
+}
+
+.loyalty-btn-main {
   background: #204631;
-  border-radius: 25px;
-  padding: 15px 59px 16px 60px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  width: 231px;
-  height: 74.5px;
-  position: absolute;
-  left: 864px;
-  top: 171px;
-  box-shadow: 2px 6px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
-.search {
   color: #ffffff;
-  text-align: center;
+  border: none;
+  border-radius: 12px;
   font-family: "Passion One", sans-serif;
-  font-size: 40px;
-  font-weight: 400;
-  position: relative;
+  font-size: 26px;
+  padding: 10px 18px;
 }
 
-.divider {
-  margin-top: -3px;
-  border-style: solid;
-  border-color: #ffffff;
-  border-width: 3px 0 0 0;
-  width: 1440px;
-  height: 0px;
-  position: absolute;
-  left: 0px;
-  top: 290px;
-  transform-origin: 0 0;
-  transform: rotate(-0.119deg) scale(1, 1);
-}
-
-.loyaltyprogramid {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59.12px;
-  top: 328px;
-}
-
-.loyalty-program-id2 {
+.loyalty-btn-main:hover {
+  background: #173726;
   color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
 }
 
-.phonenumber {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59.12px;
-  top: 503px;
-}
-
-.phone-number {
+.loyalty-btn-delete {
+  background: #c62828;
   color: #ffffff;
-  text-align: center;
+  border: none;
+  border-radius: 12px;
   font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
+  font-size: 26px;
+  padding: 10px 18px;
 }
 
-.email {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59px;
-  top: 590px;
-}
-
-.email2 {
+.loyalty-btn-delete:hover {
+  background: #a61f1f;
   color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
 }
 
-.dob {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59.12px;
-  top: 675px;
+.loyalty-admin-divider {
+  margin: 24px 0;
 }
 
-.dob2 {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
+.navbar .dropdown-menu {
+  z-index: 3000;
 }
 
-.datejoined {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59.12px;
-  top: 760px;
+@media (max-width: 768px) {
+  .loyalty-admin-page {
+    padding-top: 105px;
+  }
+
+  .loyalty-admin-box {
+    padding: 22px 18px;
+  }
+
+  .loyalty-admin-title {
+    font-size: 38px;
+  }
+
+  .loyalty-admin-label {
+    font-size: 21px;
+  }
+
+  .loyalty-tier-text {
+    font-size: 28px;
+  }
 }
-
-.date-joined {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
-}
-
-.currentpoints {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59.12px;
-  top: 845px;
-}
-
-.current-points {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
-}
-
-.customername {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 59.12px;
-  top: 418px;
-}
-
-.customer-name {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 45.12398910522461px;
-  font-weight: 400;
-  position: relative;
-}
-
-.customernameinput {
-  background: #204631;
-  padding: 8px 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  width: 360px;
-  height: 68px;
-  position: absolute;
-  left: 372px;
-  top: 428px;
-}
-
-.loyaltyprogramidinput {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 420px;
-  position: absolute;
-  left: 408px;
-  top: 322px;
-}
-
-.frame-41 {
-  background: #204631;
-  padding: 8px 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 68px;
-  position: relative;
-}
-
-.currentpointsinput {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 225px;
-  position: absolute;
-  left: 323px;
-  top: 846px;
-}
-
-.frame-42 {
-  background: #204631;
-  padding: 8px 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 68px;
-  position: relative;
-}
-
-.datejoinedinput {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 420px;
-  position: absolute;
-  left: 274px;
-  top: 758px;
-}
-
-.frame-44 {
-  background: #204631;
-  padding: 8px 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 68px;
-  position: relative;
-}
-
-.dobinput {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 360px;
-  position: absolute;
-  left: 156px;
-  top: 672px;
-}
-
-.frame-43 {
-  background: #204631;
-  padding: 8px 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 68px;
-  position: relative;
-}
-
-.phonenumberinput {
-  background: #204631;
-  padding: 8px 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  width: 360px;
-  height: 68px;
-  position: absolute;
-  left: 372px;
-  top: 514px;
-}
-
-.emailinput {
-  background: #204631;
-  padding: 8px 20px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  width: 470px;
-  height: 68px;
-  position: absolute;
-  left: 210px;
-  top: 600px;
-}
-
-.statuspicture {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: flex-start;
-  position: absolute;
-  left: 1005px;
-  top: 520px;
-}
-
-.winner-1 {
-  flex-shrink: 0;
-  width: 227.03px;
-  height: 227.03px;
-  position: relative;
-  object-fit: cover;
-  aspect-ratio: 1;
-}
-
-.frame-27 {
-  padding: 10px;
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  left: 965px;
-  top: 445px;
-}
-
-.status {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 49.35436248779297px;
-  font-weight: 400;
-  position: relative;
-}
-
-.loyalty-delete-wrap {
-  position: absolute;
-  left: 95px;
-  top: 885px;
-  width: 354px;
-  height: 76px;
-  z-index: 999;
-  background: #820707;
-  border-radius: 14.1px;
-  box-shadow: 1.41px 4.23px 2.82px 0px rgba(0, 0, 0, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.loyalty-delete-btn {
-  width: 100%;
-  height: 100%;
-  background: transparent !important;
-  border: none !important;
-  color: #ffffff !important;
-  font-family: "Passion One", sans-serif;
-  font-size: 42px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-}
-
-.frame-38 {
-  padding: 8px 10px 10px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  height: 128px;
-  position: relative;
-}
-
-.frame-37 {
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.text {
-  color: #ffffff;
-  text-align: left;
-  font-family: "Inter-Regular", sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  position: relative;
-}
-
-
-.statustier {
-  color: #ffffff;
-  text-align: center;
-  font-family: "Passion One", sans-serif;
-  font-size: 49.35436248779297px;
-  font-weight: 400;
-  position: absolute;
-  left: 1091px;
-  top: 456px;
-}
-
 /*MENU*/
 .menu,
 .menu * {
@@ -2515,7 +2135,6 @@ body {
   position: relative;
   overflow: hidden;
 }
-<style>
   .seasonal-items-list {
     display: flex;
     flex-direction: column;
@@ -2533,7 +2152,7 @@ body {
   .seasonal-item-text {
     white-space: nowrap;
   }
-</style>
+
 
 body {
   background: #36845a;
