@@ -26,6 +26,19 @@
       margin: 0;
       padding: 0;
     }
+
+    .complete-form {
+      display: inline;
+    }
+
+    .complete-button {
+      border: none;
+      font-family: 'Passion One', sans-serif;
+      font-size: 22px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
   </style>
 
   <title>Event Details</title>
@@ -66,13 +79,13 @@
               </ul>
             </li>
 
-               <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
-            <li><a class="dropdown-item" href="{{ url_for('event_details_admin') }}">All Event Details</a></li>
-          </ul>
-        </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('event_details_admin') }}">All Event Details</a></li>
+              </ul>
+            </li>
 
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
@@ -108,7 +121,7 @@
       <div class="events-body">
 
         <div style="display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:24px;">
-          <div class="page-heading">Upcoming Events</div>
+          <div class="page-heading">Approved Events</div>
 
           <a
             href="{{ url_for('events') }}#requests"
@@ -141,8 +154,8 @@
 
                   <div class="info-label">Date</div>
                   <div class="info-value">
-                    {% if event.booked_datetime %}
-                      {{ event.booked_datetime.strftime('%m/%d/%Y') }}
+                    {% if event.preferred_datetime %}
+                      {{ event.preferred_datetime.strftime('%m/%d/%Y') }}
                     {% else %}
                       N/A
                     {% endif %}
@@ -150,8 +163,8 @@
 
                   <div class="info-label">Time</div>
                   <div class="info-value">
-                    {% if event.booked_datetime %}
-                      {{ event.booked_datetime.strftime('%I:%M %p') }}
+                    {% if event.preferred_datetime %}
+                      {{ event.preferred_datetime.strftime('%I:%M %p') }}
                     {% else %}
                       N/A
                     {% endif %}
@@ -170,20 +183,24 @@
                 </div>
 
                 <div style="margin-top:18px; display:flex; justify-content:center;">
-                  <a
-                    href="{{ url_for('complete_event', event_id=event.event_id) }}"
-                    class="btn btn-danger"
-                    style="font-family:'Passion One', sans-serif; font-size:22px; padding:10px 20px; border-radius:12px;"
-                    onclick="return confirm('Mark this event as completed and remove it?')">
-                    Completed Event
-                  </a>
+                  <form
+                    action="{{ url_for('complete_event', inquiry_id=event.inquiry_id) }}"
+                    method="POST"
+                    class="complete-form"
+                    onsubmit="return confirm('Mark this event as completed?')">
+                    <button
+                      type="submit"
+                      class="btn btn-danger complete-button">
+                      Completed Event
+                    </button>
+                  </form>
                 </div>
               </div>
             {% endfor %}
           </div>
         {% else %}
           <div style="color:white; font-size:34px; padding:40px 0;">
-            No booked events yet.
+            No approved events yet.
           </div>
         {% endif %}
 
