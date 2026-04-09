@@ -648,44 +648,48 @@ def view_event(index):
                            user_role=session.get("user_role"))
 
 
-@app.route("/event-approve/<int:inquiry_id>")
+@app.route('/approve_event/<int:inquiry_id>', methods=['POST'])
 @role_required("admin")
 def approve_event(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    cur.execute("""
-        SELECT inquiry_id, preferred_datetime
-        FROM event_inquiries
-        WHERE inquiry_id = %s AND inquiry_status = 'pending'
-    """, (inquiry_id,))
-    inquiry = cur.fetchone()
-
-    if inquiry:
+    try:
         cur.execute("""
-            INSERT INTO booked_events (inquiry_id, booked_datetime)
-            VALUES (%s, %s)
-        """, (inquiry_id, inquiry["preferred_datetime"]))
-
-        cur.execute("""
-            DELETE FROM event_inquiries
+            UPDATE event_inquiries
+            SET inquiry_status = 'approved'
             WHERE inquiry_id = %s
         """, (inquiry_id,))
 
         mysql.connection.commit()
 
+    except Exception as e:
+        mysql.connection.rollback()
+        cur.close()
+        return f"Approve event failed: {e}", 500
+
     cur.close()
     return redirect(url_for("events"))
 
 
-@app.route("/event-reject/<int:inquiry_id>")
+@app.route("/event-reject/<int:inquiry_id>", methods=["POST"])
 @role_required("admin")
 def reject_event(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("""
-        UPDATE event_inquiries SET inquiry_status = 'rejected'
-        WHERE inquiry_id = %s
-    """, (inquiry_id,))
-    mysql.connection.commit()
+
+    try:
+        cur.execute("""
+            UPDATE event_inquiries
+            SET inquiry_status = 'rejected'
+            WHERE inquiry_id = %s
+        """, (inquiry_id,))
+
+        mysql.connection.commit()
+
+    except Exception as e:
+        mysql.connection.rollback()
+        cur.close()
+        return f"Reject event failed: {e}", 500
+
     cur.close()
     return redirect(url_for("events"))
 
