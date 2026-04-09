@@ -2,339 +2,145 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loyalty Program</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/customer_consolidated.css') }}">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='vars.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+  <title>Loyalty Program Admin</title>
 
   <style>
-    a, button, input, select, h1, h2, h3, h4, h5, * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      border: none;
-      text-decoration: none;
-      background: none;
-      -webkit-font-smoothing: antialiased;
+    body {
+      background-color: #36845a;
+      font-family: 'Roboto', sans-serif;
     }
 
-    menu, ol, ul {
-      list-style-type: none;
-      margin: 0;
-      padding: 0;
+    .container-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin: 120px auto;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
     }
 
-    .readonly-box {
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      border: none;
-      padding: 0;
-      font-family: "Passion One", sans-serif;
-      font-size: 38px;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-
-    .editable-input {
-      width: 100%;
-      height: 100%;
-      background: transparent !important;
-      border: none !important;
-      border-radius: 0;
-      padding: 0;
-      font-family: "Passion One", sans-serif;
-      font-size: 38px;
-      color: #ffffff;
-      text-align: center;
-    }
-
-    .editable-input:focus {
-      outline: none;
-      box-shadow: none;
-    }
-
-    .action-btn {
-      background: none !important;
-      color: #ffffff !important;
-      font-family: "Passion One", sans-serif;
+    .title {
+      font-family: 'Passion One', sans-serif;
       font-size: 40px;
-      cursor: pointer;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    .delete-btn {
-      width: 100%;
-      height: 100%;
-      background: none !important;
-      color: #ffffff !important;
-      font-family: "Passion One", sans-serif;
-      font-size: 42px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      white-space: nowrap;
+    .tier-text {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 20px;
     }
 
-    .update-btn-wrap {
-      position: absolute;
-      left: 470px;
-      top: 910px;
-      z-index: 30;
+    .gold { color: gold; }
+    .silver { color: gray; }
+    .green { color: green; }
+
+    .btn-custom {
+      background-color: #204631;
+      color: white;
     }
 
-    .update-btn-box {
-      background: #204631;
-      border-radius: 14px;
-      padding: 12px 40px 18px 40px;
-      box-shadow: 1.41px 4.23px 2.82px 0px rgba(0, 0, 0, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 220px;
-      height: 76px;
-    }
-
-    .deleteaccountbutton {
-      position: absolute;
-      left: 95px;
-      top: 910px;
-      width: 354px;
-      height: 76px;
-      z-index: 30;
-    }
-
-    .frame-36 {
-      background: #820707;
-      border-radius: 14.1px;
-      width: 100%;
-      height: 100%;
-      box-shadow: 1.41px 4.23px 2.82px 0px rgba(0, 0, 0, 0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .btn-delete {
+      background-color: red;
+      color: white;
     }
   </style>
 </head>
 
 <body>
-  <div class="loyalty-program">
 
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #204631;">
-      <div class="container-fluid px-4">
-        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
-          <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
-        </a>
+<div class="container-box">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+  <div class="title">LOYALTY PROGRAM ADMIN</div>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a></li>
+  <!-- SEARCH -->
+  <form method="POST" action="{{ url_for('loyalty_program_search') }}">
+    <div class="mb-3">
+      <label>Enter Member ID</label>
+      <input type="number" name="member_id" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-custom w-100">Search</button>
+  </form>
 
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url_for('menu') }}">Menu</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('menu_adjustments') }}">Menu Adjustments</a></li>
-              </ul>
-            </li>
+  <hr>
 
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url_for('orders_and_sales') }}">Orders & Sales</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('inventory') }}">Inventory</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('inventory_adjustments') }}">Inventory Adjustments</a></li>
-              </ul>
-            </li>
+  {% if member %}
 
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('event_details_admin') }}">Events</a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link active" href="{{ url_for('loyalty_program') }}">Loyalty Program</a>
-            </li>
-
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url_for('edit_promos') }}">Edit Promos</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('view_promos') }}">View Promos</a></li>
-              </ul>
-            </li>
-
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff Schedule</a></li>
-              </ul>
-            </li>
-          </ul>
-
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <div class="container mt-3">
-          {% for message in messages %}
-            <div class="alert alert-info">{{ message }}</div>
-          {% endfor %}
-        </div>
+  <!-- TIER DISPLAY -->
+  <div class="tier-text
+      {% if status_tier == 'Gold' %}gold
+      {% elif status_tier == 'Silver' %}silver
+      {% else %}green
       {% endif %}
-    {% endwith %}
-
-    <form method="POST" action="{{ url_for('loyalty_program_search') }}">
-      <div class="loyaltyidlookup">
-        <div class="loyalty-program-id">Loyalty Program ID:</div>
-        <input
-          type="text"
-          name="member_id"
-          class="loyaltylookup"
-          maxlength="9"
-          value="{{ member.member_id if member else '' }}"
-          required
-        >
-      </div>
-
-      <div class="searchbutton">
-        <button type="submit" class="action-btn">SEARCH</button>
-      </div>
-    </form>
-
-    <div class="divider"></div>
-
-    <div class="loyaltyprogramid"><div class="loyalty-program-id2">Loyalty Program ID:</div></div>
-    <div class="phonenumber"><div class="phone-number">Phone Number:</div></div>
-    <div class="email"><div class="email2">Email:</div></div>
-    <div class="dob"><div class="dob2">DOB:</div></div>
-    <div class="datejoined"><div class="date-joined">Date Joined:</div></div>
-    <div class="currentpoints"><div class="current-points">Current Points:</div></div>
-    <div class="customername"><div class="customer-name">Customer Name:</div></div>
-
-    {% if member %}
-    <form method="POST" action="{{ url_for('loyalty_program_update') }}">
-      <input type="hidden" name="member_id" value="{{ member.member_id }}">
-
-      <div class="customernameinput">
-        <input type="text" name="customer_name" class="editable-input" value="{{ member.customer_name }}" required>
-      </div>
-
-      <div class="loyaltyprogramidinput">
-        <div class="frame-41">
-          <div class="readonly-box">{{ member.member_id }}</div>
-        </div>
-      </div>
-
-      <div class="currentpointsinput">
-        <div class="frame-42">
-          <div class="readonly-box">{{ member.points }}</div>
-        </div>
-      </div>
-
-      <div class="datejoinedinput">
-        <div class="frame-44">
-          <div class="readonly-box">{{ member.join_date }}</div>
-        </div>
-      </div>
-
-      <div class="dobinput">
-        <div class="frame-43">
-          <div class="readonly-box">{{ member.date_of_birth }}</div>
-        </div>
-      </div>
-
-      <div class="phonenumberinput">
-        <input type="text" name="phone" class="editable-input" value="{{ member.phone or '' }}">
-      </div>
-
-      <div class="emailinput">
-        <input type="email" name="email" class="editable-input" value="{{ member.email or '' }}">
-      </div>
-
-      <div class="statuspicture">
-        <img class="winner-1" src="{{ url_for('static', filename='images/winner.png') }}" alt="Status">
-      </div>
-
-      <div class="frame-27">
-        <div class="status">Status:</div>
-      </div>
-
-      <div class="statustier">{{ status_tier }}</div>
-
-      <div class="update-btn-wrap">
-        <div class="update-btn-box">
-          <button type="submit" class="action-btn">UPDATE</button>
-        </div>
-      </div>
-    </form>
-
-    <form method="POST" action="{{ url_for('loyalty_program_delete') }}" onsubmit="return confirm('Confirm to delete this account?');">
-  <input type="hidden" name="member_id" value="{{ member.member_id }}">
-  <div class="loyalty-delete-wrap">
-    <button type="submit" class="loyalty-delete-btn">DELETE ACCOUNT</button>
-  </div>
-</form>
-
-    {% else %}
-      <div class="customernameinput"><input type="text" class="editable-input" value="" readonly></div>
-
-      <div class="loyaltyprogramidinput">
-        <div class="frame-41">
-          <div class="readonly-box"></div>
-        </div>
-      </div>
-
-      <div class="currentpointsinput">
-        <div class="frame-42">
-          <div class="readonly-box"></div>
-        </div>
-      </div>
-
-      <div class="datejoinedinput">
-        <div class="frame-44">
-          <div class="readonly-box"></div>
-        </div>
-      </div>
-
-      <div class="dobinput">
-        <div class="frame-43">
-          <div class="readonly-box"></div>
-        </div>
-      </div>
-
-      <div class="phonenumberinput"><input type="text" class="editable-input" value="" readonly></div>
-      <div class="emailinput"><input type="email" class="editable-input" value="" readonly></div>
-
-      <div class="frame-27">
-        <div class="status">Status:</div>
-      </div>
-
-      <div class="statustier"></div>
-    {% endif %}
+  ">
+    {{ status_tier }} Member
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- MEMBER INFO -->
+  <form method="POST" action="{{ url_for('loyalty_program_update') }}">
+
+    <input type="hidden" name="member_id" value="{{ member.member_id }}">
+
+    <div class="mb-2">
+      <label>Name</label>
+      <input type="text" name="customer_name" class="form-control"
+             value="{{ member.customer_name }}">
+    </div>
+
+    <div class="mb-2">
+      <label>Phone</label>
+      <input type="text" name="phone" class="form-control"
+             value="{{ member.phone }}">
+    </div>
+
+    <div class="mb-2">
+      <label>Email</label>
+      <input type="text" name="email" class="form-control"
+             value="{{ member.email }}">
+    </div>
+
+    <div class="mb-2">
+      <label>Date of Birth</label>
+      <input type="text" class="form-control"
+             value="{{ member.date_of_birth }}" readonly>
+    </div>
+
+    <div class="mb-2">
+      <label>Date Joined</label>
+      <input type="text" class="form-control"
+             value="{{ member.join_date }}" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label>Points</label>
+      <input type="text" class="form-control"
+             value="{{ member.points }}" readonly>
+    </div>
+
+    <button type="submit" class="btn btn-custom w-100 mb-2">
+      Update Member
+    </button>
+  </form>
+
+  <!-- DELETE BUTTON -->
+  <form method="POST" action="{{ url_for('loyalty_program_delete') }}">
+    <input type="hidden" name="member_id" value="{{ member.member_id }}">
+    <button type="submit" class="btn btn-delete w-100">
+      Delete Account
+    </button>
+  </form>
+
+  {% endif %}
+
+</div>
+
 </body>
 </html>
