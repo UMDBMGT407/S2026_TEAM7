@@ -1401,7 +1401,7 @@ def event_details_admin():
         user_role=session.get("user_role")
     )
 
-@app.route("/event-approve/<int:inquiry_id>")
+@app.route("/event-approve/<int:inquiry_id>", methods=["POST"])
 @role_required("admin")
 def approve_event(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -1415,7 +1415,7 @@ def approve_event(inquiry_id):
     return redirect(url_for("events"))
 
 
-@app.route("/event-reject/<int:inquiry_id>")
+@app.route("/event-reject/<int:inquiry_id>", methods=["POST"])
 @role_required("admin")
 def reject_event(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
