@@ -1428,7 +1428,7 @@ def reject_event(inquiry_id):
     cur.close()
     return redirect(url_for("events"))
 
-@app.route("/event-complete/<int:inquiry_id>")
+@app.route("/event-complete/<int:inquiry_id>", methods=["POST"])
 @role_required("admin")
 def event_complete(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
