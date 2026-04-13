@@ -196,22 +196,24 @@ def checkout():
 def event_inquiry():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
+    # Pull only approved dates, since approved inquiries now act as booked events
     cur.execute("""
-        SELECT DATE(booked_datetime) AS booked_date
-        FROM booked_events
+        SELECT DATE(preferred_datetime) AS booked_date
+        FROM event_inquiries
+        WHERE inquiry_status = 'approved'
     """)
     booked_date_rows = cur.fetchall()
     booked_dates = [str(row["booked_date"]) for row in booked_date_rows if row["booked_date"]]
 
     if request.method == "POST":
-        full_name          = request.form.get("fullName", "").strip()
-        organization       = request.form.get("organization", "").strip()
-        guests             = request.form.get("guests", "").strip()
-        email              = request.form.get("email", "").strip()
-        phone              = request.form.get("phone", "").strip()
+        full_name = request.form.get("fullName", "").strip()
+        organization = request.form.get("organization", "").strip()
+        guests = request.form.get("guests", "").strip()
+        email = request.form.get("email", "").strip()
+        phone = request.form.get("phone", "").strip()
         preferred_datetime = request.form.get("preferredDateTime", "").strip()
-        event_description  = request.form.get("eventDescription", "").strip()
-        catering_package   = request.form.get("cateringPackage", "").strip()
+        event_description = request.form.get("eventDescription", "").strip()
+        catering_package = request.form.get("cateringPackage", "").strip()
 
         requested_date = preferred_datetime.split("T")[0] if preferred_datetime else None
 
@@ -228,8 +230,17 @@ def event_inquiry():
             INSERT INTO event_inquiries
             (full_name, organization, guests, email, phone, preferred_datetime, event_description, catering_package, inquiry_status)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (full_name, organization, guests, email, phone,
-              preferred_datetime, event_description, catering_package, "pending"))
+        """, (
+            full_name,
+            organization,
+            guests,
+            email,
+            phone,
+            preferred_datetime,
+            event_description,
+            catering_package,
+            "pending"
+        ))
         mysql.connection.commit()
         cur.close()
 
@@ -647,51 +658,6 @@ def view_event(index):
                            count=len(inquiries), index=index,
                            user_role=session.get("user_role"))
 
-
-@app.route('/approve_event/<int:inquiry_id>', methods=['POST'])
-@role_required("admin")
-def approve_event(inquiry_id):
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    try:
-        cur.execute("""
-            UPDATE event_inquiries
-            SET inquiry_status = 'approved'
-            WHERE inquiry_id = %s
-        """, (inquiry_id,))
-
-        mysql.connection.commit()
-
-    except Exception as e:
-        mysql.connection.rollback()
-        cur.close()
-        return f"Approve event failed: {e}", 500
-
-    cur.close()
-    return redirect(url_for("events"))
-
-
-@app.route("/event-reject/<int:inquiry_id>", methods=["POST"])
-@role_required("admin")
-def reject_event(inquiry_id):
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    try:
-        cur.execute("""
-            UPDATE event_inquiries
-            SET inquiry_status = 'rejected'
-            WHERE inquiry_id = %s
-        """, (inquiry_id,))
-
-        mysql.connection.commit()
-
-    except Exception as e:
-        mysql.connection.rollback()
-        cur.close()
-        return f"Reject event failed: {e}", 500
-
-    cur.close()
-    return redirect(url_for("events"))
 
 
 
@@ -1435,25 +1401,43 @@ def event_details_admin():
         user_role=session.get("user_role")
     )
 
-@app.route("/complete_event/<int:inquiry_id>", methods=["POST"])
+@app.route("/event-approve/<int:inquiry_id>")
 @role_required("admin")
-def complete_event(inquiry_id):
+def approve_event(inquiry_id):
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        UPDATE event_inquiries
+        SET inquiry_status = 'approved'
+        WHERE inquiry_id = %s
+    """, (inquiry_id,))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for("events"))
 
-    try:
-        cur.execute("""
-            UPDATE event_inquiries
-            SET inquiry_status = 'completed'
-            WHERE inquiry_id = %s
-        """, (inquiry_id,))
 
-        mysql.connection.commit()
+@app.route("/event-reject/<int:inquiry_id>")
+@role_required("admin")
+def reject_event(inquiry_id):
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        UPDATE event_inquiries
+        SET inquiry_status = 'denied'
+        WHERE inquiry_id = %s
+    """, (inquiry_id,))
+    mysql.connection.commit()
+    cur.close()
+    return redirect(url_for("events"))
 
-    except Exception as e:
-        mysql.connection.rollback()
-        cur.close()
-        return f"Complete event failed: {e}", 500
-
+@app.route("/event-complete/<int:inquiry_id>")
+@role_required("admin")
+def event_complete(inquiry_id):
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        UPDATE event_inquiries
+        SET inquiry_status = 'completed'
+        WHERE inquiry_id = %s AND inquiry_status = 'approved'
+    """, (inquiry_id,))
+    mysql.connection.commit()
     cur.close()
     return redirect(url_for("event_details_admin"))
 
