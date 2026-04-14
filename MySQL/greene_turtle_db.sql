@@ -609,22 +609,26 @@ CREATE TABLE `suppliers` (
 -- Dumping data for table `suppliers`
 --
 
+--
+-- Dumping data for table `suppliers`
+--
+
 LOCK TABLES `suppliers` WRITE;
 /*!40000 ALTER TABLE `suppliers` DISABLE KEYS */;
 
-INSERT INTO suppliers 
-(SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty)
+INSERT INTO `suppliers`
+(`SupplierID`, `SupplierName`, `SupplierCity`, `SupplierState`, `SupplierZipCode`, `SupplierSpecialty`)
 VALUES
-('Fresh Farms Produce', 'Baltimore', 'MD', '21201', 'Fresh Vegetables & Fruits'),
-('Atlantic Seafood Co.', 'Annapolis', 'MD', '21401', 'Seafood Supplier'),
-('Prime Meats Inc.', 'Washington', 'DC', '20002', 'Beef & Poultry'),
-('Dairy Best LLC', 'Frederick', 'MD', '21701', 'Milk, Cheese, Eggs'),
-('Golden Grain Bakery Supply', 'Rockville', 'MD', '20850', 'Bread & Baked Goods'),
-('Spice World Distributors', 'Arlington', 'VA', '22201', 'Spices & Seasonings'),
-('Green Valley Organics', 'Columbia', 'MD', '21044', 'Organic Produce'),
-('Capital Beverage Co.', 'Silver Spring', 'MD', '20910', 'Soft Drinks & Beverages'),
-('Metro Paper Supply', 'Hyattsville', 'MD', '20781', 'Packaging & Paper Goods'),
-('Chesapeake Kitchen Supply', 'Towson', 'MD', '21204', 'Kitchen Equipment');
+(1, 'Fresh Farms Produce', 'Baltimore', 'MD', '21201', 'Fresh Vegetables & Fruits'),
+(2, 'Atlantic Seafood Co.', 'Annapolis', 'MD', '21401', 'Seafood Supplier'),
+(3, 'Prime Meats Inc.', 'Washington', 'DC', '20002', 'Beef & Poultry'),
+(4, 'Dairy Best LLC', 'Frederick', 'MD', '21701', 'Milk, Cheese, Eggs'),
+(5, 'Golden Grain Bakery Supply', 'Rockville', 'MD', '20850', 'Bread & Baked Goods'),
+(6, 'Spice World Distributors', 'Arlington', 'VA', '22201', 'Spices & Seasonings'),
+(7, 'Green Valley Organics', 'Columbia', 'MD', '21044', 'Organic Produce'),
+(8, 'Capital Beverage Co.', 'Silver Spring', 'MD', '20910', 'Soft Drinks & Beverages'),
+(9, 'Metro Paper Supply', 'Hyattsville', 'MD', '20781', 'Packaging & Paper Goods'),
+(10, 'Chesapeake Kitchen Supply', 'Towson', 'MD', '21204', 'Kitchen Equipment');
 
 /*!40000 ALTER TABLE `suppliers` ENABLE KEYS */;
 UNLOCK TABLES;
