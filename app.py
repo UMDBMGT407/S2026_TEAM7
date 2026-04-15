@@ -5,6 +5,7 @@ import MySQLdb.cursors
 from datetime import datetime, timedelta, date
 import calendar
 from flask import jsonify
+from werkzeug.security import generate_password_hash
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -1590,6 +1591,99 @@ def event_complete(inquiry_id):
     print("updated rows:", cur.rowcount)
     cur.close()
     return redirect(url_for("event_details_admin"))
+
+# =========================
+# ADD NEW USER PAGE
+# =========================
+@app.route("/add-new-user", methods=["GET", "POST"])
+@role_required("admin")
+def add_new_user():
+    if request.method == "POST":
+        first_name = request.form.get("first_name", "").strip()
+        last_name = request.form.get("last_name", "").strip()
+        role = request.form.get("role", "").strip().lower()
+
+        if not first_name or not last_name or role not in ["staff", "admin"]:
+            flash("Please enter first name, last name, and a valid role.", "danger")
+            return redirect(url_for("add_new_user"))
+
+        # Full name
+        full_name = f"{first_name} {last_name}"
+
+        # Domain
+        domain = "gtstaff.com" if role == "staff" else "gtadmin.com"
+
+        # Lowercase versions
+        first = first_name.lower()
+        last = last_name.lower()
+
+        cursor = mysql.connection.cursor()
+
+        # --- FIRST TRY: firstname ---
+        username = f"{first}@{domain}"
+        email = username
+        temp_password = f"{first}123"
+
+        cursor.execute(
+            "SELECT id FROM users WHERE username = %s OR email = %s",
+            (username, email)
+        )
+        existing_user = cursor.fetchone()
+
+        # --- IF DUPLICATE: use firstnamelastname ---
+        if existing_user:
+            username = f"{first}{last}@{domain}"
+            email = username
+            temp_password = f"{first}{last}123"
+
+            cursor.execute(
+                "SELECT id FROM users WHERE username = %s OR email = %s",
+                (username, email)
+            )
+            existing_user = cursor.fetchone()
+
+            # If STILL duplicate (rare), stop it
+            if existing_user:
+                flash("User already exists with this name. Try a different name.", "danger")
+                cursor.close()
+                return redirect(url_for("add_new_user"))
+
+        # Hash password
+        hashed_password = generate_password_hash(temp_password)
+
+        # Insert
+        cursor.execute("""
+            INSERT INTO users (
+                first_name,
+                last_name,
+                name,
+                email,
+                username,
+                password,
+                role
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
+            first_name,
+            last_name,
+            full_name,
+            email,
+            username,
+            hashed_password,
+            role
+        ))
+
+        mysql.connection.commit()
+        cursor.close()
+
+        flash(
+            f"New {role} account created. Username: {username} | Temp Password: {temp_password}",
+            "success"
+        )
+
+        return redirect(url_for("add_new_user"))
+
+    return render_template("add_new_user.html", user_role=session.get("user_role"))
 
 if __name__ == "__main__":
     app.run(debug=True)
