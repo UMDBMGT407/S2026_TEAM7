@@ -287,37 +287,36 @@ Schedule</a></li>
         <div class="delivery-status-value">In-Progress</div>
       </div>
 
-      <div class="inventory-availability">
-        <div class="availability-for-suppliers">Availability for Suppliers</div>
+     <div class="inventory-availability">
+  <div class="availability-for-suppliers">Availability for Suppliers</div>
 
-        <form action="/submit" method="POST" class="supplier-form">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search for suppliers..." name="supplier-search">
-            <button class="btn btn-outline-secondary" type="submit">Search</button>
-          </div>
+  <form action="{{ url_for('submit_supplier_availability') }}" method="POST" class="supplier-form">
+  <div class="input-group mb-3">
+    <select name="supplier-search" class="form-select">
+      <option value="">Select a supplier</option>
+      {% for s in suppliers %}
+        <option value="{{ s.SupplierID }}">{{ s.SupplierName }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-outline-secondary" type="submit">Search</button>
+  </div>
 
-          <input class="availability-entry" type="date" name="date-availability">
-          <input class="availability-entry" type="time" name="time-availability">
+  <input class="availability-entry" type="date" name="date-availability">
+  <input class="availability-entry" type="time" name="time-availability">
+</form>
 
-          <button class="submit-button" type="submit">SUBMIT</button>
-        </form>
-      </div>
-{% if message %}
-  <p>{{ message }}</p>
+  {% if message %}
+  <p style="color: white;">{{ message }}</p>
 {% endif %}
 
-{% if suppliers %}
-  <ul>
-    {% for s in suppliers %}
-      <li>
-        {{ s.SupplierName }} — {{ s.SupplierCity }}, {{ s.SupplierState }} ({{ s.SupplierSpecialty }})
-      </li>
+{% if matched_suppliers %}
+  <ul style="color: white;">
+    {% for s in matched_suppliers %}
+      <li>{{ s.SupplierName }} — {{ s.SupplierCity }}, {{ s.SupplierState }} ({{ s.SupplierSpecialty }})</li>
     {% endfor %}
   </ul>
 {% endif %}
-      <div class="inventory-category-card">
-        <img src="{{ url_for('static', filename='images/inventory_category_cost.png') }}" alt="Inventory Category Cost" class="inventory-category-cost" />
-      </div>
+</div>
 
       <div class="top-stockout-items">
         <div class="top-stock-out-items">Top Stock Out Items</div>
