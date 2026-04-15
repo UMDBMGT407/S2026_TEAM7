@@ -13,7 +13,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'insert your password'
+app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -382,27 +382,40 @@ def staff_scheduling_staff():
 @role_required("staff", "admin")
 def event_details_staff():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT id, type, name, email, guests, date, time, description FROM events")
+    cur.execute("""
+        SELECT
+            inquiry_id,
+            organization,
+            full_name,
+            email,
+            guests,
+            preferred_datetime,
+            event_description,
+            catering_package,
+            inquiry_status
+        FROM event_inquiries
+        WHERE inquiry_status IN ('approved', 'completed')
+        ORDER BY preferred_datetime ASC
+    """)
     event_rows = cur.fetchall()
+
     events = []
     for row in event_rows:
-        cur.execute("""
-            SELECT u.name FROM users u
-            JOIN event_staff es ON u.id = es.user_id
-            WHERE es.event_id = %s
-        """, (row["id"],))
-        staff = [s["name"] for s in cur.fetchall()]
+        preferred_datetime = row["preferred_datetime"]
         events.append({
-            'id':          row["id"],
-            'type':        row["type"],
-            'name':        row["name"],
-            'email':       row["email"],
-            'guests':      row["guests"],
-            'date':        str(row["date"]),
-            'time':        row["time"],
-            'description': row["description"],
-            'staff':       staff
+            'id': row["inquiry_id"],
+            'type': row["organization"] or "Private Event",
+            'name': row["full_name"],
+            'email': row["email"],
+            'guests': row["guests"],
+            'date': preferred_datetime.strftime("%Y-%m-%d") if preferred_datetime else "",
+            'time': preferred_datetime.strftime("%I:%M %p") if preferred_datetime else "",
+            'description': row["event_description"],
+            'package': row["catering_package"],
+            'status': row["inquiry_status"],
+            'staff': []
         })
+
     cur.close()
     # Admins see admin navbar, staff see staff navbar
     template = "event_details_admin.html" if session.get("user_role") == "admin" else "event_details_staff.html"
@@ -414,9 +427,9 @@ def staff_shift():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute(
         "SELECT s.id, s.date, s.start_hour AS startH, s.end_hour AS endH,"
-        " s.role, e.type AS event"
+        " s.role, COALESCE(ei.organization, ei.full_name) AS event"
         " FROM schedule s"
-        " LEFT JOIN events e ON s.event_id = e.id"
+        " LEFT JOIN event_inquiries ei ON s.event_id = ei.inquiry_id"
         " WHERE s.user_id = %s AND s.date >= CURDATE()"
         " ORDER BY s.date ASC",
         (session.get("user_id"),)
@@ -1514,9 +1527,10 @@ def event_complete(inquiry_id):
     cur.execute("""
         UPDATE event_inquiries
         SET inquiry_status = 'completed'
-        WHERE inquiry_id = %s AND inquiry_status = 'approved'
+        WHERE inquiry_id = %s
     """, (inquiry_id,))
     mysql.connection.commit()
+    print("updated rows:", cur.rowcount)
     cur.close()
     return redirect(url_for("event_details_admin"))
 
