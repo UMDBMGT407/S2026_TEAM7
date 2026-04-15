@@ -3978,3 +3978,13 @@ body {
     font-size: 34px;
   }
 }
+.inventory-availability,
+.supplier-form {
+  position: relative;
+  z-index: 999;
+}
+
+.inventory-layout,
+.inventory-analytics {
+  overflow: visible !important;
+}
