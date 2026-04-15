@@ -1,33 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shift Management</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&display=swap" rel="stylesheet">
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='vars.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
-</head>
-<body>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
   <div class="container-fluid px-4">
     
-    <!-- LOGO -->
     <a class="navbar-brand" href="{{ url_for('dashboard') }}">
       <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
     </a>
 
-    <!-- TOGGLER -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- NAV LINKS -->
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
 
@@ -35,7 +16,6 @@
           <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
         </li>
 
-        <!-- MENU -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
           <ul class="dropdown-menu">
@@ -44,7 +24,6 @@
           </ul>
         </li>
 
-        <!-- ORDERS -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
           <ul class="dropdown-menu">
@@ -54,8 +33,7 @@
           </ul>
         </li>
 
-        <!-- EVENTS -->
-            <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
@@ -63,7 +41,6 @@
           </ul>
         </li>
 
-        <!-- PROMOS -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
           <ul class="dropdown-menu">
@@ -72,19 +49,16 @@
           </ul>
         </li>
 
-        <!-- STAFF -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff 
-Schedule</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff Schedule</a></li>
             <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
           </ul>
         </li>
 
       </ul>
 
-      <!-- SIGN OUT -->
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
@@ -94,347 +68,3 @@ Schedule</a></li>
     </div>
   </div>
 </nav>
-
-
-  <div class="app">
-    <aside class="sidebar">
-      <h1>Admin Scheduler</h1>
-      <p>Manage staff availability, shifts, and schedule requests.</p>
-
-      <input type="text" class="staff-search" id="staffSearch" placeholder="Search staff..." />
-      <div class="staff-list" id="staffList"></div>
-    </aside>
-
-    <main class="main-content">
-      <div class="topbar">
-        <div class="topbar-heading">
-          <h2>Shift Management</h2>
-          <p class="subtext" id="selectedStaffText">Select a staff member</p>
-        </div>
-
-        <div class="topbar-buttons">
-          <button class="light-btn" id="prevWeekBtn" type="button">Previous Week</button>
-          <button class="light-btn" id="nextWeekBtn" type="button">Next Week</button>
-          <a href="{{ url_for('staff_scheduling_admin') }}" class="light-btn view-schedule-btn">View Schedule</a>
-          <button class="primary-btn" id="publishBtn" type="button">Publish Schedule</button>
-        </div>
-      </div>
-
-      {% with messages = get_flashed_messages() %}
-        {% if messages %}
-          <div style="margin: 10px 0 20px 0;">
-            {% for message in messages %}
-              <div class="alert alert-info">{{ message }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-
-      <section class="summary-row" id="summaryRow"></section>
-
-      <div class="main-grid">
-        <section class="panel">
-          <div class="panel-header">
-            <h3>Availability Calendar</h3>
-            <span id="weekLabel">Current Week</span>
-          </div>
-
-          <div class="calendar-legend">
-            <div class="legend-item">
-              <div class="legend-color availability"></div>
-              <span>Available</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color shift"></div>
-              <span>Scheduled Shift</span>
-            </div>
-          </div>
-
-          <div class="calendar-grid" id="calendarGrid"></div>
-        </section>
-
-        <div class="right-column">
-          <section class="panel">
-            <h3>Create Shift</h3>
-
-            <form method="POST" action="{{ url_for('add_shift') }}">
-              <input type="hidden" name="selected_staff_id" id="selectedStaffHidden">
-
-              <div class="form-group">
-                <label>Staff Member</label>
-                <select id="shiftStaff" name="user_id" required>
-                  {% for staff in staff_data %}
-                  <option value="{{ staff.id }}">{{ staff.name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Role</label>
-                <select id="shiftRole" name="role" required>
-                  <option value="">Select Role</option>
-                  <option value="Server">Server</option>
-                  <option value="Host">Host</option>
-                  <option value="Bartender">Bartender</option>
-                  <option value="Manager">Manager</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Day</label>
-                <select id="shiftDay" name="shift_day" required>
-                  <option value="mon">Monday</option>
-                  <option value="tue">Tuesday</option>
-                  <option value="wed">Wednesday</option>
-                  <option value="thu">Thursday</option>
-                  <option value="fri">Friday</option>
-                  <option value="sat">Saturday</option>
-                  <option value="sun">Sunday</option>
-                </select>
-              </div>
-
-              <div class="time-row">
-                <div class="form-group">
-                  <label>Start Time</label>
-                  <input type="time" id="shiftStart" name="start_time" value="09:00" required />
-                </div>
-
-                <div class="form-group">
-                  <label>End Time</label>
-                  <input type="time" id="shiftEnd" name="end_time" value="17:00" required />
-                </div>
-              </div>
-
-              <button type="submit" class="dark-btn full-width">Add Shift</button>
-            </form>
-          </section>
-
-          <section class="panel">
-            <h3>Dropped Shifts & Requests</h3>
-            <div id="requestList"></div>
-          </section>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script id="staff-data" type="application/json">
-    {{ staff_data | tojson | safe }}
-  </script>
-
-  <script id="shift-requests-data" type="application/json">
-    {{ shift_requests | tojson | safe }}
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-    const days = [
-      { key: "mon", label: "Monday", date: "Mon" },
-      { key: "tue", label: "Tuesday", date: "Tue" },
-      { key: "wed", label: "Wednesday", date: "Wed" },
-      { key: "thu", label: "Thursday", date: "Thu" },
-      { key: "fri", label: "Friday", date: "Fri" },
-      { key: "sat", label: "Saturday", date: "Sat" },
-      { key: "sun", label: "Sunday", date: "Sun" }
-    ];
-
-    const staffData = JSON.parse(document.getElementById("staff-data").textContent);
-    let requests = JSON.parse(document.getElementById("shift-requests-data").textContent);
-
-    const initialSelectedStaffId = JSON.parse('{{ (selected_staff_id or 0) | tojson | safe }}');
-let selectedStaffId = initialSelectedStaffId || (staffData.length > 0 ? staffData[0].id : null);
-
-    const staffList = document.getElementById("staffList");
-    const selectedStaffText = document.getElementById("selectedStaffText");
-    const summaryRow = document.getElementById("summaryRow");
-    const calendarGrid = document.getElementById("calendarGrid");
-    const requestList = document.getElementById("requestList");
-    const staffSearch = document.getElementById("staffSearch");
-    const shiftStaffDropdown = document.getElementById("shiftStaff");
-    const selectedStaffHidden = document.getElementById("selectedStaffHidden");
-
-    function getSelectedStaff() {
-      return staffData.find(staff => Number(staff.id) === Number(selectedStaffId));
-    }
-
-    function syncDropdownWithSelectedStaff() {
-      if (shiftStaffDropdown && selectedStaffId) {
-        shiftStaffDropdown.value = selectedStaffId;
-      }
-
-      if (selectedStaffHidden && selectedStaffId) {
-        selectedStaffHidden.value = selectedStaffId;
-      }
-    }
-
-    function renderStaffList(filterText = "") {
-      staffList.innerHTML = "";
-
-      const filteredStaff = staffData.filter(staff =>
-        staff.name.toLowerCase().includes(filterText.toLowerCase())
-      );
-
-      filteredStaff.forEach(staff => {
-        const card = document.createElement("div");
-        card.className = "staff-card";
-
-        if (Number(staff.id) === Number(selectedStaffId)) {
-          card.classList.add("active");
-        }
-
-        let totalShifts = 0;
-        Object.keys(staff.shifts || {}).forEach(day => {
-          totalShifts += staff.shifts[day].length;
-        });
-
-        card.innerHTML = `
-          <strong>${staff.name}</strong>
-          <span>${staff.role} · ${staff.status}</span>
-          <small>${staff.hours} hrs · ${totalShifts} shift${totalShifts !== 1 ? "s" : ""}</small>
-        `;
-
-        card.addEventListener("click", function () {
-          selectedStaffId = staff.id;
-          syncDropdownWithSelectedStaff();
-          renderPage();
-        });
-
-        staffList.appendChild(card);
-      });
-    }
-
-    function renderSummary() {
-      const staff = getSelectedStaff();
-
-      if (!staff) {
-        selectedStaffText.textContent = "Select a staff member";
-        summaryRow.innerHTML = "";
-        return;
-      }
-
-      selectedStaffText.textContent = `${staff.name} · ${staff.role}`;
-
-      summaryRow.innerHTML = `
-        <div class="summary-box">
-          <label>Employee ID</label>
-          <strong>${staff.employee_code || ''}</strong>
-        </div>
-        <div class="summary-box">
-          <label>Status</label>
-          <strong>${staff.status}</strong>
-        </div>
-        <div class="summary-box">
-          <label>Weekly Hours</label>
-          <strong>${staff.hours} hrs</strong>
-        </div>
-        <div class="summary-box">
-          <label>Role</label>
-          <strong>${staff.role}</strong>
-        </div>
-      `;
-    }
-
-    function renderCalendar() {
-      const staff = getSelectedStaff();
-      calendarGrid.innerHTML = "";
-
-      if (!staff) return;
-
-      days.forEach(day => {
-        const dayCard = document.createElement("div");
-        dayCard.className = "day-card";
-
-        let availabilityHTML = "";
-        const availabilitySlots = staff.availability && staff.availability[day.key]
-          ? staff.availability[day.key]
-          : [];
-
-        availabilitySlots.forEach(slot => {
-          if (slot === "Unavailable") {
-            availabilityHTML += `<div class="unavailable-slot">${slot}</div>`;
-          } else {
-            availabilityHTML += `<div class="availability-slot">${slot}</div>`;
-          }
-        });
-
-        let shiftsHTML = "";
-        const dayShifts = staff.shifts && staff.shifts[day.key]
-          ? staff.shifts[day.key]
-          : [];
-
-        dayShifts.forEach((shift) => {
-          shiftsHTML += `
-            <div class="shift-chip">
-              <span>${shift.text}</span>
-              <form method="POST" action="{{ url_for('delete_shift') }}" style="display:inline;">
-                <input type="hidden" name="shift_id" value="${shift.shift_id}">
-                <button type="submit" class="delete-shift-btn">×</button>
-              </form>
-            </div>
-          `;
-        });
-
-        dayCard.innerHTML = `
-  <h4>${day.label}</h4>
-  <small>${day.date}</small>
-  ${availabilityHTML}
-  ${shiftsHTML || '<div class="unavailable-slot">No shift</div>'}
-`;
-
-        calendarGrid.appendChild(dayCard);
-      });
-    }
-
-    function renderRequests() {
-      requestList.innerHTML = "";
-
-      requests.forEach(request => {
-        const item = document.createElement("div");
-        item.className = "request-item";
-
-        item.innerHTML = `
-          <strong>${request.staff_name}</strong>
-          <p>${request.text}</p>
-          <div class="request-actions">
-            <form method="POST" action="{{ url_for('update_shift_request') }}" style="display:inline;">
-              <input type="hidden" name="request_id" value="${request.id}">
-              <input type="hidden" name="request_status" value="accepted">
-              <button type="submit" class="primary-btn accept-btn">Accept</button>
-            </form>
-            <form method="POST" action="{{ url_for('update_shift_request') }}" style="display:inline;">
-              <input type="hidden" name="request_id" value="${request.id}">
-              <input type="hidden" name="request_status" value="declined">
-              <button type="submit" class="danger-btn decline-btn">Decline</button>
-            </form>
-          </div>
-        `;
-
-        requestList.appendChild(item);
-      });
-    }
-
-    if (shiftStaffDropdown) {
-      shiftStaffDropdown.addEventListener("change", function () {
-        selectedStaffId = parseInt(this.value);
-        syncDropdownWithSelectedStaff();
-        renderPage();
-      });
-    }
-
-    staffSearch.addEventListener("input", function () {
-      renderStaffList(staffSearch.value);
-    });
-
-    function renderPage() {
-      syncDropdownWithSelectedStaff();
-      renderStaffList(staffSearch.value);
-      renderSummary();
-      renderCalendar();
-      renderRequests();
-    }
-
-    renderPage();
-  </script>
-</body>
-</html>
