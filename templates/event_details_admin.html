@@ -180,7 +180,7 @@
 
                 <div style="margin-top:18px; display:flex; justify-content:center;">
                   <form
-                    action="{{ url_for('complete_event', inquiry_id=event.inquiry_id) }}"
+                    action="{{ url_for('event_complete', inquiry_id=event.inquiry_id) }}"
                     method="POST"
                     class="complete-form"
                     onsubmit="return confirm('Mark this event as completed?')">
@@ -188,7 +188,6 @@
                       type="submit"
                       class="btn btn-danger complete-button">
                       Complete Event
-                    </button>
                     </button>
                   </form>
                 </div>
