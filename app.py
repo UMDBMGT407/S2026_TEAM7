@@ -572,8 +572,20 @@ def orders_and_sales():
 @app.route("/inventory")
 @role_required("admin")
 def inventory():
-    return render_template("inventory.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
+        FROM suppliers
+        ORDER BY SupplierName
+    """)
+    suppliers = cur.fetchall()
+    cur.close()
 
+    return render_template(
+        "inventory.html",
+        user_role=session.get("user_role"),
+        suppliers=suppliers
+    )
 @app.route("/submit-supplier-availability", methods=["POST"])
 @role_required("admin")
 def submit_supplier_availability():
@@ -583,18 +595,25 @@ def submit_supplier_availability():
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
+    # all suppliers for the dropdown
+    cur.execute("""
+        SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
+        FROM suppliers
+        ORDER BY SupplierName
+    """)
+    all_suppliers = cur.fetchall()
+
+    # matched suppliers for search result
     cur.execute("""
         SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
         FROM suppliers
         WHERE SupplierName LIKE %s
+        ORDER BY SupplierName
     """, (f"%{supplier_search}%",))
+    matched_suppliers = cur.fetchall()
 
-    suppliers = cur.fetchall()
-
-    message = None
-
-    if suppliers:
-        message = "Supplier(s) found. Availability recorded (simulated)."
+    if matched_suppliers:
+        message = "Supplier(s) found."
     else:
         message = "No suppliers found."
 
@@ -603,7 +622,8 @@ def submit_supplier_availability():
     return render_template(
         "inventory.html",
         user_role=session.get("user_role"),
-        suppliers=suppliers,
+        suppliers=all_suppliers,
+        matched_suppliers=matched_suppliers,
         message=message
     )
 
