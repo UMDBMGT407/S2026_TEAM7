@@ -207,7 +207,7 @@ VALUES
 (1,'Irish Stew',14.99,'Seasonal','active'),
 (2,'Springy Market Salad',12.50,'Seasonal','active'),
 (3,'Lucky Charms Bomb',8.00,'Seasonal','active'),
-(4,'Clover’s Cheeseburger',13.75,'Seasonal','active'),
+(4,'Clover‚Äôs Cheeseburger',13.75,'Seasonal','active'),
 (5,'Corned Beef Handheld',12.75,'Seasonal','active'),
 (6,'Guinness Float',6.50,'Seasonal','active'),
 (7,'Burger',12.99,'Entree','active'),
@@ -1170,3 +1170,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2026-04-08 21:10:35
+
