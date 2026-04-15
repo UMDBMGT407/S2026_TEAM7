@@ -332,6 +332,33 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
+
+WITH RECURSIVE seq AS (
+  SELECT 1 AS n
+  UNION ALL
+  SELECT n + 1
+  FROM seq
+  WHERE n < 210
+)
+INSERT INTO `orders` (`TransactionDate`, `TransactionTime`, `PaymentMethod`)
+SELECT
+  DATE_ADD('2026-03-01', INTERVAL FLOOR((n - 1) / 7) DAY) AS TransactionDate,
+  CASE
+    WHEN MOD(n, 6) = 0 THEN '11:15:00'
+    WHEN MOD(n, 6) = 1 THEN '12:30:00'
+    WHEN MOD(n, 6) = 2 THEN '13:45:00'
+    WHEN MOD(n, 6) = 3 THEN '17:20:00'
+    WHEN MOD(n, 6) = 4 THEN '18:40:00'
+    ELSE '20:05:00'
+  END AS TransactionTime,
+  CASE
+    WHEN MOD(n, 4) = 0 THEN 'Credit Card'
+    WHEN MOD(n, 4) = 1 THEN 'Debit Card'
+    WHEN MOD(n, 4) = 2 THEN 'Cash'
+    ELSE 'Mobile Pay'
+  END AS PaymentMethod
+FROM seq;
+
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 
