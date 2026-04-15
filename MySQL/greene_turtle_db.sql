@@ -629,10 +629,6 @@ CREATE TABLE `suppliers` (
 -- Dumping data for table `suppliers`
 --
 
---
--- Dumping data for table `suppliers`
---
-
 LOCK TABLES `suppliers` WRITE;
 /*!40000 ALTER TABLE `suppliers` DISABLE KEYS */;
 
@@ -652,6 +648,39 @@ VALUES
 
 /*!40000 ALTER TABLE `suppliers` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `supplier_availability`
+--
+
+DROP TABLE IF EXISTS `supplier_availability`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `supplier_availability` (
+  `availability_id` int NOT NULL AUTO_INCREMENT,
+  `SupplierID` int NOT NULL,
+  `submission_date` date DEFAULT (CURRENT_DATE),
+  `submission_time` time DEFAULT (CURRENT_TIME),
+  `selected_date` date NOT NULL,
+  `selected_time` time NOT NULL,
+  PRIMARY KEY (`availability_id`),
+  KEY `SupplierID` (`SupplierID`),
+  CONSTRAINT `supplier_availability_ibfk_1` 
+    FOREIGN KEY (`SupplierID`) 
+    REFERENCES `suppliers` (`SupplierID`) 
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `supplier_availability`
+--
+
+LOCK TABLES `supplier_availability` WRITE;
+/*!40000 ALTER TABLE `supplier_availability` DISABLE KEYS */;
+/*!40000 ALTER TABLE `supplier_availability` ENABLE KEYS */;
+UNLOCK TABLES;
+
 --
 -- Table structure for table `users`
 --
