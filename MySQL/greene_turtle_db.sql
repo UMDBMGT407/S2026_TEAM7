@@ -759,35 +759,52 @@ CREATE TABLE `orders` (
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
 
-WITH RECURSIVE seq AS (
-  SELECT 1 AS n
-  UNION ALL
-  SELECT n + 1
-  FROM seq
-  WHERE n < 210
-)
-INSERT INTO `orders` (`TransactionDate`, `TransactionTime`, `PaymentMethod`)
-SELECT
-  DATE_ADD('2026-03-01', INTERVAL FLOOR((n - 1) / 7) DAY) AS TransactionDate,
-  CASE
-    WHEN MOD(n, 6) = 0 THEN '11:15:00'
-    WHEN MOD(n, 6) = 1 THEN '12:30:00'
-    WHEN MOD(n, 6) = 2 THEN '13:45:00'
-    WHEN MOD(n, 6) = 3 THEN '17:20:00'
-    WHEN MOD(n, 6) = 4 THEN '18:40:00'
-    ELSE '20:05:00'
-  END AS TransactionTime,
-  CASE
-    WHEN MOD(n, 4) = 0 THEN 'Credit Card'
-    WHEN MOD(n, 4) = 1 THEN 'Debit Card'
-    WHEN MOD(n, 4) = 2 THEN 'Cash'
-    ELSE 'Mobile Pay'
-  END AS PaymentMethod
-FROM seq;
+INSERT INTO `orders` 
+(`OrderID`, `TransactionDate`, `TransactionTime`, `PaymentMethod`)
+VALUES
+(1,'2026-04-01','12:15:22','Credit Card'),
+(2,'2026-04-01','12:45:10','Cash'),
+(3,'2026-04-01','13:05:33','Debit Card'),
+(4,'2026-04-01','18:20:11','Credit Card'),
+(5,'2026-04-02','11:05:44','Mobile Pay'),
+(6,'2026-04-02','12:30:55','Cash'),
+(7,'2026-04-02','13:45:12','Credit Card'),
+(8,'2026-04-02','19:10:08','Debit Card'),
+(9,'2026-04-03','12:10:19','Credit Card'),
+(10,'2026-04-03','13:55:22','Mobile Pay'),
+(11,'2026-04-03','17:35:41','Cash'),
+(12,'2026-04-03','20:05:14','Credit Card'),
+(13,'2026-04-04','11:50:33','Debit Card'),
+(14,'2026-04-04','12:40:27','Credit Card'),
+(15,'2026-04-04','14:15:09','Mobile Pay'),
+(16,'2026-04-04','18:55:45','Cash'),
+(17,'2026-04-05','12:05:12','Credit Card'),
+(18,'2026-04-05','13:25:30','Debit Card'),
+(19,'2026-04-05','15:10:44','Mobile Pay'),
+(20,'2026-04-05','19:45:01','Credit Card'),
+(21,'2026-04-06','11:30:21','Cash'),
+(22,'2026-04-06','12:55:33','Credit Card'),
+(23,'2026-04-06','14:40:50','Debit Card'),
+(24,'2026-04-06','20:15:18','Mobile Pay'),
+(25,'2026-04-07','12:20:05','Credit Card'),
+(26,'2026-04-07','13:35:44','Cash'),
+(27,'2026-04-07','16:10:29','Debit Card'),
+(28,'2026-04-07','18:45:56','Mobile Pay'),
+(29,'2026-04-08','11:55:14','Credit Card'),
+(30,'2026-04-08','12:50:32','Cash'),
+(31,'2026-04-08','14:25:47','Debit Card'),
+(32,'2026-04-08','19:35:20','Credit Card'),
+(33,'2026-04-09','12:05:33','Mobile Pay'),
+(34,'2026-04-09','13:15:22','Cash'),
+(35,'2026-04-09','17:50:44','Credit Card'),
+(36,'2026-04-09','20:10:11','Debit Card'),
+(37,'2026-04-10','11:40:25','Credit Card'),
+(38,'2026-04-10','12:35:39','Mobile Pay'),
+(39,'2026-04-10','14:55:02','Cash'),
+(40,'2026-04-10','19:20:18','Debit Card');
 
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
-
 --
 -- Table structure for table `promotion_calendar`
 --
