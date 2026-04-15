@@ -454,6 +454,8 @@ def dashboard():
 @role_required("admin")
 def menu():
     return render_template("menu.html", user_role=session.get("user_role"))
+
+
 @app.route("/remove-seasonal-item", methods=["POST"])
 @role_required("admin")
 def remove_seasonal_item():
@@ -463,11 +465,13 @@ def remove_seasonal_item():
         return jsonify({"success": False, "message": "Missing item name."}), 400
 
     cur = mysql.connection.cursor()
+    
     cur.execute("""
         UPDATE menu_items
-        SET category = 'regular'
+        SET active_status = 'inactive'
         WHERE name = %s
     """, (item_name,))
+    
     mysql.connection.commit()
 
     affected_rows = cur.rowcount
@@ -476,8 +480,7 @@ def remove_seasonal_item():
     if affected_rows == 0:
         return jsonify({"success": False, "message": f"No item found for {item_name}."}), 404
 
-    return jsonify({"success": True})
-
+    return jsonify({"success": True, "message": f"{item_name} marked as inactive."})
 
 @app.route("/menu-adjustments")
 @role_required("admin")
@@ -487,6 +490,7 @@ def menu_adjustments():
     cur.execute("""
         SELECT menu_item_id, name, category, price
         FROM menu_items
+        WHERE active_status = 'active'
         ORDER BY category, name
     """)
 
@@ -516,8 +520,8 @@ def add_menu_item():
     cur = mysql.connection.cursor()
 
     cur.execute("""
-        INSERT INTO menu_items (name, category, price)
-        VALUES (%s, %s, %s)
+        INSERT INTO menu_items (name, category, price, active_status)
+        VALUES (%s, %s, %s, 'active')
     """, (name, category, price))
 
     mysql.connection.commit()
@@ -552,7 +556,8 @@ def delete_menu_item(menu_item_id):
     cur = mysql.connection.cursor()
 
     cur.execute("""
-        DELETE FROM menu_items
+        UPDATE menu_items
+        SET active_status = 'inactive'
         WHERE menu_item_id = %s
     """, (menu_item_id,))
 
