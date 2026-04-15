@@ -572,20 +572,39 @@ def delete_menu_item(menu_item_id):
 def orders_and_sales():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    # current week orders
+    # find the latest week that exists in the orders table
+    cur.execute("""
+        SELECT YEARWEEK(MAX(TransactionDate), 1) AS latest_week
+        FROM orders
+    """)
+    latest_week_result = cur.fetchone()
+    latest_week = latest_week_result["latest_week"]
+
+    # if there are no orders yet
+    if latest_week is None:
+        cur.close()
+        return render_template(
+            "orders_and_sales.html",
+            user_role=session.get("user_role"),
+            weekly_orders=0,
+            last_week_orders=0,
+            order_difference=0
+        )
+
+    # total orders for the latest week in the database
     cur.execute("""
         SELECT COUNT(*) AS weekly_orders
         FROM orders
-        WHERE YEARWEEK(TransactionDate, 1) = YEARWEEK(CURDATE(), 1)
-    """)
+        WHERE YEARWEEK(TransactionDate, 1) = %s
+    """, (latest_week,))
     weekly_orders = cur.fetchone()["weekly_orders"]
 
-    # previous week orders
+    # total orders for the week before that
     cur.execute("""
         SELECT COUNT(*) AS last_week_orders
         FROM orders
-        WHERE YEARWEEK(TransactionDate, 1) = YEARWEEK(CURDATE(), 1) - 1
-    """)
+        WHERE YEARWEEK(TransactionDate, 1) = %s
+    """, (latest_week - 1,))
     last_week_orders = cur.fetchone()["last_week_orders"]
 
     order_difference = weekly_orders - last_week_orders
