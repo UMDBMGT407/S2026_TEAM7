@@ -567,11 +567,38 @@ def delete_menu_item(menu_item_id):
     return redirect(url_for("menu_adjustments"))
 
 
-# Orders
 @app.route("/orders-and-sales")
 @role_required("admin")
 def orders_and_sales():
-    return render_template("orders_and_sales.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # current week orders
+    cur.execute("""
+        SELECT COUNT(*) AS weekly_orders
+        FROM orders
+        WHERE YEARWEEK(TransactionDate, 1) = YEARWEEK(CURDATE(), 1)
+    """)
+    weekly_orders = cur.fetchone()["weekly_orders"]
+
+    # previous week orders
+    cur.execute("""
+        SELECT COUNT(*) AS last_week_orders
+        FROM orders
+        WHERE YEARWEEK(TransactionDate, 1) = YEARWEEK(CURDATE(), 1) - 1
+    """)
+    last_week_orders = cur.fetchone()["last_week_orders"]
+
+    order_difference = weekly_orders - last_week_orders
+
+    cur.close()
+
+    return render_template(
+        "orders_and_sales.html",
+        user_role=session.get("user_role"),
+        weekly_orders=weekly_orders,
+        last_week_orders=last_week_orders,
+        order_difference=order_difference
+    )
 
 
 @app.route("/inventory")
