@@ -290,7 +290,7 @@ Schedule</a></li>
      <div class="inventory-availability">
   <div class="availability-for-suppliers">Availability for Suppliers</div>
 
-  <form action="{{ url_for('submit_supplier_availability') }}" method="POST" class="supplier-form">
+ <form action="{{ url_for('submit_supplier_availability') }}" method="POST" class="supplier-form">
   <div class="input-group mb-3">
     <select name="supplier-search" class="form-select">
       <option value="">Select a supplier</option>
@@ -298,7 +298,7 @@ Schedule</a></li>
         <option value="{{ s.SupplierID }}">{{ s.SupplierName }}</option>
       {% endfor %}
     </select>
-    <button class="btn btn-outline-secondary" type="submit">Search</button>
+    <button class="btn btn-outline-secondary" type="submit">Submit</button>
   </div>
 
   <input class="availability-entry" type="date" name="date-availability">
