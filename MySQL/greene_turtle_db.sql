@@ -212,13 +212,16 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `menu_items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `menu_items` (
   `menu_item_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `price` decimal(6,2) DEFAULT NULL,
   `category` varchar(100) DEFAULT NULL,
+  `active_status` ENUM('active','inactive') NOT NULL DEFAULT 'active',
   PRIMARY KEY (`menu_item_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,7 +230,24 @@ CREATE TABLE `menu_items` (
 
 LOCK TABLES `menu_items` WRITE;
 /*!40000 ALTER TABLE `menu_items` DISABLE KEYS */;
-INSERT INTO `menu_items` VALUES (1,'Irish Stew',14.99,'Seasonal'),(2,'Springy Market Salad',12.50,'Seasonal'),(3,'Lucky Charms Bomb',8.00,'Seasonal'),(4,'Clover’s Cheeseburger',13.75,'Seasonal'),(5,'Corned Beef Handheld',12.75,'Seasonal'),(6,'Guinness Float',6.50,'Seasonal'),(7,'Burger',12.99,'Entree'),(8,'Cheeseburger',10.99,'Entree'),(9,'Chicken Wings',12.99,'Appetizer'),(10,'Fries',4.99,'Side'),(11,'Caesar Salad',8.99,'Salad'),(12,'Fish Tacos',11.99,'Entree'),(13,'Mozzarella Sticks',7.99,'Appetizer');
+
+INSERT INTO `menu_items`
+(`menu_item_id`, `name`, `price`, `category`, `active_status`)
+VALUES
+(1,'Irish Stew',14.99,'Seasonal','active'),
+(2,'Springy Market Salad',12.50,'Seasonal','active'),
+(3,'Lucky Charms Bomb',8.00,'Seasonal','active'),
+(4,'Clover’s Cheeseburger',13.75,'Seasonal','active'),
+(5,'Corned Beef Handheld',12.75,'Seasonal','active'),
+(6,'Guinness Float',6.50,'Seasonal','active'),
+(7,'Burger',12.99,'Entree','active'),
+(8,'Cheeseburger',10.99,'Entree','active'),
+(9,'Chicken Wings',12.99,'Appetizer','active'),
+(10,'Fries',4.99,'Side','active'),
+(11,'Caesar Salad',8.99,'Salad','active'),
+(12,'Fish Tacos',11.99,'Entree','active'),
+(13,'Mozzarella Sticks',7.99,'Appetizer','active');
+
 /*!40000 ALTER TABLE `menu_items` ENABLE KEYS */;
 UNLOCK TABLES;
 
