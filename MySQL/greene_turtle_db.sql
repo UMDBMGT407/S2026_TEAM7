@@ -1170,3 +1170,46 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 
 -- Dump completed on 2026-04-08 21:10:35
 
+
+
+
+-- Additional promotions data
+INSERT INTO promotions
+(promotion_name, promotion_type, description, discount, start_date, end_date, start_time, end_time, recurring_day)
+VALUES
+('Happy Hour', 'Discount', '25% off appetizers and drinks', 25.00, '2026-05-01', '2026-06-30', '15:00:00', '18:00:00', 'Friday'),
+('Late Night Bites', 'Discount', '15% off all appetizers after 9PM', 15.00, '2026-05-01', '2026-07-31', '21:00:00', '23:59:00', NULL),
+('Taco Tuesday', 'Discount', '20% off all tacos', 20.00, '2026-05-01', '2026-12-31', '11:00:00', '22:00:00', 'Tuesday'),
+('Wing Wednesday', 'BOGO', 'Buy one get one free wings', NULL, '2026-05-01', '2026-12-31', '16:00:00', '22:00:00', 'Wednesday'),
+('Thirsty Thursday', 'Discount', 'Half off draft beers', 50.00, '2026-05-01', '2026-12-31', '17:00:00', '22:00:00', 'Thursday'),
+('Lunch Combo Deal', 'Discount', '10% off lunch combos', 10.00, '2026-05-01', '2026-08-31', '11:00:00', '14:00:00', NULL),
+('Business Lunch Special', 'Discount', '15% off meals for groups of 4+', 15.00, '2026-05-01', '2026-09-01', '11:00:00', '14:00:00', NULL),
+('Summer Kickoff', 'Discount', '20% off entire menu for opening weekend', 20.00, '2026-06-01', '2026-06-03', NULL, NULL, NULL),
+('Back to School Special', 'Discount', '15% off for students with ID', 15.00, '2026-08-20', '2026-09-15', NULL, NULL, NULL),
+('Family Feast Deal', 'Discount', '25% off orders for groups of 6+', 25.00, '2026-05-15', '2026-12-31', NULL, NULL, NULL),
+('Kids Eat Free', 'BOGO', 'Free kids meal with adult entrée purchase', NULL, '2026-05-01', '2026-12-31', '17:00:00', '20:00:00', 'Sunday'),
+('Margarita Monday', 'Discount', '30% off all margaritas', 30.00, '2026-05-01', '2026-12-31', '16:00:00', '22:00:00', 'Monday'),
+('Wine Down Wednesday', 'Discount', '25% off all wine bottles', 25.00, '2026-05-01', '2026-12-31', '17:00:00', '22:00:00', 'Wednesday'),
+('Game Day Special', 'Discount', '15% off during game days', 15.00, '2026-09-01', '2026-12-31', NULL, NULL, NULL),
+('Holiday Special', 'Discount', '20% off select holiday menu items', 20.00, '2026-12-15', '2026-12-31', NULL, NULL, NULL);
+
+
+-- Small calendar rows for additional promotions (max 2 per day)
+INSERT INTO promotion_calendar (promotion_id, date)
+VALUES
+(5,'2026-05-01'),
+(6,'2026-05-01'),
+(7,'2026-05-05'),
+(10,'2026-05-05'),
+(8,'2026-05-06'),
+(11,'2026-05-06'),
+(9,'2026-05-07'),
+(14,'2026-05-07'),
+(15,'2026-05-10'),
+(16,'2026-05-11'),
+(17,'2026-05-13'),
+(12,'2026-06-01'),
+(12,'2026-06-02'),
+(13,'2026-08-20'),
+(18,'2026-09-06'),
+(19,'2026-12-15');
