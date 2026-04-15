@@ -158,7 +158,6 @@ CREATE TABLE `members` (
   `password` varchar(255) NOT NULL,
   `promo_opt_in` tinyint(1) DEFAULT '0',
   `join_date` datetime DEFAULT CURRENT_TIMESTAMP,
-  `points` int DEFAULT '0',
   PRIMARY KEY (`member_id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `username` (`username`)
@@ -171,7 +170,7 @@ CREATE TABLE `members` (
 
 LOCK TABLES `members` WRITE;
 /*!40000 ALTER TABLE `members` DISABLE KEYS */;
-INSERT INTO `members` VALUES (1,'Hannah','Lee','2003-04-12','hannah.lee@email.com','301-555-1111','Email','hannahlee1','temp123',1,'2025-01-15 10:00:00',1250),(2,'Marcus','Brown','2001-09-23','marcus.brown@email.com','240-555-2222','SMS','marcusbrown1','temp123',1,'2025-06-02 14:30:00',720),(3,'Sofia','Nguyen','2002-12-05','sofia.nguyen@email.com','443-555-3333','Email','sofian1','temp123',0,'2026-02-10 09:15:00',180);
+INSERT INTO `members` VALUES (1,'Hannah','Lee','2003-04-12','hannah.lee@email.com','301-555-1111','Email','hannahlee1','temp123',1,'2025-01-15 10:00:00'),(2,'Marcus','Brown','2001-09-23','marcus.brown@email.com','240-555-2222','SMS','marcusbrown1','temp123',1,'2025-06-02 14:30:00'),(3,'Sofia','Nguyen','2002-12-05','sofia.nguyen@email.com','443-555-3333','Email','sofian1','temp123',0,'2026-02-10 09:15:00');
 /*!40000 ALTER TABLE `members` ENABLE KEYS */;
 UNLOCK TABLES;
 
