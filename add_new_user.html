@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- SAME CSS AS WORKING PAGE -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='vars.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+
+  <!-- SAME BOOTSTRAP VERSION -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- SAME FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- FIXED GLOBAL BACKGROUND -->
+  <style>
+    a, button, input, select, h1, h2, h3, h4, h5, * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    menu, ol, ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* 🔥 THIS FIXES THE TWO-TONE ISSUE */
+    html, body {
+      background: #3f865c !important;
+      min-height: 100vh;
+    }
+  </style>
+
+  <title>Add New User</title>
+</head>
+
+<body>
+
+<!-- NAVBAR (UNCHANGED) -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
+  <div class="container-fluid px-4">
+    
+    <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('menu') }}">Menu</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('menu_adjustments') }}">Menu Adjustments</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('orders_and_sales') }}">Orders & Sales</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('inventory') }}">Inventory</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('inventory_adjustments') }}">Inventory Adjustments</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('event_details_admin') }}">All Event Details</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('edit_promos') }}">Edit Promos</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('view_promos') }}">View Promos</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff Schedule</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link active" href="{{ url_for('add_new_user') }}">New User</a>
+        </li>
+
+      </ul>
+
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+<!-- CONTENT -->
+<div class="container" style="padding-top: 120px; max-width: 700px;">
+
+  <div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+
+      <h2 class="mb-4" style="color: #204631; font-weight: 700;">
+        Add New User
+      </h2>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('add_new_user') }}">
+
+        <div class="mb-3">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-control" name="first_name" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-control" name="last_name" required>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Assign Role</label>
+          <select class="form-select" name="role" required>
+            <option value="">Select role</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn text-white" style="background-color: #204631;">
+          Create User
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
