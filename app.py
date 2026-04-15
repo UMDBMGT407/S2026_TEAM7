@@ -233,7 +233,68 @@ def cart():
 def checkout():
     return render_template("checkout.html", user_role=session.get("user_role"))
 
+@app.route("/submit-order", methods=["POST"])
+def submit_order():
+    data = request.get_json()
 
+    cart = data.get("cart", [])
+    payment_method = data.get("payment_method", "Credit Card")
+
+    if not cart:
+        return jsonify({"success": False, "message": "Cart is empty."}), 400
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    try:
+        now = datetime.now()
+
+        # Insert into orders table
+        cur.execute("""
+            INSERT INTO orders (TransactionDate, TransactionTime, PaymentMethod)
+            VALUES (%s, %s, %s)
+        """, (
+            now.date(),
+            now.strftime("%H:%M:%S"),
+            payment_method
+        ))
+
+        order_id = cur.lastrowid
+
+        # Insert each cart item into order_items table
+        for item in cart:
+            menu_item_id = item.get("menu_item_id")
+            quantity = item.get("quantity", 1)
+
+            if not menu_item_id:
+                mysql.connection.rollback()
+                return jsonify({
+                    "success": False,
+                    "message": "A cart item is missing menu_item_id."
+                }), 400
+
+            cur.execute("""
+                INSERT INTO order_items (OrderID, menu_item_id, Quantity)
+                VALUES (%s, %s, %s)
+            """, (order_id, menu_item_id, quantity))
+
+        mysql.connection.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Order placed successfully.",
+            "order_id": order_id
+        })
+
+    except Exception as e:
+        mysql.connection.rollback()
+        return jsonify({
+            "success": False,
+            "message": f"Error saving order: {str(e)}"
+        }), 500
+
+    finally:
+        cur.close()
+        
 @app.route("/event-inquiry", methods=["GET", "POST"])
 def event_inquiry():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
