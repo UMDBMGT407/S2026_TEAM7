@@ -103,11 +103,45 @@
           <p>11:00 AM - 2:00 AM</p>
         </div>
       </div>
+      {% if current_promos and current_promos|length > 0 %}
+        <div class="current-promos-section">
+          <h2 class="promo-heading">Current Promotions</h2>
 
+          {% for promo in current_promos %}
+            <div class="promo-card">
+              <h3 class="promo-title">{{ promo.promotion_name }}</h3>
+
+              {% if promo.description %}
+                <p class="promo-description">{{ promo.description }}</p>
+              {% endif %}
+
+              {% if promo.discount %}
+                <p class="promo-discount">{{ promo.discount }}% off</p>
+              {% endif %}
+
+              {% if promo.start_time and promo.end_time %}
+                <p class="promo-time">
+                  Available today from {{ promo.start_time.strftime("%I:%M %p") }} to {{ promo.end_time.strftime("%I:%M %p") }}
+                </p>
+              {% endif %}
+
+              {% if promo.promo_items %}
+                <p class="promo-items">
+                  Includes: {{ promo.promo_items }}
+                </p>
+              {% endif %}
+            </div>
+          {% endfor %}
+          {% else %}
+            <div class="promo-card no-promos">
+              <h3 class="promo-title">No Current Promotions</h3>
+              <p class="promo-description">Check back later for upcoming deals!</p>
+            </div>
+        </div>
+      {% endif %}
       <div class="homepage-buttons">
         <a href="{{ url_for('online_ordering') }}" class="homepage-btn">Order Food</a>
         <a href="{{ url_for('become_a_member') }}" class="homepage-btn">Create Account</a>
-        <a href="{{ url_for('loyalty_status') }}" class="homepage-btn">Loyalty Status</a>
         <a href="{{ url_for('event_inquiry') }}" class="homepage-btn">Book an Event</a>
       </div>
     </section>
