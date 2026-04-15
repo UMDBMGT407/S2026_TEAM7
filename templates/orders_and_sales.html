@@ -121,9 +121,9 @@ Schedule</a></li>
           <div class="weekly-orders">
             <div class="weekly-orders2">Weekly Orders</div>
             <div class="line-1"></div>
-            <div class="_167">167</div>
+            <div class="_167">{{ weekly_orders }}</div>
             <div class="this-is-12-orders-higher-than-last-week">
-              This is 12 orders higher than last week
+              This is {{ order_difference }} orders higher than last week
             </div>
           </div>
 
@@ -151,20 +151,20 @@ Schedule</a></li>
             <div class="targets-results">Targets Results</div>
             <div class="line-12"></div>
             <div class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k">
-              <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span">
-                Orders: 150 / 
-              </span>
-              <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span2">
-                167
-                <br />
-                Sales: $3.5K / 
-              </span>
-              <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span3">
-                $2.8K
-                <br />
-                Profit: $1.8K / $1.2K
-              </span>
-            </div>
+            <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span">
+              Orders: 150 /
+            </span>
+            <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span2">
+              {{ weekly_orders }}
+              <br />
+              Sales: $3.5K /
+            </span>
+            <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span3">
+              $2.8K
+              <br />
+              Profit: $1.8K / $1.2K
+            </span>
+          </div>
           </div>
 
           <div class="order-goals-kp-is">
