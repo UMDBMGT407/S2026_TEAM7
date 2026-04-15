@@ -174,7 +174,48 @@ def logout():
 # ========================
 @app.route("/")
 def home():
-    return render_template("index.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        SELECT
+            p.promotion_id,
+            p.promotion_name,
+            p.promotion_type,
+            p.description,
+            p.discount,
+            p.start_time,
+            p.end_time,
+            GROUP_CONCAT(mi.name ORDER BY mi.name SEPARATOR ', ') AS promo_items
+        FROM promotion_calendar pc
+        JOIN promotions p
+            ON pc.promotion_id = p.promotion_id
+        LEFT JOIN promotion_items pi
+            ON p.promotion_id = pi.promotion_id
+        LEFT JOIN menu_items mi
+            ON pi.menu_item_id = mi.menu_item_id
+        WHERE pc.date = CURDATE()
+          AND (p.start_time IS NULL OR CURTIME() >= p.start_time)
+          AND (p.end_time IS NULL OR CURTIME() <= p.end_time)
+        GROUP BY
+            p.promotion_id,
+            p.promotion_name,
+            p.promotion_type,
+            p.description,
+            p.discount,
+            p.start_time,
+            p.end_time
+        ORDER BY p.promotion_name
+    """)
+
+    current_promos = cur.fetchall()
+    cur.close()
+
+    return render_template(
+        "index.html",
+        user_role=session.get("user_role"),
+        current_promos=current_promos
+    )
+
 
 
 @app.route("/online-ordering")
