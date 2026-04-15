@@ -2888,7 +2888,7 @@ body {
 .app {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
-  min-height: 100vh;
+  min-height: calc(100vh - 74px);
   width: 100%;
   max-width: 100%;
 }
@@ -3987,4 +3987,14 @@ body {
 .inventory-layout,
 .inventory-analytics {
   overflow: visible !important;
+}
+
+.shift-page-shell {
+  background: #36845a;
+  min-height: 100vh;
+  padding-top: 90px;
+}
+
+.shift-page-shell .app {
+  min-height: calc(100vh - 90px);
 }
