@@ -170,7 +170,7 @@ CREATE TABLE `members` (
 
 LOCK TABLES `members` WRITE;
 /*!40000 ALTER TABLE `members` DISABLE KEYS */;
-INSERT INTO `members` VALUES (1,'Hannah','Lee','2003-04-12','hannah.lee@email.com','301-555-1111','Email','hannahlee1','temp123',1,'2025-01-15 10:00:00'),(2,'Marcus','Brown','2001-09-23','marcus.brown@email.com','240-555-2222','SMS','marcusbrown1','temp123',1,'2025-06-02 14:30:00'),(3,'Sofia','Nguyen','2002-12-05','sofia.nguyen@email.com','443-555-3333','Email','sofian1','temp123',0,'2026-02-10 09:15:00');
+INSERT INTO `members` VALUES (1,'Hannah','Lee','2003-04-12','hannah.lee@email.com','301-555-1111','Email','hannahlee1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',1,'2025-01-15 10:00:00'),(2,'Marcus','Brown','2001-09-23','marcus.brown@email.com','240-555-2222','SMS','marcusbrown1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',1,'2025-06-02 14:30:00'),(3,'Sofia','Nguyen','2002-12-05','sofia.nguyen@email.com','443-555-3333','Email','sofian1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',0,'2026-02-10 09:15:00');
 /*!40000 ALTER TABLE `members` ENABLE KEYS */;
 UNLOCK TABLES;
 
