@@ -401,19 +401,35 @@ def event_details_staff():
 
     events = []
     for row in event_rows:
+        cur.execute("""
+            SELECT u.name
+            FROM users u
+            JOIN event_staff es ON u.id = es.user_id
+            WHERE es.event_id = %s
+            ORDER BY u.name
+        """, (row["inquiry_id"],))
+        staff = [s["name"] for s in cur.fetchall()]
+
         preferred_datetime = row["preferred_datetime"]
         events.append({
             'id': row["inquiry_id"],
+            'inquiry_id': row["inquiry_id"],
             'type': row["organization"] or "Private Event",
+            'organization': row["organization"],
+            'full_name': row["full_name"],
             'name': row["full_name"],
             'email': row["email"],
             'guests': row["guests"],
+            'preferred_datetime': preferred_datetime,
             'date': preferred_datetime.strftime("%Y-%m-%d") if preferred_datetime else "",
             'time': preferred_datetime.strftime("%I:%M %p") if preferred_datetime else "",
             'description': row["event_description"],
+            'event_description': row["event_description"],
             'package': row["catering_package"],
+            'catering_package': row["catering_package"],
             'status': row["inquiry_status"],
-            'staff': []
+            'inquiry_status': row["inquiry_status"],
+            'staff': staff
         })
 
     cur.close()
