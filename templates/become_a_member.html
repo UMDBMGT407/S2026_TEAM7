@@ -59,7 +59,7 @@
          <ul class="navbar-nav auth-nav">
            <li class="nav-item account-actions">
              {% if user_role == "customer" %}
-               <a class="sign-in-btn account-icon-btn" id="navAccountButton" href="{{ url_for('loyalty_status') }}">
+               <a class="sign-in-btn account-icon-btn" id="navAccountButton" href="{{ url_for('home') }}">
                  <img src="{{ url_for('static', filename='images/profile_head.png') }}" alt="Profile" class="account-icon-image">
                </a>
                <a class="sign-out-btn" href="{{ url_for('logout') }}">Sign Out</a>
