@@ -635,17 +635,25 @@ def submit_supplier_availability():
     """)
     all_suppliers = cur.fetchall()
 
-    # matched suppliers for search result
-    cur.execute("""
-        SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
-        FROM suppliers
-        WHERE SupplierName LIKE %s
-        ORDER BY SupplierName
-    """, (f"%{supplier_search}%",))
-    matched_suppliers = cur.fetchall()
+    matched_suppliers = []
 
-    if matched_suppliers:
-        message = "Supplier(s) found."
+    if supplier_search:
+        cur.execute("""
+            SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
+            FROM suppliers
+            WHERE SupplierID = %s
+        """, (supplier_search,))
+        matched_suppliers = cur.fetchall()
+
+    if matched_suppliers and date_availability and time_availability:
+        cur.execute("""
+            INSERT INTO supplier_availability (SupplierID, selected_date, selected_time)
+            VALUES (%s, %s, %s)
+        """, (supplier_search, date_availability, time_availability))
+        mysql.connection.commit()
+        message = "Supplier availability submitted successfully."
+    elif matched_suppliers:
+        message = "Availability Submitted!"
     else:
         message = "No suppliers found."
 
