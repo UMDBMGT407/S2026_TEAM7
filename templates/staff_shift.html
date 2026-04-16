@@ -326,10 +326,9 @@
 
   function openDropModal() {
     document.getElementById('drop-reason').value = '';
-    document.getElementById('drop-email').value = '';
     document.getElementById('drop-shift-select').value = '';
     dropModal.show();
-  }
+}
 
   function prefillDrop(id) {
     document.getElementById('drop-shift-select').value = id;
@@ -364,7 +363,6 @@
   function openRequestModal() {
     document.getElementById('request-type').value = '';
     document.getElementById('request-notes').value = '';
-    document.getElementById('request-email').value = '';
     document.getElementById('request-shift-select').value = '';
     requestModal.show();
   }
