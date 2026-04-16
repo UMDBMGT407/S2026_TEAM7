@@ -490,7 +490,7 @@ CREATE TABLE `shift_requests` (
   PRIMARY KEY (`request_id`),
   KEY `shift_id` (`shift_id`),
   KEY `staff_id` (`staff_id`),
-  CONSTRAINT `shift_requests_ibfk_1` FOREIGN KEY (`shift_id`) REFERENCES `staff_shifts` (`shift_id`) ON DELETE SET NULL,
+  CONSTRAINT `shift_requests_ibfk_1` FOREIGN KEY (`shift_id`) REFERENCES `schedule` (`id`) ON DELETE SET NULL,
   CONSTRAINT `shift_requests_ibfk_2` FOREIGN KEY (`staff_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
