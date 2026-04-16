@@ -422,10 +422,15 @@ def staff_scheduling_staff():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('staff', 'admin') AND active_status = 'active'")
     staff_members = [row["name"] for row in cur.fetchall()]
-    cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
+    cur.execute("""
+        SELECT u.name, s.role, s.date, s.start_hour, s.end_hour, s.color
+        FROM schedule s
+        JOIN users u ON s.user_id = u.id
+    """)
     schedule_events = [
         {
             'date':  str(row["date"]),
+            'name': row["name"],
             'role': row["role"],
             'start': float(row["start_hour"]),
             'end':   float(row["end_hour"]),
