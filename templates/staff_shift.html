@@ -339,23 +339,30 @@
     document.getElementById('drop-shift-select').value = id;
     dropModal.show();
   }
-
+  
   function submitDrop() {
-    const shift  = document.getElementById('drop-shift-select').value;
+    const shift = document.getElementById('drop-shift-select').value;
     const reason = document.getElementById('drop-reason').value.trim();
-    const email  = document.getElementById('drop-email').value.trim();
     if (!shift) { alert('Please select a shift to drop.'); return; }
-    if (!email)  { alert('Please enter your email.'); return; }
-    const s = scheduledShifts.find(x => x.id == shift);
-    const d = new Date(s.date + 'T00:00:00');
-    const dateStr = `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
-    const subject = encodeURIComponent(`[Drop Request] ${s.event} – ${dateStr}`);
-    const body = encodeURIComponent(
-      `Drop Shift Request\n\nStaff Email: ${email}\nShift: ${s.event}\nDate: ${dateStr}\nTime: ${fmtHour(s.startH)} – ${fmtHour(s.endH)}\nRole: ${s.role}\n\nReason:\n${reason || 'No reason provided.'}`
-    );
-    window.location.href = `mailto:manager@yourvenue.com?subject=${subject}&body=${body}`;
-    dropModal.hide();
-    showToast('Drop request email opened!', '#c0392b');
+
+    fetch('/submit-shift-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            shift_id: shift,
+            request_type: 'drop',
+            notes: reason
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            dropModal.hide();
+            showToast('Drop request submitted!', '#c0392b');
+        } else {
+            showToast('Error submitting. Try again.', '#c0392b');
+        }
+    });
   }
 
   function openRequestModal() {
@@ -372,24 +379,30 @@
   }
 
   function submitRequest() {
-    const type  = document.getElementById('request-type').value;
+    const type = document.getElementById('request-type').value;
     const shift = document.getElementById('request-shift-select').value;
     const notes = document.getElementById('request-notes').value.trim();
-    const email = document.getElementById('request-email').value.trim();
-    if (!type)  { alert('Please select a request type.'); return; }
+    if (!type) { alert('Please select a request type.'); return; }
     if (!shift) { alert('Please select the affected shift.'); return; }
-    if (!email) { alert('Please enter your email.'); return; }
-    const s = scheduledShifts.find(x => x.id == shift);
-    const d = new Date(s.date + 'T00:00:00');
-    const dateStr = `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
-    const typeLabel = {'swap':'Shift Swap','time':'Time Change','role':'Role Change','other':'Other'}[type];
-    const subject = encodeURIComponent(`[Change Request: ${typeLabel}] ${s.event} – ${dateStr}`);
-    const body = encodeURIComponent(
-      `Schedule Change Request\n\nStaff Email: ${email}\nRequest Type: ${typeLabel}\nShift: ${s.event}\nDate: ${dateStr}\nTime: ${fmtHour(s.startH)} – ${fmtHour(s.endH)}\nRole: ${s.role}\n\nDetails:\n${notes || 'No additional details.'}`
-    );
-    window.location.href = `mailto:manager@yourvenue.com?subject=${subject}&body=${body}`;
-    requestModal.hide();
-    showToast('Change request email opened!', '#204631');
+
+    fetch('/submit-shift-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            shift_id: shift,
+            request_type: type,
+            notes: notes
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            requestModal.hide();
+            showToast('Request submitted!', '#204631');
+        } else {
+            showToast('Error submitting. Try again.', '#c0392b');
+        }
+    });
   }
 
   function showToast(msg, bg) {
