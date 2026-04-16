@@ -14,7 +14,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Candi050704!'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
