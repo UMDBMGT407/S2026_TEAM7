@@ -1444,9 +1444,40 @@ def update_shift_request():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("""
-        UPDATE shift_requests
-        SET request_status = %s
-        WHERE request_id = %s
+        SELECT sr.request_id, sr.request_type, sr.shift_id, sr.request_note
+        FROM shift_requests sr
+        WHERE sr.request_id = %s
+    """, (request_id,))
+    req = cur.fetchone()
+
+    if req and request_status == "accepted":
+        if req["request_type"] == "drop":
+            cur.execute("DELETE FROM schedule WHERE id = %s", (req["shift_id"],))
+
+        elif req["request_type"] == "time":
+            new_date = request.form.get("new_date")
+            new_start = request.form.get("new_start")
+            new_end = request.form.get("new_end")
+            if new_date and new_start and new_end:
+                start_dt = datetime.strptime(new_start, "%H:%M")
+                end_dt = datetime.strptime(new_end, "%H:%M")
+                start_hour = start_dt.hour + start_dt.minute / 60
+                end_hour = end_dt.hour + end_dt.minute / 60
+                cur.execute("""
+                    UPDATE schedule
+                    SET date = %s, start_hour = %s, end_hour = %s
+                    WHERE id = %s
+                """, (new_date, start_hour, end_hour, req["shift_id"]))
+
+        elif req["request_type"] == "role":
+            new_role = request.form.get("new_role")
+            if new_role:
+                cur.execute("""
+                    UPDATE schedule SET role = %s WHERE id = %s
+                """, (new_role, req["shift_id"]))
+
+    cur.execute("""
+        UPDATE shift_requests SET request_status = %s WHERE request_id = %s
     """, (request_status, request_id))
 
     mysql.connection.commit()
