@@ -14,7 +14,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'Candi050704!'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -582,7 +582,16 @@ def submit_shift_request():
 
     request_type = data.get("request_type")
     shift_id = data.get("shift_id")
-    notes = data.get("notes")
+    notes = data.get("notes", "")
+
+    if request_type == "time":
+        new_date = data.get("new_date", "")
+        new_start = data.get("new_start", "")
+        new_end = data.get("new_end", "")
+        notes = f"New date: {new_date} | Start: {new_start} | End: {new_end} | Note: {notes}"
+    elif request_type == "role":
+        new_role = data.get("new_role", "")
+        notes = f"New role: {new_role} | Note: {notes}"
 
     if not request_type or not user_id:
         return jsonify({"success": False}), 400
@@ -591,12 +600,12 @@ def submit_shift_request():
     cur.execute("""
         INSERT INTO shift_requests (shift_id, staff_id, request_type, request_note, request_status)
         VALUES (%s, %s, %s, %s, 'pending')
-    """, (shift_id or None, user_id, request_type, notes or ""))
+    """, (shift_id or None, user_id, request_type, notes))
     mysql.connection.commit()
     cur.close()
 
     return jsonify({"success": True})
-    
+
 # ========================
 # ADMIN PAGES
 # ========================
@@ -1339,7 +1348,27 @@ def shift_management():
                 )
 
     staff_data = list(staff_lookup.values())
-    shift_requests = []
+
+    cur.execute("""
+        SELECT sr.request_id, sr.request_type, sr.request_note, 
+            sr.request_status, sr.created_at, u.name AS staff_name
+        FROM shift_requests sr
+        JOIN users u ON sr.staff_id = u.id
+        WHERE sr.request_status = 'pending'
+        ORDER BY sr.created_at DESC
+    """)
+    shift_request_rows = cur.fetchall()
+
+    shift_requests = [
+        {
+            "id": row["request_id"],
+            "staff_name": row["staff_name"],
+            "text": f"{row['request_type'].title()} request: {row['request_note'] or 'No details provided'}",
+            "status": row["request_status"]
+        }
+        for row in shift_request_rows
+    ]
+
 
     cur.close()
 
