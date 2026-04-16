@@ -167,6 +167,31 @@
 
       </form>
 
+      <!-- ===== MARK USER INACTIVE ===== -->
+      <hr class="my-4">
+
+      <h4 style="color: #204631; font-weight: 700;">
+        Mark User Inactive
+      </h4>
+
+      <form method="POST" action="{{ url_for('delete_user') }}">
+
+        <div class="mb-3">
+          <label class="form-label">Select User</label>
+          <select class="form-select" name="username" required>
+            <option value="">Select a user</option>
+            {% for user in users %}
+              <option value="{{ user[0] }}">{{ user[0] }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-danger">
+          Mark Inactive
+        </button>
+
+      </form>
+
     </div>
   </div>
 
@@ -176,3 +201,4 @@
 
 </body>
 </html>
+
