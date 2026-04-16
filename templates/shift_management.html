@@ -412,33 +412,64 @@
     }
 
     function renderRequests() {
-      requestList.innerHTML = "";
+    requestList.innerHTML = "";
 
-      requests.forEach(request => {
+    if (requests.length === 0) {
+        requestList.innerHTML = '<p style="color:#999;font-size:14px;">No pending requests.</p>';
+        return;
+    }
+
+    requests.forEach(request => {
         const item = document.createElement("div");
         item.className = "request-item";
 
+        let extraFields = "";
+
+        if (request.request_type === "time") {
+            extraFields = `
+                <div style="margin-top:8px;">
+                    <label style="font-size:12px;">New Date</label>
+                    <input type="date" name="new_date" class="form-control form-control-sm mb-1" required>
+                    <label style="font-size:12px;">New Start Time</label>
+                    <input type="time" name="new_start" class="form-control form-control-sm mb-1" required>
+                    <label style="font-size:12px;">New End Time</label>
+                    <input type="time" name="new_end" class="form-control form-control-sm" required>
+                </div>
+            `;
+        } else if (request.request_type === "role") {
+            extraFields = `
+                <div style="margin-top:8px;">
+                    <label style="font-size:12px;">New Role</label>
+                    <select name="new_role" class="form-select form-select-sm">
+                        <option value="Server">Server</option>
+                        <option value="Host">Host</option>
+                        <option value="Bartender">Bartender</option>
+                    </select>
+                </div>
+            `;
+        }
+
         item.innerHTML = `
-          <strong>${request.staff_name}</strong>
-          <p>${request.text}</p>
-          <div class="request-actions">
-            <form method="POST" action="{{ url_for('update_shift_request') }}" style="display:inline;">
-              <input type="hidden" name="request_id" value="${request.id}">
-              <input type="hidden" name="request_status" value="accepted">
-              <button type="submit" class="primary-btn accept-btn">Accept</button>
+            <strong>${request.staff_name}</strong>
+            <p style="font-size:13px;margin:4px 0;">${request.text}</p>
+            <form method="POST" action="{{ url_for('update_shift_request') }}">
+                <input type="hidden" name="request_id" value="${request.id}">
+                <input type="hidden" name="request_status" value="accepted">
+                ${extraFields}
+                <div class="request-actions" style="margin-top:8px;">
+                    <button type="submit" class="primary-btn accept-btn">Accept</button>
+                </div>
             </form>
-            <form method="POST" action="{{ url_for('update_shift_request') }}" style="display:inline;">
-              <input type="hidden" name="request_id" value="${request.id}">
-              <input type="hidden" name="request_status" value="declined">
-              <button type="submit" class="danger-btn decline-btn">Decline</button>
+            <form method="POST" action="{{ url_for('update_shift_request') }}" style="margin-top:4px;">
+                <input type="hidden" name="request_id" value="${request.id}">
+                <input type="hidden" name="request_status" value="declined">
+                <button type="submit" class="danger-btn decline-btn">Decline</button>
             </form>
-          </div>
         `;
 
         requestList.appendChild(item);
-      });
-    }
-
+    });
+  }
     if (shiftStaffDropdown) {
       shiftStaffDropdown.addEventListener("change", function () {
         selectedStaffId = parseInt(this.value);
