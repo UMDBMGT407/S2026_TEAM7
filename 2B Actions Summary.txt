@@ -31,6 +31,21 @@ Dashboard:
 * The Upcoming Events card is linked to the View Events page, and the Shifts Needing Coverage page links to the Shift Management page. 
 * There is a KPI Goals side pop-up which allows the admin to choose their weekly revenue targets, events this month target, and shifts filled target. There is a "set" button for each target that changes the color of the line below it, showing the target status. 
 
+Orders & Sales
+* Displays some static/sample data cards e.g. weekly sales is from sample data
+
+Menu
+* Current Seasonal Items & Sales displays active seasonal promotion items & can delete items. It was updated so deleted items are changed to 'inactive' status
+* Displays static data cards
+
+Menu Adjustments
+* Displays all active menu items from sample data where you can update or delete the name, price, or category of the current item. Additionally, deleting was updated so it simply changes the active status to 'inactive'
+* Allows for admin to create new menu items that will be set to active status, this includes creating the name, category, and price
+
+Inventory
+* Allows for supplier availability submissions. There is a drop-down for our sample suppliers and admin can pick a date and time to 'submit' for availability. Currently, this submission populates our database for tracking. 
+* Displays static data cards
+
 Event Requests Page: 
 * Pending requests are connected to the customer event inquiry page and show how many customers have submitted requests that haven’t been accepted or rejected yet.
 * Each event request has an accept and reject button. If a request is accepted, it moves to the View Events page and is saved in the database as “accepted,” along with all of the event details. If a request is rejected, it disappears from the website but is still saved in the database as “rejected.” Requests that haven’t been acted on are saved as “pending.
