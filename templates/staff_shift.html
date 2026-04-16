@@ -121,9 +121,7 @@
         <label>Select Shift to Drop</label>
         <select class="form-select" id="drop-shift-select"></select>
         <label>Reason for Dropping</label>
-        <textarea class="form-control" id="drop-reason" rows="3" placeholder="Brief reason (optional)..."></textarea>
-        <label>Your Email (for confirmation)</label>
-        <input type="email" class="form-control" id="drop-email" placeholder="you@example.com">
+        <textarea class="form-control" id="drop-reason" rows="3" placeholder="Brief reason (optional)..."></textarea>        
       </div>
       <div class="modal-footer border-0">
         <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
@@ -154,8 +152,6 @@
         <select class="form-select" id="request-shift-select"></select>
         <label>Details / Notes</label>
         <textarea class="form-control" id="request-notes" rows="4" placeholder="Describe your request..."></textarea>
-        <label>Your Email (for confirmation)</label>
-        <input type="email" class="form-control" id="request-email" placeholder="you@example.com">
       </div>
       <div class="modal-footer border-0">
         <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
@@ -339,7 +335,7 @@
     document.getElementById('drop-shift-select').value = id;
     dropModal.show();
   }
-  
+
   function submitDrop() {
     const shift = document.getElementById('drop-shift-select').value;
     const reason = document.getElementById('drop-reason').value.trim();
