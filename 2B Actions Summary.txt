@@ -45,7 +45,7 @@ Event Requests Page:
 
 View Events Page: 
 * The View Events page shows all accepted events on one page with their full details. This page is connected to the event request page.
-* Each accepted event has a “complete event” button. When this button is clicked, the event is marked as “complete” in the database and disappears from the page. Even though it is no longer visible, it is still saved in the database as “complete.”
+* Each accepted event has a “complete event” button. When this button is clicked, the event is marked as “complete” in the database and disappears from the page. * Even though it is no longer visible, it is still saved in the database as “complete.”
 * There is also a button that links back to the event requests page.
 
 
@@ -70,6 +70,18 @@ Staff Scheduling:
 * The calendar allows for toggling between previous and future days, along with a "Today" button to take the user to the current day.
 * There is a red line following the calendar to show real time (EST).
 
+Shift Management: 
+* Allows the admin to create new shifts by selecting a staff member, role, day, and start/end time. When submitted, the shift is saved to the database and immediately appears on the calendar.
+* Each scheduled shift includes a delete button, allowing the admin to remove shifts. Deleted shifts are removed from the schedule but remain handled through backend database logic.
+* Includes a a “View Schedule” button that links to the full Staff Scheduling calendar page
+* Displays a “Dropped Shifts & Requests” section where staff shift requests appear. The admin can accept or decline requests, which updates the request status in the database.
+
+New User: 
+* Allows the admin to create new users by entering information such as first name, last name, email, username, password, and role (admin or staff).
+* The role selection determines what permissions the user will have within the system (e.g., admin access vs. staff access).
+* User credentials (such as passwords) are securely handled and stored using hashing for authentication purposes.
+* Newly created users can immediately log into the system and access pages based on their assigned role.
+* Includes functionality to mark a user as inactive, which updates their status in the database without deleting their account.
 
 
 STAFF SIDE:
