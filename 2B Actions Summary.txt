@@ -1,10 +1,20 @@
-﻿ADMIN SIDE:
+CUSTOMER SIDE:
 
 
-Event Requests Page 
+
+
+ADMIN SIDE:
+
+Dashboard: 
+* Displays some static/sample data cards that are linked to different individual pages.
+* The Upcoming Events card is linked to the View Events page, and the Shifts Needing Coverage page links to the Shift Management page. 
+* There is a KPI Goals side pop-up which allows the admin to choose their weekly revenue targets, events this month target, and shifts filled target. There is a "set" button for each target that changes the color of the line below it, showing the target status. 
+
+Event Requests Page: 
 * Pending requests are connected to the customer event inquiry page and show how many customers have submitted requests that haven’t been accepted or rejected yet.
 * Each event request has an accept and reject button. If a request is accepted, it moves to the View Events page and is saved in the database as “accepted,” along with all of the event details. If a request is rejected, it disappears from the website but is still saved in the database as “rejected.” Requests that haven’t been acted on are saved as “pending.
 * The view events button navigates the user to the event details page that displays all of the accepted events 
+
 View Events Page: 
 * The View Events page shows all accepted events on one page with their full details. This page is connected to the event request page.
 * Each accepted event has a “complete event” button. When this button is clicked, the event is marked as “complete” in the database and disappears from the page. Even though it is no longer visible, it is still saved in the database as “complete.”
@@ -24,3 +34,33 @@ View Promos:
 * The calendar allows navigation between months and years and is connected to a real calendar system, so all dates are accurate for each month.
 * When a promotion is added to the calendar, it appears on the selected days or recurring days. Each promotion displays its title along with a view info button (to see full promotion details) and a delete button (to remove the promotion from the calendar).
 * When a promotion is deleted from the calendar, it is removed from the promotion_calendar table but remains stored in the main promotions table in the database.
+
+Staff Scheduling:
+* Shows all scheduled admin and staff. 
+* The user is able to click through the different schedule views (day, 3-day, week). 
+* The user can filter through the different staff on the calendar.
+* The calendar allows for toggling between previous and future days, along with a "Today" button to take the user to the current day.
+* There is a red line following the calendar to show real time (EST).
+
+
+
+STAFF SIDE:
+
+Staff Scheduling:
+* Shows all scheduled admin and staff. 
+* The user is able to click through the different schedule views (day, 3-day, week). 
+* The user can filter through the different staff on the calendar.
+* The calendar allows for toggling between previous and future days, along with a "Today" button to take the user to the current day.
+* There is a red line following the calendar to show real time (EST).
+
+Event Details:
+* Shows which staff are needed for each upcoming event.
+* Lets the user to see the different upcoming events with details taken from customers' event inquiries. 
+* User is able to select through multiple events if there are multiple. 
+
+Shift Availability: 
+* Shows the signed-in staff their specific shifts for the week. 
+* Allows the staff to select their own availability. 
+* The users can drop their scheduled shifts or request a change in shift through the "Drop a Shift" and "Request Change" buttons. 
+* They also get the same option through their "Actions" button in the "My Upcoming Shift" section. 
+* This page is linked to the Shift Management page, as the staff's requests/availabilities will be shown on the Shift Management page. 
