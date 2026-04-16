@@ -545,14 +545,14 @@ DROP TABLE IF EXISTS `staff_availability`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `staff_availability` (
   `availability_id` int NOT NULL AUTO_INCREMENT,
-  `staff_id` int NOT NULL,
+  `user_id` int NOT NULL,
   `day_of_week` varchar(10) NOT NULL,
   `start_time` time DEFAULT NULL,
   `end_time` time DEFAULT NULL,
   `is_unavailable` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`availability_id`),
-  KEY `staff_id` (`staff_id`),
-  CONSTRAINT `staff_availability_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`staff_id`) ON DELETE CASCADE
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `staff_availability_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
