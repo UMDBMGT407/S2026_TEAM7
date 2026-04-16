@@ -574,6 +574,29 @@ def save_availability():
     cur.close()
     return jsonify({"success": True})
 
+@app.route("/submit-shift-request", methods=["POST"])
+@role_required("staff", "admin")
+def submit_shift_request():
+    data = request.get_json()
+    user_id = session.get("user_id")
+
+    request_type = data.get("request_type")
+    shift_id = data.get("shift_id")
+    notes = data.get("notes")
+
+    if not request_type or not user_id:
+        return jsonify({"success": False}), 400
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("""
+        INSERT INTO shift_requests (shift_id, staff_id, request_type, request_note, request_status)
+        VALUES (%s, %s, %s, %s, 'pending')
+    """, (shift_id or None, user_id, request_type, notes or ""))
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({"success": True})
+    
 # ========================
 # ADMIN PAGES
 # ========================
