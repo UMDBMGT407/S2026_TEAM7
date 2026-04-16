@@ -18,11 +18,6 @@ SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
 SET @@SESSION.SQL_LOG_BIN= 0;
 
 --
--- GTID state at the beginning of the backup 
---
-
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '1f5b8956-296b-11f1-98c6-6a86625790cb:1-77,
-9f5dd0cc-2926-11f1-b373-9020ee489e3f:1-82';
 
 --
 -- Table structure for table `booked_events`
