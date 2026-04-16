@@ -183,13 +183,11 @@
   // Scheduled shifts passed from Flask via Jinja2
   const scheduledShifts = {{ scheduled_shifts | tojson }};
 
+
   function offsetDate(n) {
     const d = new Date(); d.setDate(d.getDate() + n);
     return d.toISOString().split('T')[0];
   }
-
-  let availability = JSON.parse(localStorage.getItem('staff_avail') || '{}');
-  let weekOffset = 0;
 
   function getWeekDates(offset) {
     const today = new Date();
@@ -208,6 +206,20 @@
     const disp = h > 12 ? h - 12 : h;
     return `${disp}:00${ampm}`;
   }
+
+  const savedAvailability = {{ saved_availability | tojson }};
+  let availability = {};
+  savedAvailability.forEach(slot => {
+      const dates = getWeekDates(0);
+      dates.forEach(d => {
+          if (DAY_NAMES[d.getDay()].toLowerCase() === slot.day_of_week) {
+              const h = parseInt(slot.start_time.split(':')[0]);
+              const key = `${fmtDate(d)}_${h}`;
+              availability[key] = true;
+          }
+      });
+  });
+  let weekOffset = 0;
 
   function renderGrid() {
     const dates = getWeekDates(weekOffset);
@@ -255,9 +267,34 @@
   }
 
   function saveAvailability() {
-    localStorage.setItem('staff_avail', JSON.stringify(availability));
-    showToast('Availability saved!', '#204631');
-  }
+    const slots = [];
+    const dates = getWeekDates(weekOffset);
+
+    HOURS.forEach(h => {
+        dates.forEach(d => {
+            const ds = fmtDate(d);
+            const key = `${ds}_${h}`;
+            if (availability[key]) {
+                slots.push({
+                    day_of_week: DAY_NAMES[d.getDay()].toLowerCase(),
+                    start_time: `${h}:00:00`,
+                    end_time: `${h + 1}:00:00`
+                });
+            }
+        });
+    });
+
+    fetch('/save-availability', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(slots)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) showToast('Availability saved!', '#204631');
+        else showToast('Error saving. Try again.', '#c0392b');
+    });
+}
 
   function renderShifts() {
     const tbody = document.getElementById('shifts-tbody');
