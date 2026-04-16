@@ -519,6 +519,20 @@ def staff_shift():
         (session.get("user_id"),)
     )
     rows = cur.fetchall()
+    cur.execute("""
+        SELECT day_of_week, start_time, end_time
+        FROM staff_availability
+        WHERE user_id = %s
+    """, (session.get("user_id"),))
+
+    saved_availability = [
+        {
+            "day_of_week": row["day_of_week"],
+            "start_time": str(row["start_time"]),
+            "end_time": str(row["end_time"])
+        }
+        for row in cur.fetchall()
+    ]
     cur.close()
  
     scheduled_shifts = [
@@ -534,8 +548,31 @@ def staff_shift():
     ]
  
     return render_template("staff_shift.html", scheduled_shifts=scheduled_shifts,
-                           user_role=session.get("user_role"))
+                       saved_availability=saved_availability,
+                       user_role=session.get("user_role"))
 
+@app.route("/save-availability", methods=["POST"])
+@role_required("staff", "admin")
+def save_availability():
+    data = request.get_json()
+    user_id = session.get("user_id")
+    
+
+    if not data or not user_id:
+        return jsonify({"success": False}), 400
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur.execute("DELETE FROM staff_availability WHERE user_id = %s", (user_id,))
+
+    for slot in data:
+        cur.execute("""
+            INSERT INTO staff_availability (user_id, day_of_week, start_time, end_time, is_unavailable)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (user_id, slot["day_of_week"], slot["start_time"], slot["end_time"], 0))
+
+    mysql.connection.commit()
+    cur.close()
+    return jsonify({"success": True})
 
 # ========================
 # ADMIN PAGES
@@ -1216,7 +1253,6 @@ def shift_management():
         ORDER BY date, start_hour
     """)
     schedule_rows = cur.fetchall()
-
     staff_lookup = {}
 
     for user in users:
@@ -1262,6 +1298,22 @@ def shift_management():
                 staff["availability"][day] = []
 
         staff["hours"] = round(staff["hours"], 1)
+
+    cur.execute("""
+        SELECT user_id, day_of_week, start_time, end_time
+        FROM staff_availability
+        ORDER BY user_id
+    """)
+    for row in cur.fetchall():
+        uid = row["user_id"]
+        if uid in staff_lookup:
+            day = row["day_of_week"]
+            start = str(row["start_time"])
+            end = str(row["end_time"])
+            if day in staff_lookup[uid]["availability"]:
+                staff_lookup[uid]["availability"][day].append(
+                    f"{start[:5]}–{end[:5]}"
+                )
 
     staff_data = list(staff_lookup.values())
     shift_requests = []
