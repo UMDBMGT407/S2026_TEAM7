@@ -10,19 +10,6 @@ Login:
 * Staff username and password takes user to Staff Scheduling page
 * Customer takes user to Home/Index page
 
-USERNAMES AND PASSWORDS:
-user: alyssa@gtstaff.com 
-pass: alyssa123
-
-user: john@gtadmin.com
-pass: john123
-
-user: grace@gtadmin.com
-pass: grace123
-
-user: matt@gtstaff.com
-pass: matt123
-
 Online Ordering, Cart
 * Add items on online ordering page which references Menu Items table in database to get menu item ID for each item added
 * Items added to cart which calculates total
