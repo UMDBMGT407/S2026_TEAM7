@@ -14,7 +14,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -420,7 +420,7 @@ def become_a_member():
 @role_required("staff", "admin")
 def staff_scheduling_staff():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('staff', 'admin')")
+    cur.execute("SELECT DISTINCT name FROM users WHERE role IN ('staff', 'admin') AND active_status = 'active'")
     staff_members = [row["name"] for row in cur.fetchall()]
     cur.execute("SELECT date, role, start_hour, end_hour, color FROM schedule")
     schedule_events = [
@@ -1198,11 +1198,11 @@ def shift_management():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("""
-        SELECT id, name, email, role
-        FROM users
-        WHERE role IN ('staff', 'admin')
-        ORDER BY name
-    """)
+    SELECT id, name, email, role
+    FROM users
+    WHERE role IN ('staff', 'admin') AND active_status = 'active'
+    ORDER BY name
+""")
     users = cur.fetchall()
 
     cur.execute("""
@@ -1386,7 +1386,7 @@ def staff_scheduling_admin():
     cur.execute("""
         SELECT name
         FROM users
-        WHERE role IN ('staff', 'admin')
+        WHERE role IN ('staff', 'admin') AND active_status = 'active'
         ORDER BY name
     """)
     staff_members = [row["name"] for row in cur.fetchall()]
@@ -1549,9 +1549,10 @@ def add_new_user():
                 email,
                 username,
                 password,
-                role
+                role,
+                active_status
             )
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             first_name,
             last_name,
@@ -1559,7 +1560,8 @@ def add_new_user():
             email,
             username,
             hashed_password,
-            role
+            role,
+            "active"
         ))
 
         mysql.connection.commit()
@@ -1572,7 +1574,57 @@ def add_new_user():
 
         return redirect(url_for("add_new_user"))
 
-    return render_template("add_new_user.html", user_role=session.get("user_role"))
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("""
+        SELECT username
+        FROM users
+        WHERE active_status = 'active'
+        ORDER BY username
+    """)
+
+    users = cursor.fetchall()
+    cursor.close()
+
+    return render_template(
+        "add_new_user.html",
+        user_role=session.get("user_role"),
+        users=users
+    )
+
+# =========================
+# MARK USER INACTIVE
+# =========================
+@app.route("/delete-user", methods=["POST"])
+@role_required("admin")
+def delete_user():
+    username = request.form.get("username", "").strip()
+
+    if not username:
+        flash("Please enter a username.", "danger")
+        return redirect(url_for("add_new_user"))
+
+    cursor = mysql.connection.cursor()
+
+    cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+    existing_user = cursor.fetchone()
+
+    if not existing_user:
+        flash("User not found.", "danger")
+        cursor.close()
+        return redirect(url_for("add_new_user"))
+
+    cursor.execute("""
+        UPDATE users
+        SET active_status = 'inactive'
+        WHERE username = %s
+    """, (username,))
+
+    mysql.connection.commit()
+    cursor.close()
+
+    flash(f"User '{username}' marked as inactive.", "success")
+    return redirect(url_for("add_new_user"))
 
 if __name__ == "__main__":
     app.run(debug=True)
