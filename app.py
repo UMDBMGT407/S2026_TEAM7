@@ -1577,10 +1577,10 @@ def add_new_user():
     cursor = mysql.connection.cursor()
 
     cursor.execute("""
-        SELECT username
+        SELECT username, name
         FROM users
         WHERE active_status = 'active'
-        ORDER BY username
+        ORDER BY name
     """)
 
     users = cursor.fetchall()
