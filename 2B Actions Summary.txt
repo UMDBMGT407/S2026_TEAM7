@@ -1,0 +1,26 @@
+﻿ADMIN SIDE:
+
+
+Event Requests Page 
+* Pending requests are connected to the customer event inquiry page and show how many customers have submitted requests that haven’t been accepted or rejected yet.
+* Each event request has an accept and reject button. If a request is accepted, it moves to the View Events page and is saved in the database as “accepted,” along with all of the event details. If a request is rejected, it disappears from the website but is still saved in the database as “rejected.” Requests that haven’t been acted on are saved as “pending.
+* The view events button navigates the user to the event details page that displays all of the accepted events 
+View Events Page: 
+* The View Events page shows all accepted events on one page with their full details. This page is connected to the event request page.
+* Each accepted event has a “complete event” button. When this button is clicked, the event is marked as “complete” in the database and disappears from the page. Even though it is no longer visible, it is still saved in the database as “complete.”
+* There is also a button that links back to the event requests page.
+
+
+Edit Promos: 
+* Allows you to insert promotion information. 
+* Allows you to apply promotions within a start date and end date, either for every day within that range or for a single recurring day within the range, depending on whether a recurring day is selected.
+* The applicable menu items field is connected to the menu_item table and provides a dropdown of all available menu items.
+* The Apply Promotion button applies the promotion to the promotion calendar, which is displayed on the View Promotions page.
+* The View Promotions button navigates the user to the View Promotions page, where promotions are displayed on a calendar.
+
+
+View Promos:
+* The user can select from a dropdown menu of existing promotions and add them to the calendar. Promotions can be applied to every day within a selected date range or to a single recurring day within that range. Promotions are added by selecting the information and clicking the "Add to Calendar" button.
+* The calendar allows navigation between months and years and is connected to a real calendar system, so all dates are accurate for each month.
+* When a promotion is added to the calendar, it appears on the selected days or recurring days. Each promotion displays its title along with a view info button (to see full promotion details) and a delete button (to remove the promotion from the calendar).
+* When a promotion is deleted from the calendar, it is removed from the promotion_calendar table but remains stored in the main promotions table in the database.
