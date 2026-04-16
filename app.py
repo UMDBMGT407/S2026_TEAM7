@@ -1360,13 +1360,14 @@ def shift_management():
     shift_request_rows = cur.fetchall()
 
     shift_requests = [
-        {
-            "id": row["request_id"],
-            "staff_name": row["staff_name"],
-            "text": f"{row['request_type'].title()} request: {row['request_note'] or 'No details provided'}",
-            "status": row["request_status"]
-        }
-        for row in shift_request_rows
+    {
+        "id": row["request_id"],
+        "staff_name": row["staff_name"],
+        "request_type": row["request_type"],
+        "text": f"{row['request_type'].title()} request: {row['request_note'] or 'No details provided'}",
+        "status": row["request_status"]
+    }
+    for row in shift_request_rows
     ]
 
 
