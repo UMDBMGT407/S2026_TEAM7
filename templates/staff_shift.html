@@ -140,18 +140,21 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <label>Type of Request</label>
-        <select class="form-select" id="request-type">
+      <label>Type of Request</label>
+      <select class="form-select" id="request-type" onchange="updateRequestFields()">
           <option value="">Select...</option>
-          <option value="swap">Shift Swap</option>
           <option value="time">Time Change</option>
           <option value="role">Role Change</option>
           <option value="other">Other</option>
-        </select>
-        <label>Shift Affected</label>
-        <select class="form-select" id="request-shift-select"></select>
-        <label>Details / Notes</label>
-        <textarea class="form-control" id="request-notes" rows="4" placeholder="Describe your request..."></textarea>
+      </select>
+
+      <label style="margin-top:10px;">Shift Affected</label>
+      <select class="form-select" id="request-shift-select"></select>
+
+      <div id="request-extra-fields"></div>
+
+      <label style="margin-top:10px;">Details / Notes</label>
+      <textarea class="form-control" id="request-notes" rows="3" placeholder="Describe your request..."></textarea>
       </div>
       <div class="modal-footer border-0">
         <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
@@ -379,14 +382,20 @@
     if (!type) { alert('Please select a request type.'); return; }
     if (!shift) { alert('Please select the affected shift.'); return; }
 
+    const payload = { shift_id: shift, request_type: type, notes: notes };
+
+    if (type === 'time') {
+        payload.new_date = document.getElementById('new-date')?.value || '';
+        payload.new_start = document.getElementById('new-start')?.value || '';
+        payload.new_end = document.getElementById('new-end')?.value || '';
+    } else if (type === 'role') {
+        payload.new_role = document.getElementById('new-role')?.value || '';
+    }
+
     fetch('/submit-shift-request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            shift_id: shift,
-            request_type: type,
-            notes: notes
-        })
+        body: JSON.stringify(payload)
     })
     .then(r => r.json())
     .then(data => {
@@ -412,6 +421,35 @@
     renderGrid();
     renderShifts();
   });
+
+  function updateRequestFields() {
+    const type = document.getElementById('request-type').value;
+    const container = document.getElementById('request-extra-fields');
+
+    if (type === 'time') {
+        container.innerHTML = `
+            <label style="margin-top:10px;">New Date</label>
+            <input type="date" class="form-control" id="new-date">
+            <label style="margin-top:10px;">New Start Time</label>
+            <input type="time" class="form-control" id="new-start">
+            <label style="margin-top:10px;">New End Time</label>
+            <input type="time" class="form-control" id="new-end">
+        `;
+    } else if (type === 'role') {
+        container.innerHTML = `
+            <label style="margin-top:10px;">New Role</label>
+            <select class="form-select" id="new-role">
+                <option value="Server">Server</option>
+                <option value="Host">Host</option>
+                <option value="Bartender">Bartender</option>
+            </select>
+        `;
+    } else {
+        container.innerHTML = '';
+    }
+  }
+
+
 </script>
 </body>
 </html>
