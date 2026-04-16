@@ -1,6 +1,28 @@
 CUSTOMER SIDE:
 
+Index:
+* Promotions message pulling from promotions table in database
 
+Login:
+* Username and Password entered check with User and Member tables in database to check if user is admin, staff, or customer.
+* Username and password must match in user and member tables.
+* Admin username and password takes user to Admin Dashboard page
+* Staff username and password takes user to Staff Scheduling page
+* Customer takes user to Home/Index page
+
+USERNAMES AND PASSWORDS:
+user: alyssa@gtstaff.com 
+pass: alyssa123
+
+user: john@gtadmin.com
+pass: john123
+
+Online Ordering, Cart
+* Add items on online ordering page which references Menu Items table in database to get menu item ID for each item added
+* Items added to cart which calculates total
+
+Checkout
+* Once user submits order, orders get added to orders table in the database
 
 Event Inquiry:
 * Fill out form and get added to event_inquiry table in database
