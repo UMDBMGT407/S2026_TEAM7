@@ -2,6 +2,12 @@ CUSTOMER SIDE:
 
 
 
+Event Inquiry:
+* Fill out form and get added to event_inquiry table in database
+
+Become a Member:
+* Fill out form and get added to members table in database
+
 
 ADMIN SIDE:
 
