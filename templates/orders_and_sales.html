@@ -131,41 +131,46 @@ Schedule</a></li>
           </div>
 
           <div class="weekly-sales">
-            <div class="weekly-sales2">Weekly Sales</div>
-            <div class="line-1"></div>
-            <div class="_2-8-k">$2.8K</div>
-            <div class="this-is-379-23-lower-than-last-week">
-              This is $379.23 lower than last week
-            </div>
+          <div class="weekly-sales2">Weekly Sales</div>
+          <div class="line-1"></div>
+          <div class="_2-8-k">${{ "%.2f"|format(weekly_sales) }}</div>
+          <div class="this-is-379-23-lower-than-last-week">
+            This is
+            {% if weekly_sales_difference >= 0 %}
+              ${{ "%.2f"|format(weekly_sales_difference) }} higher than last week
+            {% else %}
+              ${{ "%.2f"|format(weekly_sales_difference|abs) }} lower than last week
+            {% endif %}
           </div>
+        </div>
 
           <div class="weekly-profit">
-            <div class="weekly-profit2">Weekly Profit</div>
-            <div class="line-1"></div>
-            <div class="_1-2-k">$1.2K</div>
-            <div class="this-is-162-56-lower-than-last-week">
-              This is $162.56 lower than last week
-            </div>
+          <div class="weekly-profit2">Monthly Sales</div>
+          <div class="line-1"></div>
+          <div class="_1-2-k">${{ "%.2f"|format(monthly_sales) }}</div>
+          <div class="this-is-162-56-lower-than-last-week">
+            This is
+            {% if monthly_sales_difference >= 0 %}
+              ${{ "%.2f"|format(monthly_sales_difference) }} higher than last month
+            {% else %}
+              ${{ "%.2f"|format(monthly_sales_difference|abs) }} lower than last month
+            {% endif %}
           </div>
         </div>
 
         <div class="frame-19">
           <div class="sales-targets-resulst">
-            <div class="targets-results">Targets Results</div>
-            <div class="line-12"></div>
             <div class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k">
             <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span">
-              Orders: 150 /
+              Orders: 150 / {{ weekly_orders }}
             </span>
             <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span2">
-              {{ weekly_orders }}
               <br />
-              Sales: $3.5K /
+              Weekly Sales: $3,500 / ${{ "%.2f"|format(weekly_sales) }}
             </span>
             <span class="orders-150-167-sales-3-5-k-2-8-k-profit-1-8-k-1-2-k-span3">
-              $2.8K
               <br />
-              Profit: $1.8K / $1.2K
+              Monthly Sales: $18,000 / ${{ "%.2f"|format(monthly_sales) }}
             </span>
           </div>
           </div>
