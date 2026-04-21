@@ -162,6 +162,72 @@ CREATE TABLE `ingredients` (
 --
 -- Dumping data for table `ingredients`
 --
+INSERT INTO `ingredients` (`IngredientID`, `IngredientName`, `SupplierID`) VALUES
+(1,'Chicken Breast',1),
+(2,'Ground Beef',1),
+(3,'Burger Buns',2),
+(4,'Hot Dog Buns',2),
+(5,'Lettuce',3),
+(6,'Tomatoes',3),
+(7,'Onions',3),
+(8,'Cheddar Cheese',4),
+(9,'Mozzarella Cheese',4),
+(10,'French Fries',5),
+
+(11,'Sweet Potato Fries',5),
+(12,'Ketchup',6),
+(13,'Mustard',6),
+(14,'Mayonnaise',6),
+(15,'BBQ Sauce',7),
+(16,'Buffalo Sauce',7),
+(17,'Ranch Dressing',8),
+(18,'Blue Cheese Dressing',8),
+(19,'Chicken Wings',9),
+(20,'Shrimp',9),
+
+(21,'Salmon Fillet',10),
+(22,'Steak',1),
+(23,'Eggs',2),
+(24,'Milk',2),
+(25,'Butter',3),
+(26,'Flour',3),
+(27,'Sugar',4),
+(28,'Salt',4),
+(29,'Black Pepper',5),
+(30,'Garlic Powder',5),
+
+(31,'Olive Oil',6),
+(32,'Vegetable Oil',6),
+(33,'Pasta',7),
+(34,'Rice',7),
+(35,'Tortillas',8),
+(36,'Nacho Chips',8),
+(37,'Salsa',9),
+(38,'Guacamole',9),
+(39,'Pickles',10),
+(40,'Jalapenos',10),
+
+(41,'Chicken Stock',1),
+(42,'Spinach',2),
+(43,'Teriyaki Sauce',3),
+(44,'Parmesan Cheese',4),
+(45,'Heavy Cream',5),
+(46,'Ice Cream',6),
+(47,'Chocolate Syrup',7),
+(48,'Whipped Cream',8),
+(49,'Coffee Beans',9),
+(50,'Tea Bags',10),
+
+(51,'Soda Syrup',1),
+(52,'Beer',2),
+(53,'Wine',3),
+(54,'Lemons',4),
+(55,'Limes',5),
+(56,'Mint Leaves',6),
+(57,'Simple Syrup',7),
+(58,'Club Soda',8),
+(59,'Orange Juice',9),
+(60,'Cranberry Juice',10);
 
 LOCK TABLES `ingredients` WRITE;
 /*!40000 ALTER TABLE `ingredients` DISABLE KEYS */;
@@ -200,6 +266,75 @@ CREATE TABLE `inventory` (
 --
 -- Dumping data for table `inventory`
 --
+INSERT INTO `inventory`
+(`IngredientID`, `SupplierID`, `InventoryName`, `CurrentStock`, `ExpirationDate`, `DateIn`, `StorageType`, `ReorderQuantity`, `ReorderDate`, `UnitsOfMeasure`, `UnitsPerPackage`, `NumberOfPackages`, `status`)
+VALUES
+(1,1,'Chicken Breast',120.00,'2026-05-01','2026-04-15','Freezer',50,'2026-04-25','lbs',10,12,'active'),
+(2,1,'Ground Beef',95.00,'2026-04-28','2026-04-14','Freezer',40,'2026-04-24','lbs',10,10,'active'),
+(3,2,'Burger Buns',200.00,'2026-04-25','2026-04-18','Dry',100,'2026-04-23','units',20,10,'active'),
+(4,2,'Hot Dog Buns',150.00,'2026-04-25','2026-04-18','Dry',80,'2026-04-23','units',20,8,'active'),
+(5,3,'Lettuce',60.00,'2026-04-23','2026-04-20','Refrigerator',30,'2026-04-22','heads',10,6,'active'),
+(6,3,'Tomatoes',80.00,'2026-04-24','2026-04-19','Refrigerator',40,'2026-04-23','lbs',10,8,'active'),
+(7,3,'Onions',100.00,'2026-05-10','2026-04-18','Dry',50,'2026-04-28','lbs',10,10,'active'),
+(8,4,'Cheddar Cheese',75.00,'2026-05-05','2026-04-16','Refrigerator',30,'2026-04-27','lbs',5,15,'active'),
+(9,4,'Mozzarella Cheese',70.00,'2026-05-05','2026-04-16','Refrigerator',30,'2026-04-27','lbs',5,14,'active'),
+(10,5,'French Fries',200.00,'2026-06-01','2026-04-10','Freezer',100,'2026-04-26','lbs',20,10,'active'),
+
+(11,5,'Sweet Potato Fries',120.00,'2026-06-01','2026-04-10','Freezer',60,'2026-04-26','lbs',20,6,'active'),
+(12,6,'Ketchup',90.00,'2027-01-01','2026-03-01','Dry',40,'2026-05-01','bottles',12,8,'active'),
+(13,6,'Mustard',85.00,'2027-01-01','2026-03-01','Dry',40,'2026-05-01','bottles',12,7,'active'),
+(14,6,'Mayonnaise',70.00,'2026-10-01','2026-03-10','Refrigerator',30,'2026-04-30','bottles',12,6,'active'),
+(15,7,'BBQ Sauce',65.00,'2027-02-01','2026-03-15','Dry',30,'2026-05-05','bottles',12,5,'active'),
+(16,7,'Buffalo Sauce',60.00,'2027-02-01','2026-03-15','Dry',30,'2026-05-05','bottles',12,5,'active'),
+(17,8,'Ranch Dressing',55.00,'2026-09-01','2026-03-20','Refrigerator',25,'2026-04-29','bottles',12,5,'active'),
+(18,8,'Blue Cheese Dressing',50.00,'2026-09-01','2026-03-20','Refrigerator',25,'2026-04-29','bottles',12,4,'active'),
+(19,9,'Chicken Wings',180.00,'2026-05-15','2026-04-12','Freezer',90,'2026-04-27','lbs',20,9,'active'),
+(20,9,'Shrimp',140.00,'2026-05-10','2026-04-11','Freezer',70,'2026-04-26','lbs',10,14,'active'),
+
+(21,10,'Salmon Fillet',110.00,'2026-05-08','2026-04-12','Freezer',50,'2026-04-26','lbs',10,11,'active'),
+(22,1,'Steak',130.00,'2026-05-12','2026-04-13','Freezer',60,'2026-04-27','lbs',10,13,'active'),
+(23,2,'Eggs',300.00,'2026-05-01','2026-04-17','Refrigerator',150,'2026-04-24','units',30,10,'active'),
+(24,2,'Milk',100.00,'2026-04-25','2026-04-20','Refrigerator',50,'2026-04-23','gallons',5,20,'active'),
+(25,3,'Butter',80.00,'2026-05-15','2026-04-14','Refrigerator',40,'2026-04-28','lbs',5,16,'active'),
+(26,3,'Flour',200.00,'2026-08-01','2026-03-01','Dry',100,'2026-05-10','lbs',25,8,'active'),
+(27,4,'Sugar',180.00,'2026-08-01','2026-03-01','Dry',90,'2026-05-10','lbs',25,7,'active'),
+(28,4,'Salt',160.00,'2027-01-01','2026-02-01','Dry',80,'2026-05-15','lbs',25,6,'active'),
+(29,5,'Black Pepper',120.00,'2027-01-01','2026-02-01','Dry',60,'2026-05-15','lbs',10,12,'active'),
+(30,5,'Garlic Powder',110.00,'2027-01-01','2026-02-01','Dry',55,'2026-05-15','lbs',10,11,'active'),
+
+(31,6,'Olive Oil',90.00,'2027-05-01','2026-01-15','Dry',40,'2026-05-20','liters',5,18,'active'),
+(32,6,'Vegetable Oil',150.00,'2027-05-01','2026-01-15','Dry',70,'2026-05-20','liters',5,30,'active'),
+(33,7,'Pasta',170.00,'2026-09-01','2026-02-01','Dry',80,'2026-05-10','lbs',20,8,'active'),
+(34,7,'Rice',200.00,'2026-09-01','2026-02-01','Dry',100,'2026-05-10','lbs',25,8,'active'),
+(35,8,'Tortillas',140.00,'2026-05-01','2026-04-18','Refrigerator',60,'2026-04-24','units',20,7,'active'),
+(36,8,'Nacho Chips',160.00,'2026-07-01','2026-03-10','Dry',80,'2026-05-01','lbs',20,8,'active'),
+(37,9,'Salsa',130.00,'2026-08-01','2026-03-15','Dry',60,'2026-05-05','jars',12,10,'active'),
+(38,9,'Guacamole',90.00,'2026-04-24','2026-04-20','Refrigerator',40,'2026-04-22','lbs',5,18,'active'),
+(39,10,'Pickles',120.00,'2027-01-01','2026-02-01','Dry',60,'2026-05-15','jars',12,10,'active'),
+(40,10,'Jalapenos',100.00,'2027-01-01','2026-02-01','Dry',50,'2026-05-15','jars',12,8,'active'),
+
+-- some inactive items 
+(41,1,'Old Chicken Stock',10.00,'2026-04-10','2026-03-01','Freezer',20,'2026-04-05','lbs',10,1,'inactive'),
+(42,2,'Expired Lettuce',5.00,'2026-04-15','2026-04-10','Refrigerator',10,'2026-04-16','heads',5,1,'inactive'),
+(43,3,'Discontinued Sauce',20.00,'2026-06-01','2026-02-01','Dry',10,'2026-04-20','bottles',12,2,'inactive'),
+(44,4,'Old Cheese Batch',15.00,'2026-04-18','2026-03-20','Refrigerator',10,'2026-04-19','lbs',5,3,'inactive'),
+(45,5,'Spoiled Milk',8.00,'2026-04-20','2026-04-15','Refrigerator',10,'2026-04-21','gallons',5,2,'inactive'),
+
+(46,6,'Ice Cream',90.00,'2026-06-15','2026-04-10','Freezer',40,'2026-05-01','gallons',5,18,'active'),
+(47,7,'Chocolate Syrup',70.00,'2027-01-01','2026-02-01','Dry',30,'2026-05-15','bottles',12,6,'active'),
+(48,8,'Whipped Cream',60.00,'2026-05-01','2026-04-18','Refrigerator',30,'2026-04-25','cans',12,5,'active'),
+(49,9,'Coffee Beans',150.00,'2027-02-01','2026-01-15','Dry',70,'2026-05-20','lbs',20,7,'active'),
+(50,10,'Tea Bags',200.00,'2027-02-01','2026-01-15','Dry',100,'2026-05-20','units',50,4,'active'),
+(51,1,'Soda Syrup',180.00,'2027-01-01','2026-02-01','Dry',80,'2026-05-10','boxes',10,18,'active'),
+(52,2,'Beer Kegs',40.00,'2026-06-01','2026-04-10','Refrigerator',20,'2026-04-28','kegs',1,40,'active'),
+(53,3,'Wine Bottles',120.00,'2028-01-01','2026-01-01','Dry',60,'2026-06-01','bottles',12,10,'active'),
+(54,4,'Lemons',90.00,'2026-04-25','2026-04-20','Refrigerator',40,'2026-04-23','lbs',10,9,'active'),
+(55,5,'Limes',85.00,'2026-04-25','2026-04-20','Refrigerator',40,'2026-04-23','lbs',10,8,'active'),
+(56,6,'Mint Leaves',50.00,'2026-04-23','2026-04-20','Refrigerator',20,'2026-04-22','bunches',5,10,'active'),
+(57,7,'Simple Syrup',60.00,'2027-01-01','2026-02-01','Dry',30,'2026-05-15','liters',5,12,'active'),
+(58,8,'Club Soda',140.00,'2027-01-01','2026-02-01','Dry',60,'2026-05-15','cans',24,6,'active'),
+(59,9,'Orange Juice',100.00,'2026-05-01','2026-04-18','Refrigerator',50,'2026-04-25','gallons',5,20,'active'),
+(60,10,'Cranberry Juice',95.00,'2026-05-01','2026-04-18','Refrigerator',50,'2026-04-25','gallons',5,19,'active');
 
 LOCK TABLES `inventory` WRITE;
 /*!40000 ALTER TABLE `inventory` DISABLE KEYS */;
