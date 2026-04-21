@@ -651,14 +651,26 @@ def remove_seasonal_item():
 @app.route("/menu-adjustments")
 @role_required("admin")
 def menu_adjustments():
+    status_filter = request.args.get("status", "active").strip().lower()
+
+    if status_filter not in ["active", "inactive", "all"]:
+        status_filter = "active"
+
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    cur.execute("""
-        SELECT menu_item_id, name, category, price
-        FROM menu_items
-        WHERE active_status = 'active'
-        ORDER BY category, name
-    """)
+    if status_filter == "all":
+        cur.execute("""
+            SELECT menu_item_id, name, category, price, active_status
+            FROM menu_items
+            ORDER BY category, name
+        """)
+    else:
+        cur.execute("""
+            SELECT menu_item_id, name, category, price, active_status
+            FROM menu_items
+            WHERE active_status = %s
+            ORDER BY category, name
+        """, (status_filter,))
 
     menu_items = cur.fetchall()
     cur.close()
@@ -666,8 +678,10 @@ def menu_adjustments():
     return render_template(
         "menu_adjustments.html",
         menu_items=menu_items,
+        status_filter=status_filter,
         user_role=session.get("user_role")
     )
+    
 @app.route("/menu-adjustments/add", methods=["POST"])
 @role_required("admin")
 def add_menu_item():
@@ -731,7 +745,21 @@ def delete_menu_item(menu_item_id):
     cur.close()
 
     return redirect(url_for("menu_adjustments"))
+@app.route("/menu-adjustments/reactivate/<int:menu_item_id>", methods=["POST"])
+@role_required("admin")
+def reactivate_menu_item(menu_item_id):
+    cur = mysql.connection.cursor()
 
+    cur.execute("""
+        UPDATE menu_items
+        SET active_status = 'active'
+        WHERE menu_item_id = %s
+    """, (menu_item_id,))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return redirect(url_for("menu_adjustments", status="inactive"))
 
 @app.route("/orders-and-sales")
 @role_required("admin")
