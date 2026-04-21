@@ -189,14 +189,14 @@ CREATE TABLE `inventory` (
   `UnitsOfMeasure` varchar(20) NOT NULL,
   `UnitsPerPackage` decimal(10,2) DEFAULT NULL,
   `NumberOfPackages` int DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active',
+
   PRIMARY KEY (`InventoryID`),
   KEY `IngredientID` (`IngredientID`),
   KEY `SupplierID` (`SupplierID`),
   CONSTRAINT `inventory_ibfk_1` FOREIGN KEY (`IngredientID`) REFERENCES `ingredients` (`IngredientID`),
   CONSTRAINT `inventory_ibfk_2` FOREIGN KEY (`SupplierID`) REFERENCES `suppliers` (`SupplierID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
 --
 -- Dumping data for table `inventory`
 --
