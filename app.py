@@ -766,7 +766,7 @@ def reactivate_menu_item(menu_item_id):
 def orders_and_sales():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    # find the latest week that exists in the orders table
+    # latest week in orders table
     cur.execute("""
         SELECT YEARWEEK(MAX(TransactionDate), 1) AS latest_week
         FROM orders
@@ -774,18 +774,34 @@ def orders_and_sales():
     latest_week_result = cur.fetchone()
     latest_week = latest_week_result["latest_week"]
 
-    # if there are no orders yet
-    if latest_week is None:
+    # latest month in orders table
+    cur.execute("""
+        SELECT
+            YEAR(MAX(TransactionDate)) AS latest_year,
+            MONTH(MAX(TransactionDate)) AS latest_month
+        FROM orders
+    """)
+    latest_month_result = cur.fetchone()
+    latest_year = latest_month_result["latest_year"]
+    latest_month = latest_month_result["latest_month"]
+
+    if latest_week is None or latest_year is None or latest_month is None:
         cur.close()
         return render_template(
             "orders_and_sales.html",
             user_role=session.get("user_role"),
             weekly_orders=0,
             last_week_orders=0,
-            order_difference=0
+            order_difference=0,
+            weekly_sales=0,
+            last_week_sales=0,
+            weekly_sales_difference=0,
+            monthly_sales=0,
+            last_month_sales=0,
+            monthly_sales_difference=0
         )
 
-    # total orders for the latest week in the database
+    # weekly orders
     cur.execute("""
         SELECT COUNT(*) AS weekly_orders
         FROM orders
@@ -793,7 +809,6 @@ def orders_and_sales():
     """, (latest_week,))
     weekly_orders = cur.fetchone()["weekly_orders"]
 
-    # total orders for the week before that
     cur.execute("""
         SELECT COUNT(*) AS last_week_orders
         FROM orders
@@ -803,6 +818,50 @@ def orders_and_sales():
 
     order_difference = weekly_orders - last_week_orders
 
+    # weekly sales
+    cur.execute("""
+        SELECT COALESCE(SUM(OrderPrice), 0) AS weekly_sales
+        FROM orders
+        WHERE YEARWEEK(TransactionDate, 1) = %s
+    """, (latest_week,))
+    weekly_sales = float(cur.fetchone()["weekly_sales"] or 0)
+
+    cur.execute("""
+        SELECT COALESCE(SUM(OrderPrice), 0) AS last_week_sales
+        FROM orders
+        WHERE YEARWEEK(TransactionDate, 1) = %s
+    """, (latest_week - 1,))
+    last_week_sales = float(cur.fetchone()["last_week_sales"] or 0)
+
+    weekly_sales_difference = weekly_sales - last_week_sales
+
+    # monthly sales
+    cur.execute("""
+        SELECT COALESCE(SUM(OrderPrice), 0) AS monthly_sales
+        FROM orders
+        WHERE YEAR(TransactionDate) = %s
+          AND MONTH(TransactionDate) = %s
+    """, (latest_year, latest_month))
+    monthly_sales = float(cur.fetchone()["monthly_sales"] or 0)
+
+    # previous month logic
+    if latest_month == 1:
+        prev_month = 12
+        prev_month_year = latest_year - 1
+    else:
+        prev_month = latest_month - 1
+        prev_month_year = latest_year
+
+    cur.execute("""
+        SELECT COALESCE(SUM(OrderPrice), 0) AS last_month_sales
+        FROM orders
+        WHERE YEAR(TransactionDate) = %s
+          AND MONTH(TransactionDate) = %s
+    """, (prev_month_year, prev_month))
+    last_month_sales = float(cur.fetchone()["last_month_sales"] or 0)
+
+    monthly_sales_difference = monthly_sales - last_month_sales
+
     cur.close()
 
     return render_template(
@@ -810,7 +869,13 @@ def orders_and_sales():
         user_role=session.get("user_role"),
         weekly_orders=weekly_orders,
         last_week_orders=last_week_orders,
-        order_difference=order_difference
+        order_difference=order_difference,
+        weekly_sales=weekly_sales,
+        last_week_sales=last_week_sales,
+        weekly_sales_difference=weekly_sales_difference,
+        monthly_sales=monthly_sales,
+        last_month_sales=last_month_sales,
+        monthly_sales_difference=monthly_sales_difference
     )
 
 
