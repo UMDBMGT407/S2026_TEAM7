@@ -321,21 +321,19 @@ Schedule</a></li>
 {% endif %}
 </div>
 
-      <div class="top-stockout-items">
-        <div class="top-stock-out-items">Top Stock Out Items</div>
-        <div class="line-2"></div>
-        <div class="kaiser-roll-281-american-cheese-172-frozen-french-fries-156-beef-patty-127-chicken-breast-111">
-          Kaiser Roll ----------- 281
-          <br />
-          American Cheese -----172
-          <br />
-          Frozen French Fries -- 156
-          <br />
-          Beef Patty ------------ 127
-          <br />
-          Chicken Breast ------- 111
-        </div>
-      </div>
+     <div class="top-stockout-items">
+  <div class="top-stock-out-items">Top Ordered Items</div>
+  <div class="line-2"></div>
+  <div class="kaiser-roll-281-american-cheese-172-frozen-french-fries-156-beef-patty-127-chicken-breast-111">
+    {% if top_ordered_items %}
+      {% for item in top_ordered_items %}
+        {{ item.InventoryName }} - {{ item.total_ordered }}<br />
+      {% endfor %}
+    {% else %}
+      No ordered inventory items found.
+    {% endif %}
+  </div>
+</div>
 
     </div>
   </div>
