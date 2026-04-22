@@ -651,15 +651,31 @@ def menu():
     """)
     bottom_selling_items = cur.fetchall()
 
+    # Seasonal items + sales
+    cur.execute("""
+        SELECT 
+            mi.menu_item_id,
+            mi.name,
+            COALESCE(SUM(oi.Quantity), 0) AS total_sold
+        FROM menu_items mi
+        LEFT JOIN order_items oi
+            ON mi.menu_item_id = oi.menu_item_id
+        WHERE mi.active_status = 'active'
+          AND mi.category = 'Seasonal'
+        GROUP BY mi.menu_item_id, mi.name
+        ORDER BY mi.name ASC
+    """)
+    seasonal_items = cur.fetchall()
+
     cur.close()
 
     return render_template(
         "menu.html",
         user_role=session.get("user_role"),
         top_selling_items=top_selling_items,
-        bottom_selling_items=bottom_selling_items
+        bottom_selling_items=bottom_selling_items,
+        seasonal_items=seasonal_items
     )
-
 @app.route("/remove-seasonal-item", methods=["POST"])
 @role_required("admin")
 def remove_seasonal_item():
