@@ -685,7 +685,12 @@ def menu():
 
     for row in payment_rows:
         payment_frequency[row["PaymentMethod"]] = row["payment_count"]
-
+    # Average Order Value
+    cur.execute("""
+        SELECT COALESCE(AVG(OrderPrice), 0) AS avg_order_value
+        FROM orders
+    """)
+    avg_order_value = float(cur.fetchone()["avg_order_value"] or 0)
     cur.close()
 
     return render_template(
@@ -695,6 +700,7 @@ def menu():
         bottom_selling_items=bottom_selling_items,
         seasonal_items=seasonal_items,
         payment_frequency=payment_frequency
+        avg_order_value=avg_order_value 
     )
 @app.route("/remove-seasonal-item", methods=["POST"])
 @role_required("admin")
