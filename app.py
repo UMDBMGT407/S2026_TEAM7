@@ -667,6 +667,25 @@ def menu():
     """)
     seasonal_items = cur.fetchall()
 
+    # Payment type frequency
+    cur.execute("""
+        SELECT PaymentMethod, COUNT(*) AS payment_count
+        FROM orders
+        WHERE PaymentMethod IN ('Credit Card', 'Debit Card', 'Cash', 'Mobile Pay')
+        GROUP BY PaymentMethod
+    """)
+    payment_rows = cur.fetchall()
+
+    payment_frequency = {
+        "Credit Card": 0,
+        "Debit Card": 0,
+        "Cash": 0,
+        "Mobile Pay": 0
+    }
+
+    for row in payment_rows:
+        payment_frequency[row["PaymentMethod"]] = row["payment_count"]
+
     cur.close()
 
     return render_template(
@@ -674,7 +693,8 @@ def menu():
         user_role=session.get("user_role"),
         top_selling_items=top_selling_items,
         bottom_selling_items=bottom_selling_items,
-        seasonal_items=seasonal_items
+        seasonal_items=seasonal_items,
+        payment_frequency=payment_frequency
     )
 @app.route("/remove-seasonal-item", methods=["POST"])
 @role_required("admin")
