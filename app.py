@@ -621,7 +621,7 @@ def dashboard():
 def menu():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    # Top selling items
+      # Top selling items
     cur.execute("""
         SELECT 
             mi.name,
@@ -630,7 +630,7 @@ def menu():
         LEFT JOIN order_items oi
             ON mi.menu_item_id = oi.menu_item_id
         WHERE mi.active_status = 'active'
-        GROUP BY mi.menu_item_id, mi.name
+        GROUP BY mi.name
         ORDER BY total_sold DESC, mi.name ASC
         LIMIT 4
     """)
@@ -645,7 +645,7 @@ def menu():
         LEFT JOIN order_items oi
             ON mi.menu_item_id = oi.menu_item_id
         WHERE mi.active_status = 'active'
-        GROUP BY mi.menu_item_id, mi.name
+        GROUP BY mi.name
         ORDER BY total_sold ASC, mi.name ASC
         LIMIT 4
     """)
