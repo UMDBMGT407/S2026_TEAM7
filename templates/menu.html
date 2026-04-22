@@ -165,13 +165,17 @@ Schedule</a></li>
 
       <div class="menu-right">
         <div class="waste-percentage">
-          <div class="waste-percentage2">Waste Percentage</div>
-          <div class="line-1"></div>
-          <div class="_2-7">2.7%</div>
-          <div class="this-is-0-2-lower-than-last-week">
-            This is 0.2 lower than last week!
-          </div>
-        </div>
+  <div class="waste-percentage2">Average Order Value</div>
+  <div class="line-1"></div>
+
+  <div class="_2-7">
+    ${{ "%.2f"|format(avg_order_value) }}
+  </div>
+
+  <div class="this-is-0-2-lower-than-last-week">
+    Based on all online customer orders
+  </div>
+</div>
       </div>
 
     </div>
