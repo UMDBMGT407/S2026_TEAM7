@@ -963,18 +963,35 @@ def orders_and_sales():
 @role_required("admin")
 def inventory():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
     cur.execute("""
         SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
         FROM suppliers
         ORDER BY SupplierName
     """)
     suppliers = cur.fetchall()
+
+    cur.execute("""
+        SELECT
+            i.InventoryName,
+            COALESCE(SUM(oi.Quantity), 0) AS total_ordered
+        FROM inventory i
+        LEFT JOIN order_items oi
+            ON i.InventoryID = oi.menu_item_id
+        WHERE i.status = 'active'
+        GROUP BY i.InventoryID, i.InventoryName
+        ORDER BY total_ordered DESC, i.InventoryName ASC
+        LIMIT 5
+    """)
+    top_ordered_items = cur.fetchall()
+
     cur.close()
 
     return render_template(
         "inventory.html",
         user_role=session.get("user_role"),
-        suppliers=suppliers
+        suppliers=suppliers,
+        top_ordered_items=top_ordered_items
     )
 @app.route("/submit-supplier-availability", methods=["POST"])
 @role_required("admin")
