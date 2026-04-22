@@ -1895,38 +1895,7 @@ body {
   box-sizing: border-box;
 }
 
-.menu {
-  background: #36845a;
-  min-height: 100vh;
-  padding: 120px 30px 60px;
-}
 
-.menu-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 420px 1fr 260px;
-  gap: 40px;
-  align-items: start;
-}
-
-.menu-left {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.menu-center {
-  display: flex;
-  justify-content: center;
-  align-items: start;
-}
-
-.menu-right {
-  display: flex;
-  justify-content: center;
-  align-items: start;
-}
 
 .top-selling-items,
 .bottom-selling-items,
@@ -2014,21 +1983,54 @@ body {
   font-size: 16px;
 }
 
-.current-seasonal-items-sales {
-  max-width: 650px;
-  margin-top: 120px;
-  margin-left: 45%;
-  transform: translate(-10%, -500px); /* moves it up 500px */
+.menu {
+  background: #36845a;
+  min-height: 100vh;
+  padding: 120px 30px 60px;
+}
+
+.menu-content {
+  max-width: 1500px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 420px 1fr 420px;
+  gap: 40px;
+  align-items: start;
+}
+
+.menu-left {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 30px;
+}
+
+.menu-center {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.menu-right {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  align-items: stretch;
+}
+
+.current-seasonal-items-sales {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .current-seasonal-items-sales2 {
   color: #ffffff;
-  text-align: center;
+  text-align: left;
   font-family: "Passion One", sans-serif;
-  font-size: 52px;
+  font-size: 42px;
   width: 100%;
   margin-bottom: 12px;
 }
@@ -2050,7 +2052,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   width: 100%;
 }
 
@@ -2058,10 +2060,15 @@ body {
   color: #ffffff;
   font-family: "Passion One", sans-serif;
   font-size: 26px;
+  line-height: 1.2;
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .delete-btn {
-  background-color: #204631;
+  background-color: #d2504d;
   color: white;
   border: 2px solid white;
   border-radius: 10px;
@@ -2078,12 +2085,20 @@ body {
   color: #204631;
 }
 
-
 @media (max-width: 1200px) {
   .menu-content {
     grid-template-columns: 1fr;
-    gap: 40px;
   }
+
+  .seasonal-item-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .delete-btn {
+    width: 100%;
+  }
+}
 
   .menu-left {
     flex-direction: row;
@@ -2103,7 +2118,7 @@ body {
   .menu-right {
     justify-content: flex-start;
   }
-}
+
 
 @media (max-width: 768px) {
   .menu {
@@ -2149,10 +2164,7 @@ body {
     width: 100%;
   }
 
-  .seasonal-item-text {
-    white-space: nowrap;
-  }
-
+  
 
 body {
   background: #36845a;
@@ -2363,10 +2375,10 @@ body {
 }
 
 .menu-content {
-  max-width: 1400px;
+  max-width: 85%;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 420px 1fr 260px;
+  grid-template-columns: 420px 1fr 420px;
   gap: 40px;
   align-items: start;
 }
@@ -2378,6 +2390,7 @@ body {
 }
 
 .menu-center {
+  max-width: 500px;
   display: flex;
   justify-content: center;
   align-items: start;
@@ -2475,15 +2488,7 @@ body {
   font-size: 16px;
 }
 
-.current-seasonal-items-sales {
-  max-width: 650px;
-  margin-top: 120px;
-  margin-left: 45%;
-  transform: translate(-10%, -500px); /* moves it up 500px */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+
 
 .current-seasonal-items-sales2 {
   color: #ffffff;
@@ -3997,4 +4002,19 @@ body {
 
 .shift-page-shell .app {
   min-height: calc(100vh - 90px);
+}
+
+.menu-layout {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  padding: 40px;
+}
+
+.left-side {
+  flex: 1;
+}
+
+.right-side {
+  width: 400px;
 }
