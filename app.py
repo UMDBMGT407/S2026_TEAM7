@@ -699,9 +699,10 @@ def menu():
         top_selling_items=top_selling_items,
         bottom_selling_items=bottom_selling_items,
         seasonal_items=seasonal_items,
-        payment_frequency=payment_frequency
-        avg_order_value=avg_order_value 
+        payment_frequency=payment_frequency,
+        avg_order_value=avg_order_value
     )
+
 @app.route("/remove-seasonal-item", methods=["POST"])
 @role_required("admin")
 def remove_seasonal_item():
