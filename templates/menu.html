@@ -142,21 +142,18 @@ Schedule</a></li>
 </div>
 
         <div class="add-on-frequency">
-          <div class="add-on-frequency2">Add-On Frequency</div>
-          <div class="line-4"></div>
-          <div class="side-upgrade-69-bacon-added-43-double-meat-35-make-it-crabby-style-54-make-it-pub-style-47">
-            Side Upgrade ------- 69
-            <br />
-            Bacon-Added ------- 43
-            <br />
-            Double-Meat -------- 35
-            <br />
-            Make it Crabby Style- 54
-            <br />
-            Make it Pub Style ---- 47
-          </div>
-        </div>
-      </div>
+  <div class="add-on-frequency2">Payment Type Frequency</div>
+  <div class="line-4"></div>
+  <div class="side-upgrade-69-bacon-added-43-double-meat-35-make-it-crabby-style-54-make-it-pub-style-47">
+    Credit Card - {{ payment_frequency['Credit Card'] }}
+    <br />
+    Debit Card - {{ payment_frequency['Debit Card'] }}
+    <br />
+    Cash - {{ payment_frequency['Cash'] }}
+    <br />
+    Mobile Pay - {{ payment_frequency['Mobile Pay'] }}
+  </div>
+</div>
 
       <div class="menu-center">
         <img
