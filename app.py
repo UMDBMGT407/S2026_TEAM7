@@ -985,13 +985,26 @@ def inventory():
     """)
     top_ordered_items = cur.fetchall()
 
+    # delivery status based on supplier availability submissions in the past 2 days
+    cur.execute("""
+        SELECT COUNT(*) AS recent_orders
+        FROM supplier_availability
+        WHERE selected_date >= CURDATE() - INTERVAL 2 DAY
+    """)
+    recent_orders = cur.fetchone()["recent_orders"]
+
+    delivery_status = "In-Progress" if recent_orders > 0 else "NO ORDER"
+
     cur.close()
 
     return render_template(
         "inventory.html",
         user_role=session.get("user_role"),
         suppliers=suppliers,
-        top_ordered_items=top_ordered_items
+        matched_suppliers=[],
+        message=None,
+        top_ordered_items=top_ordered_items,
+        delivery_status=delivery_status
     )
 @app.route("/submit-supplier-availability", methods=["POST"])
 @role_required("admin")
@@ -1002,7 +1015,6 @@ def submit_supplier_availability():
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    # all suppliers for the dropdown
     cur.execute("""
         SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
         FROM suppliers
@@ -1032,6 +1044,29 @@ def submit_supplier_availability():
     else:
         message = "No suppliers found."
 
+    cur.execute("""
+        SELECT
+            i.InventoryName,
+            COALESCE(SUM(oi.Quantity), 0) AS total_ordered
+        FROM inventory i
+        LEFT JOIN order_items oi
+            ON i.InventoryID = oi.menu_item_id
+        WHERE i.status = 'active'
+        GROUP BY i.InventoryID, i.InventoryName
+        ORDER BY total_ordered DESC, i.InventoryName ASC
+        LIMIT 5
+    """)
+    top_ordered_items = cur.fetchall()
+
+    cur.execute("""
+        SELECT COUNT(*) AS recent_orders
+        FROM supplier_availability
+        WHERE selected_date >= CURDATE() - INTERVAL 2 DAY
+    """)
+    recent_orders = cur.fetchone()["recent_orders"]
+
+    delivery_status = "In-Progress" if recent_orders > 0 else "NO ORDER"
+
     cur.close()
 
     return render_template(
@@ -1039,7 +1074,9 @@ def submit_supplier_availability():
         user_role=session.get("user_role"),
         suppliers=all_suppliers,
         matched_suppliers=matched_suppliers,
-        message=message
+        message=message,
+        top_ordered_items=top_ordered_items,
+        delivery_status=delivery_status
     )
 
 @app.route("/inventory-adjustments")
