@@ -619,8 +619,46 @@ def dashboard():
 @app.route("/menu")
 @role_required("admin")
 def menu():
-    return render_template("menu.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
+    # Top selling items
+    cur.execute("""
+        SELECT 
+            mi.name,
+            COALESCE(SUM(oi.Quantity), 0) AS total_sold
+        FROM menu_items mi
+        LEFT JOIN order_items oi
+            ON mi.menu_item_id = oi.menu_item_id
+        WHERE mi.active_status = 'active'
+        GROUP BY mi.menu_item_id, mi.name
+        ORDER BY total_sold DESC, mi.name ASC
+        LIMIT 4
+    """)
+    top_selling_items = cur.fetchall()
+
+    # Bottom selling items
+    cur.execute("""
+        SELECT 
+            mi.name,
+            COALESCE(SUM(oi.Quantity), 0) AS total_sold
+        FROM menu_items mi
+        LEFT JOIN order_items oi
+            ON mi.menu_item_id = oi.menu_item_id
+        WHERE mi.active_status = 'active'
+        GROUP BY mi.menu_item_id, mi.name
+        ORDER BY total_sold ASC, mi.name ASC
+        LIMIT 4
+    """)
+    bottom_selling_items = cur.fetchall()
+
+    cur.close()
+
+    return render_template(
+        "menu.html",
+        user_role=session.get("user_role"),
+        top_selling_items=top_selling_items,
+        bottom_selling_items=bottom_selling_items
+    )
 
 @app.route("/remove-seasonal-item", methods=["POST"])
 @role_required("admin")
