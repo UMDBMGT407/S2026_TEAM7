@@ -185,38 +185,14 @@ Schedule</a></li>
       </div>
       <div class="line-5"></div>
 
-     <div class="seasonal-items-list">
-  <div class="seasonal-item-row" data-item-name="Springy Market Salad">
-    <div class="seasonal-item-text">Springy Market Salad -- 23</div>
-    <button class="delete-btn" type="button">Delete</button>
-  </div>
-
-  <div class="seasonal-item-row" data-item-name="Lucky Charms Bomb">
-    <div class="seasonal-item-text">Lucky Charms Bomb --- 46</div>
-    <button class="delete-btn" type="button">Delete</button>
-  </div>
-
-  <div class="seasonal-item-row" data-item-name="Clover’s Cheeseburger">
-    <div class="seasonal-item-text">Clover’s Cheeseburger - 24</div>
-    <button class="delete-btn" type="button">Delete</button>
-  </div>
-
-  <div class="seasonal-item-row" data-item-name="Corned Beef Handheld">
-    <div class="seasonal-item-text">Corned Beef Handheld - 43</div>
-    <button class="delete-btn" type="button">Delete</button>
-  </div>
-
-  <div class="seasonal-item-row" data-item-name="Irish Stew">
-    <div class="seasonal-item-text">Irish Stew -------------- 12</div>
-    <button class="delete-btn" type="button">Delete</button>
-  </div>
-
-  <div class="seasonal-item-row" data-item-name="Guinness Float">
-    <div class="seasonal-item-text">Guinness Float --------- 54</div>
-    <button class="delete-btn" type="button">Delete</button>
-  </div>
-</div>
+   <div class="seasonal-items-list">
+  {% for item in seasonal_items %}
+    <div class="seasonal-item-row" data-item-name="{{ item.name }}">
+      <div class="seasonal-item-text">{{ item.name }} - {{ item.total_sold }}</div>
+      <button class="delete-btn" type="button">Delete</button>
     </div>
+  {% endfor %}
+</div>
   </div>
 
 <script>
