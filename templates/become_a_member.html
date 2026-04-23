@@ -100,45 +100,53 @@
     {% endif %}
 
   <form method="POST" action="{{ url_for('become_a_member') }}">
-    <div class="form-fields">
-      <div class="first-name">FIRST NAME</div>
-      <div class="last-name">LAST NAME</div>
-      <div class="birthday">BIRTHDAY</div>
-      <input class="first-name-entry" type="text" name="firstName" placeholder="">
-      <input class="last-name-entry" type="text" name="lastName">
-      <input class="birthday-entry" type="date" name="birthday">
-      <div class="email">EMAIL</div>
-      <div class="phone-number">PHONE NUMBER</div>
-      <div class="preferred-channel">PREFERRED CHANNEL</div>
-      <input class="email-entry" type="email" name="email">
-      <input class="phone-number-entry" type="tel" name="phone">
-      <div class="messaging-select">
-        <label class="messaging-select">
-          <input class="text-select" type="radio" name="preferredChannel" value="text">
-          <span class="text-messaging">Text Messaging</span>
-        </label>
-      </div>
-      <div class="username">USERNAME</div>
-      <div class="password">PASSWORD</div>
-      <div class="email-select">
-        <label class="email-select">
-          <input class="email-select2" type="radio" name="preferredChannel" value="email">
-          <span class="email2">Email</span>
-        </label>
-      </div>
-      <input class="username-entry" type="text" name="username">
-      <input class="password-entry" type="password" name="password">
-    </div>
-    <div class="opt-in-and-create">
-      <label class="opt-in">
-        <input class="opt-in-select" type="checkbox" name="promoOptIn">
-        <span class="i-agree-to-receive-promotions-and-updates-via-email-sms">
-          I agree to receive promotions and updates via email/sms
-        </span>
+  <div class="form-fields">
+    <div class="first-name">FIRST NAME</div>
+    <div class="last-name">LAST NAME</div>
+    <div class="birthday">BIRTHDAY</div>
+
+    <input class="first-name-entry" type="text" name="firstName" required>
+    <input class="last-name-entry" type="text" name="lastName" required>
+    <input class="birthday-entry" type="date" name="birthday" required>
+
+    <div class="email">EMAIL</div>
+    <div class="phone-number">PHONE NUMBER</div>
+    <div class="preferred-channel">PREFERRED CHANNEL</div>
+
+    <input class="email-entry" type="email" name="email" required>
+    <input class="phone-number-entry" type="tel" name="phone" required>
+
+    <div class="messaging-select">
+      <label class="messaging-select">
+        <input class="text-select" type="radio" name="preferredChannel" value="text" required>
+        <span class="text-messaging">Text Messaging</span>
       </label>
-      <button class="create-account-button" type="submit">Create Account</button>
     </div>
-  </form>
+
+    <div class="username">USERNAME</div>
+    <div class="password">PASSWORD</div>
+
+    <div class="email-select">
+      <label class="email-select">
+        <input class="email-select2" type="radio" name="preferredChannel" value="email" required>
+        <span class="email2">Email</span>
+      </label>
+    </div>
+
+    <input class="username-entry" type="text" name="username" required>
+    <input class="password-entry" type="password" name="password" required>
+  </div>
+
+  <div class="opt-in-and-create">
+    <label class="opt-in">
+      <input class="opt-in-select" type="checkbox" name="promoOptIn" required>
+      <span class="i-agree-to-receive-promotions-and-updates-via-email-sms">
+        I agree to receive promotions and updates via email/sms
+      </span>
+    </label>
+    <button class="create-account-button" type="submit">Create Account</button>
+  </div>
+</form>
   </div>
   
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
