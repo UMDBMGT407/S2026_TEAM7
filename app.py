@@ -694,13 +694,14 @@ def menu():
     cur.close()
 
     return render_template(
-        "menu.html",
-        user_role=session.get("user_role"),
-        top_selling_items=top_selling_items,
-        bottom_selling_items=bottom_selling_items,
-        seasonal_items=seasonal_items,
-        payment_frequency=payment_frequency,
-        avg_order_value=avg_order_value
+    "menu.html",
+    labels=labels,
+    values=values,
+    top_selling_items=top_selling_items,
+    bottom_selling_items=bottom_selling_items,
+    payment_frequency=payment_frequency,
+    avg_order_value=avg_order_value,
+    seasonal_items=seasonal_items
     )
 
 @app.route("/remove-seasonal-item", methods=["POST"])
