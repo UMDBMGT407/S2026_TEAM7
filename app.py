@@ -728,7 +728,27 @@ def remove_seasonal_item():
         return jsonify({"success": False, "message": f"No item found for {item_name}."}), 404
 
     return jsonify({"success": True, "message": f"{item_name} marked as inactive."})
+# PIE CHART 
+@app.route("/menu-category-pie")
+@role_required("admin")
+def menu_category_pie():
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
+    cur.execute("""
+        SELECT mi.category, COUNT(*) AS total_orders
+        FROM order_items oi, menu_items mi
+        WHERE oi.menu_item_id = mi.menu_item_id
+        GROUP BY mi.category
+    """)
+    
+    chart_data = cur.fetchall()
+    cur.close()
+
+    labels = [row["category"] for row in chart_data]
+    values = [row["total_orders"] for row in chart_data]
+
+    return render_template("menu_category_pie.html", labels=labels, values=values)
+    
 @app.route("/menu-adjustments")
 @role_required("admin")
 def menu_adjustments():
