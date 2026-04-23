@@ -145,13 +145,12 @@
       </div>
 
       <!-- CENTER COLUMN -->
-      <div class="menu-center">
-        <img
-          src="{{ url_for('static', filename='images/menu_category_frequency.png') }}"
-          alt="Menu Category Frequency"
-          class="menu-category-frequency"
-        />
-      </div>
+<div class="menu-center">
+  <div class="chart-card">
+    <h3 class="chart-title">Menu Category Frequency</h3>
+    <canvas id="pieChart"></canvas>
+  </div>
+</div>
 
       <!-- RIGHT COLUMN -->
           <div class="menu-right">
@@ -231,6 +230,40 @@
       });
     });
   </script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script>
+  const labels = {{ labels | tojson }};
+  const values = {{ values | tojson }};
+
+  const ctx = document.getElementById('pieChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: values,
+        backgroundColor: [
+          '#36845a',
+          '#204631',
+          '#5da271',
+          '#8bc7a0',
+          '#cde8d5',
+          '#7f9c8c'
+        ],
+        borderColor: '#ffffff',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      plugins: {
+        legend: {
+          position: 'bottom'
+        }
+      }
+    }
+  });
+</script>
 </body>
 </html>
