@@ -985,7 +985,19 @@ def orders_and_sales():
 @role_required("admin")
 def inventory():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+# PIE CHART DATA: group by StorageType
+    cur.execute("""
+        SELECT 
+            IFNULL(StorageType, 'Other') AS category,
+            SUM(CurrentStock) AS total_stock
+        FROM inventory
+        WHERE status = 'active'
+        GROUP BY StorageType
+    """)
+    category_data = cur.fetchall()
 
+    inventory_category_labels = [row["category"] for row in category_data]
+    inventory_category_values = [float(row["total_stock"]) for row in category_data]
     cur.execute("""
         SELECT SupplierID, SupplierName, SupplierCity, SupplierState, SupplierZipCode, SupplierSpecialty
         FROM suppliers
@@ -1021,6 +1033,8 @@ def inventory():
 
     return render_template(
         "inventory.html",
+        inventory_category_labels=inventory_category_labels,
+        inventory_category_values=inventory_category_values,
         user_role=session.get("user_role"),
         suppliers=suppliers,
         matched_suppliers=[],
