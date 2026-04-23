@@ -318,6 +318,24 @@ def event_inquiry():
         event_description = request.form.get("eventDescription", "").strip()
         catering_package = request.form.get("cateringPackage", "").strip()
 
+        if not all([
+            full_name,
+            organization,
+            guests,
+            email,
+            phone,
+            preferred_datetime,
+            event_description,
+            catering_package
+        ]):
+        cur.close()
+        return render_template(
+            "event_inquiry.html",
+            user_role=session.get("user_role"),
+            booked_dates=booked_dates,
+            message="Please fill out all required fields."
+        )
+
         requested_date = preferred_datetime.split("T")[0] if preferred_datetime else None
 
         if requested_date in booked_dates:
@@ -369,22 +387,48 @@ def become_a_member():
         first_name = request.form.get("firstName", "").strip()
         last_name = request.form.get("lastName", "").strip()
         birthday = request.form.get("birthday", "").strip()
-        email = request.form.get("email", "").strip()
+        email = request.form.get("email", "").strip().lower()
         phone = request.form.get("phone", "").strip()
         preferred_channel = request.form.get("preferredChannel", "").strip()
-        username = request.form.get("username", "").strip()
+        username = request.form.get("username", "").strip().lower()
         password = request.form.get("password", "").strip()
-        hashed_password = generate_password_hash(password)
         promo_opt_in = 1 if request.form.get("promoOptIn") else 0
 
-        if not all([first_name, last_name, birthday, email, phone, preferred_channel, username, password]):
+        if not all([first_name, last_name, birthday, email, phone, preferred_channel, username, password]) or not promo_opt_in:
             return render_template(
                 "become_a_member.html",
                 user_role=session.get("user_role"),
-                message="Please fill out all required fields."
+                message="Please fill out all required fields and agree to receive promotions and updates."
             )
 
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+        cur.execute("""
+            SELECT member_id
+            FROM members
+            WHERE email = %s OR username = %s
+            LIMIT 1
+        """, (email, username))
+        existing_member = cur.fetchone()
+
+        cur.execute("""
+            SELECT id
+            FROM users
+            WHERE email = %s OR username = %s
+            LIMIT 1
+        """, (email, username))
+        existing_user = cur.fetchone()
+
+        if existing_member or existing_user:
+            cur.close()
+            return render_template(
+                "become_a_member.html",
+                user_role=session.get("user_role"),
+                message="Account already made. Please sign in instead."
+            )
+
+        hashed_password = generate_password_hash(password)
+
         cur.execute("""
             INSERT INTO members
             (first_name, last_name, date_of_birth, email, phone, preferred_channel, username, password, promo_opt_in)
@@ -410,7 +454,7 @@ def become_a_member():
         )
 
     return render_template("become_a_member.html", user_role=session.get("user_role"))
-    
+
 
 
 # ========================
