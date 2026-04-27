@@ -105,8 +105,25 @@
     <div class="last-name">LAST NAME</div>
     <div class="birthday">BIRTHDAY</div>
 
-    <input class="first-name-entry" type="text" name="firstName" required>
-    <input class="last-name-entry" type="text" name="lastName" required>
+    <input
+      class="first-name-entry"
+      type="text"
+      name="firstName"
+      pattern="[A-Za-z\s]+"
+      title="Please enter letters only."
+      oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+      required
+    >
+
+    <input
+      class="last-name-entry"
+      type="text"
+      name="lastName"
+      pattern="[A-Za-z\s]+"
+      title="Please enter letters only."
+      oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')"
+      required
+    >
     <input class="birthday-entry" type="date" name="birthday" required>
 
     <div class="email">EMAIL</div>
@@ -114,7 +131,17 @@
     <div class="preferred-channel">PREFERRED CHANNEL</div>
 
     <input class="email-entry" type="email" name="email" required>
-    <input class="phone-number-entry" type="tel" name="phone" required>
+    <input
+      class="phone-number-entry"
+      type="tel"
+      name="phone"
+      inputmode="numeric"
+      pattern="[0-9]{10}"
+      maxlength="10"
+      title="Please enter a 10-digit phone number with numbers only."
+      oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      required
+    >
 
     <div class="messaging-select">
       <label class="messaging-select">
