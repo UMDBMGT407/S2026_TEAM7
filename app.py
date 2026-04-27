@@ -1132,7 +1132,7 @@ def submit_supplier_availability():
         mysql.connection.commit()
         message = "Supplier availability submitted successfully."
     elif matched_suppliers:
-        message = "Availability Submitted!"
+        message = "Please select both a date and time."
     else:
         message = "No suppliers found."
 
@@ -1159,10 +1159,25 @@ def submit_supplier_availability():
 
     delivery_status = "In-Progress" if recent_orders > 0 else "NO ORDER"
 
+    cur.execute("""
+        SELECT 
+            IFNULL(StorageType, 'Other') AS category,
+            SUM(CurrentStock) AS total_stock
+        FROM inventory
+        WHERE status = 'active'
+        GROUP BY StorageType
+    """)
+    category_data = cur.fetchall()
+
+    inventory_category_labels = [row["category"] for row in category_data]
+    inventory_category_values = [float(row["total_stock"]) for row in category_data]
+
     cur.close()
 
     return render_template(
         "inventory.html",
+        inventory_category_labels=inventory_category_labels,
+        inventory_category_values=inventory_category_values,
         user_role=session.get("user_role"),
         suppliers=all_suppliers,
         matched_suppliers=matched_suppliers,
