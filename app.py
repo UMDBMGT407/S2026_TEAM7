@@ -734,7 +734,19 @@ def menu():
         SELECT COALESCE(AVG(OrderPrice), 0) AS avg_order_value
         FROM orders
     """)
-    avg_order_value = float(cur.fetchone()["avg_order_value"] or 0)
+    avg_order_value = float(cur.fetchone()["avg_order_value"] or 0
+
+    cur.execute("""
+        SELECT mi.category, COUNT(*) AS total_orders
+        FROM order_items oi, menu_items mi
+        WHERE oi.menu_item_id = mi.menu_item_id
+        GROUP BY mi.category
+    """)
+
+    chart_data = cur.fetchall()
+    
+    labels = [row["category"] for row in chart_data]
+    values = [row["total_orders"] for row in chart_data]
     cur.close()
 
     return render_template(
