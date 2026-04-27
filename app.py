@@ -747,12 +747,27 @@ def menu():
         FROM orders
     """)
     avg_order_value = float(cur.fetchone()["avg_order_value"] or 0)
+
+    cur.execute("""
+    SELECT 
+            mi.category,
+            COUNT(*) AS total_orders
+        FROM order_items oi, menu_items mi
+        WHERE oi.menu_item_id = mi.menu_item_id
+        GROUP BY mi.category
+        ORDER BY mi.category
+    """)
+
+    chart_data = cur.fetchall()
+
+    labels = [row["category"] for row in chart_data]
+    values = [row["total_orders"] for row in chart_data]
     cur.close()
 
     return render_template(
     "menu.html",
-    # labels=labels,
-    # values=values,
+    labels=labels,
+    values=values,
     top_selling_items=top_selling_items,
     bottom_selling_items=bottom_selling_items,
     payment_frequency=payment_frequency,
@@ -805,7 +820,6 @@ def menu_category_pie():
     values = [row["total_orders"] for row in chart_data]
 
     return render_template("menu_category_pie.html", labels=labels, values=values)
-    
 @app.route("/menu-adjustments")
 @role_required("admin")
 def menu_adjustments():
