@@ -33,29 +33,25 @@
   </style>
 </head>
 <body>
+
   <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
     <div class="container-fluid px-4">
 
-      <!-- ===== LOGO ===== -->
       <a class="navbar-brand" href="{{ url_for('dashboard') }}">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" height="46px">
       </a>
 
-      <!-- ===== TOGGLER ===== -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <!-- ===== NAV LINKS ===== -->
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
 
-          <!-- DASHBOARD -->
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
           </li>
 
-          <!-- ===== MENU ===== -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Menu</a>
             <ul class="dropdown-menu">
@@ -64,7 +60,6 @@
             </ul>
           </li>
 
-          <!-- ===== ORDERS ===== -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Orders</a>
             <ul class="dropdown-menu">
@@ -74,7 +69,6 @@
             </ul>
           </li>
 
-          <!-- ===== EVENTS ===== -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
             <ul class="dropdown-menu">
@@ -83,7 +77,6 @@
             </ul>
           </li>
 
-          <!-- ===== PROMOS ===== -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Promos</a>
             <ul class="dropdown-menu">
@@ -92,7 +85,6 @@
             </ul>
           </li>
 
-          <!-- ===== STAFF ===== -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
             <ul class="dropdown-menu">
@@ -101,14 +93,12 @@
             </ul>
           </li>
 
-          <!-- ===== NEW USER ===== -->
           <li class="nav-item">
-  <a class="nav-link" href="{{ url_for('add_new_user') }}">New User</a>
-</li>
+            <a class="nav-link" href="{{ url_for('add_new_user') }}">New User</a>
+          </li>
 
         </ul>
 
-        <!-- ===== SIGN OUT ===== -->
         <ul class="navbar-nav">
           <li class="nav-item">
             <a class="btn btn-outline-light" href="{{ url_for('logout') }}">Sign Out</a>
@@ -125,7 +115,13 @@
         <h1>Admin Scheduler</h1>
         <p>Manage staff availability, shifts, and schedule requests.</p>
 
-        <input type="text" class="staff-search" id="staffSearch" placeholder="Search staff..." />
+        <input type="text"
+       class="staff-search"
+       id="staffSearch"
+       placeholder="Search staff..."
+       pattern="[A-Za-z\s]*"
+       title="Only letters allowed"
+       oninput="this.value = this.value.replace(/[^A-Za-z\s]/g, '')">
         <div class="staff-list" id="staffList"></div>
       </aside>
 
@@ -137,10 +133,17 @@
           </div>
 
           <div class="topbar-buttons">
-            <button class="light-btn" id="prevWeekBtn" type="button">Previous Week</button>
-            <button class="light-btn" id="nextWeekBtn" type="button">Next Week</button>
-            <a href="{{ url_for('staff_scheduling_admin') }}" class="light-btn view-schedule-btn">View Schedule</a>
-            <button class="primary-btn" id="publishBtn" type="button">Publish Schedule</button>
+            <a class="light-btn view-schedule-btn" href="{{ url_for('shift_management', week_start=prev_week_start, selected_staff_id=selected_staff_id) }}">
+  Previous Week
+</a>
+
+<a class="light-btn view-schedule-btn" href="{{ url_for('shift_management', week_start=next_week_start, selected_staff_id=selected_staff_id) }}">
+  Next Week
+</a>
+
+            <a href="{{ url_for('staff_scheduling_admin') }}" class="light-btn view-schedule-btn">
+              View Schedule
+            </a>
           </div>
         </div>
 
@@ -160,7 +163,7 @@
           <section class="panel">
             <div class="panel-header">
               <h3>Availability Calendar</h3>
-              <span id="weekLabel">Current Week</span>
+              <span id="weekLabel">{{ week_label }}</span>
             </div>
 
             <div class="calendar-legend">
@@ -183,6 +186,7 @@
 
               <form method="POST" action="{{ url_for('add_shift') }}">
                 <input type="hidden" name="selected_staff_id" id="selectedStaffHidden">
+                <input type="hidden" name="week_start" value="{{ week_start }}">
 
                 <div class="form-group">
                   <label>Staff Member</label>
@@ -393,83 +397,88 @@
             <div class="shift-chip">
               <span>${shift.text}</span>
               <form method="POST" action="{{ url_for('delete_shift') }}" style="display:inline;">
-                <input type="hidden" name="shift_id" value="${shift.shift_id}">
-                <button type="submit" class="delete-shift-btn">×</button>
-              </form>
+  <input type="hidden" name="shift_id" value="${shift.shift_id}">
+  <input type="hidden" name="selected_staff_id" value="${selectedStaffId}">
+  <input type="hidden" name="week_start" value="{{ week_start }}">
+  <button type="submit" class="delete-shift-btn">×</button>
+</form>
             </div>
           `;
         });
 
         dayCard.innerHTML = `
-  <h4>${day.label}</h4>
-  <small>${day.date}</small>
-  ${availabilityHTML}
-  ${shiftsHTML || '<div class="unavailable-slot">No shift</div>'}
-`;
+          <h4>${day.label}</h4>
+          <small>${day.date}</small>
+          ${availabilityHTML}
+          ${shiftsHTML || '<div class="unavailable-slot">No shift</div>'}
+        `;
 
         calendarGrid.appendChild(dayCard);
       });
     }
 
     function renderRequests() {
-    requestList.innerHTML = "";
+      requestList.innerHTML = "";
 
-    if (requests.length === 0) {
+      if (requests.length === 0) {
         requestList.innerHTML = '<p style="color:#999;font-size:14px;">No pending requests.</p>';
         return;
-    }
+      }
 
-    requests.forEach(request => {
+      requests.forEach(request => {
         const item = document.createElement("div");
         item.className = "request-item";
 
         let extraFields = "";
 
         if (request.request_type === "time") {
-            extraFields = `
-                <div style="margin-top:8px;">
-                    <label style="font-size:12px;">New Date</label>
-                    <input type="date" name="new_date" class="form-control form-control-sm mb-1" required>
-                    <label style="font-size:12px;">New Start Time</label>
-                    <input type="time" name="new_start" class="form-control form-control-sm mb-1" required>
-                    <label style="font-size:12px;">New End Time</label>
-                    <input type="time" name="new_end" class="form-control form-control-sm" required>
-                </div>
-            `;
+          extraFields = `
+            <div style="margin-top:8px;">
+              <label style="font-size:12px;">New Date</label>
+              <input type="date" name="new_date" class="form-control form-control-sm mb-1" required>
+              <label style="font-size:12px;">New Start Time</label>
+              <input type="time" name="new_start" class="form-control form-control-sm mb-1" required>
+              <label style="font-size:12px;">New End Time</label>
+              <input type="time" name="new_end" class="form-control form-control-sm" required>
+            </div>
+          `;
         } else if (request.request_type === "role") {
-            extraFields = `
-                <div style="margin-top:8px;">
-                    <label style="font-size:12px;">New Role</label>
-                    <select name="new_role" class="form-select form-select-sm">
-                        <option value="Server">Server</option>
-                        <option value="Host">Host</option>
-                        <option value="Bartender">Bartender</option>
-                    </select>
-                </div>
-            `;
+          extraFields = `
+            <div style="margin-top:8px;">
+              <label style="font-size:12px;">New Role</label>
+              <select name="new_role" class="form-select form-select-sm">
+                <option value="Server">Server</option>
+                <option value="Host">Host</option>
+                <option value="Bartender">Bartender</option>
+              </select>
+            </div>
+          `;
         }
 
         item.innerHTML = `
-            <strong>${request.staff_name}</strong>
-            <p style="font-size:13px;margin:4px 0;">${request.text}</p>
-            <form method="POST" action="{{ url_for('update_shift_request') }}">
-                <input type="hidden" name="request_id" value="${request.id}">
-                <input type="hidden" name="request_status" value="accepted">
-                ${extraFields}
-                <div class="request-actions" style="margin-top:8px;">
-                    <button type="submit" class="primary-btn accept-btn">Accept</button>
-                </div>
-            </form>
-            <form method="POST" action="{{ url_for('update_shift_request') }}" style="margin-top:4px;">
-                <input type="hidden" name="request_id" value="${request.id}">
-                <input type="hidden" name="request_status" value="declined">
-                <button type="submit" class="danger-btn decline-btn">Decline</button>
-            </form>
+          <strong>${request.staff_name}</strong>
+          <p style="font-size:13px;margin:4px 0;">${request.text}</p>
+
+          <form method="POST" action="{{ url_for('update_shift_request') }}">
+            <input type="hidden" name="request_id" value="${request.id}">
+            <input type="hidden" name="request_status" value="accepted">
+            ${extraFields}
+            <div class="request-actions" style="margin-top:8px;">
+              <button type="submit" class="primary-btn accept-btn">Accept</button>
+            </div>
+          </form>
+
+          <form method="POST" action="{{ url_for('update_shift_request') }}" style="margin-top:4px;">
+            <input type="hidden" name="request_id" value="${request.id}">
+            <input type="hidden" name="request_status" value="declined">
+            <button type="submit" class="danger-btn decline-btn">Decline</button>
+          </form>
         `;
 
         requestList.appendChild(item);
-    });
-  }
+      });
+    }
+
     if (shiftStaffDropdown) {
       shiftStaffDropdown.addEventListener("change", function () {
         selectedStaffId = parseInt(this.value);
