@@ -97,6 +97,18 @@ def next_date_for_day(day_code):
 
     return today + timedelta(days=days_ahead)
 
+def date_for_day_in_week(week_start, day_code):
+    day_map = {
+        "mon": 0,
+        "tue": 1,
+        "wed": 2,
+        "thu": 3,
+        "fri": 4,
+        "sat": 5,
+        "sun": 6
+    }
+
+    return week_start + timedelta(days=day_map[day_code])
 # ========================
 # AUTH ROUTES
 # ========================
@@ -734,25 +746,13 @@ def menu():
         SELECT COALESCE(AVG(OrderPrice), 0) AS avg_order_value
         FROM orders
     """)
-    avg_order_value = float(cur.fetchone()["avg_order_value"] or 0
-
-    cur.execute("""
-        SELECT mi.category, COUNT(*) AS total_orders
-        FROM order_items oi, menu_items mi
-        WHERE oi.menu_item_id = mi.menu_item_id
-        GROUP BY mi.category
-    """)
-
-    chart_data = cur.fetchall()
-    
-    labels = [row["category"] for row in chart_data]
-    values = [row["total_orders"] for row in chart_data]
+    avg_order_value = float(cur.fetchone()["avg_order_value"] or 0)
     cur.close()
 
     return render_template(
     "menu.html",
-    labels=labels,
-    values=values,
+    # labels=labels,
+    # values=values,
     top_selling_items=top_selling_items,
     bottom_selling_items=bottom_selling_items,
     payment_frequency=payment_frequency,
@@ -1132,7 +1132,7 @@ def submit_supplier_availability():
         mysql.connection.commit()
         message = "Supplier availability submitted successfully."
     elif matched_suppliers:
-        message = "Please select both a date and time."
+        message = "Availability Submitted!"
     else:
         message = "No suppliers found."
 
@@ -1159,25 +1159,10 @@ def submit_supplier_availability():
 
     delivery_status = "In-Progress" if recent_orders > 0 else "NO ORDER"
 
-    cur.execute("""
-        SELECT 
-            IFNULL(StorageType, 'Other') AS category,
-            SUM(CurrentStock) AS total_stock
-        FROM inventory
-        WHERE status = 'active'
-        GROUP BY StorageType
-    """)
-    category_data = cur.fetchall()
-
-    inventory_category_labels = [row["category"] for row in category_data]
-    inventory_category_values = [float(row["total_stock"]) for row in category_data]
-
     cur.close()
 
     return render_template(
         "inventory.html",
-        inventory_category_labels=inventory_category_labels,
-        inventory_category_values=inventory_category_values,
         user_role=session.get("user_role"),
         suppliers=all_suppliers,
         matched_suppliers=matched_suppliers,
@@ -1595,6 +1580,7 @@ def add_promo_to_calendar():
 
 from datetime import datetime
 
+
 # =========================
 # SHIFT MANAGEMENT PAGE
 # =========================
@@ -1603,22 +1589,42 @@ from datetime import datetime
 def shift_management():
     selected_staff_id = request.args.get("selected_staff_id", type=int)
 
+    week_start_raw = request.args.get("week_start")
+
+    if week_start_raw:
+        try:
+            week_start_date = datetime.strptime(week_start_raw, "%Y-%m-%d").date()
+        except ValueError:
+            today = date.today()
+            week_start_date = today - timedelta(days=today.weekday())
+    else:
+        today = date.today()
+        week_start_date = today - timedelta(days=today.weekday())
+
+    week_end_date = week_start_date + timedelta(days=6)
+    prev_week_start = week_start_date - timedelta(days=7)
+    next_week_start = week_start_date + timedelta(days=7)
+
+    week_label = f"Week of {week_start_date.strftime('%b %d, %Y')} - {week_end_date.strftime('%b %d, %Y')}"
+
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("""
-    SELECT id, name, email, role
-    FROM users
-    WHERE role IN ('staff', 'admin') AND active_status = 'active'
-    ORDER BY name
-""")
+        SELECT id, name, email, role
+        FROM users
+        WHERE role IN ('staff', 'admin') AND active_status = 'active'
+        ORDER BY name
+    """)
     users = cur.fetchall()
 
     cur.execute("""
         SELECT id, user_id, date, role, start_hour, end_hour, color
         FROM schedule
+        WHERE date BETWEEN %s AND %s
         ORDER BY date, start_hour
-    """)
+    """, (week_start_date, week_end_date))
     schedule_rows = cur.fetchall()
+
     staff_lookup = {}
 
     for user in users:
@@ -1641,10 +1647,6 @@ def shift_management():
 
         day_key = day_key_from_date(row["date"])
 
-        if day_key not in staff_lookup[user_id]["shifts"]:
-            print("BAD DAY KEY:", day_key, "for date:", row["date"])
-            continue
-
         start = float(row["start_hour"])
         end = float(row["end_hour"])
 
@@ -1659,10 +1661,6 @@ def shift_management():
         staff_lookup[user_id]["hours"] += (end - start)
 
     for staff in staff_lookup.values():
-        for day in ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]:
-            if not staff["availability"][day]:
-                staff["availability"][day] = []
-
         staff["hours"] = round(staff["hours"], 1)
 
     cur.execute("""
@@ -1670,12 +1668,15 @@ def shift_management():
         FROM staff_availability
         ORDER BY user_id
     """)
+
     for row in cur.fetchall():
         uid = row["user_id"]
+
         if uid in staff_lookup:
             day = row["day_of_week"]
             start = str(row["start_time"])
             end = str(row["end_time"])
+
             if day in staff_lookup[uid]["availability"]:
                 staff_lookup[uid]["availability"][day].append(
                     f"{start[:5]}–{end[:5]}"
@@ -1685,7 +1686,7 @@ def shift_management():
 
     cur.execute("""
         SELECT sr.request_id, sr.request_type, sr.request_note, 
-            sr.request_status, sr.created_at, u.name AS staff_name
+               sr.request_status, sr.created_at, u.name AS staff_name
         FROM shift_requests sr
         JOIN users u ON sr.staff_id = u.id
         WHERE sr.request_status = 'pending'
@@ -1694,16 +1695,15 @@ def shift_management():
     shift_request_rows = cur.fetchall()
 
     shift_requests = [
-    {
-        "id": row["request_id"],
-        "staff_name": row["staff_name"],
-        "request_type": row["request_type"],
-        "text": f"{row['request_type'].title()} request: {row['request_note'] or 'No details provided'}",
-        "status": row["request_status"]
-    }
-    for row in shift_request_rows
+        {
+            "id": row["request_id"],
+            "staff_name": row["staff_name"],
+            "request_type": row["request_type"],
+            "text": f"{row['request_type'].title()} request: {row['request_note'] or 'No details provided'}",
+            "status": row["request_status"]
+        }
+        for row in shift_request_rows
     ]
-
 
     cur.close()
 
@@ -1711,8 +1711,39 @@ def shift_management():
         "shift_management.html",
         staff_data=staff_data,
         shift_requests=shift_requests,
-        selected_staff_id=selected_staff_id
+        selected_staff_id=selected_staff_id,
+        week_start=week_start_date.strftime("%Y-%m-%d"),
+        prev_week_start=prev_week_start.strftime("%Y-%m-%d"),
+        next_week_start=next_week_start.strftime("%Y-%m-%d"),
+        week_label=week_label
     )
+
+# =========================
+# UPDATE SHIFT REQUEST
+# =========================
+@app.route("/update-shift-request", methods=["POST"])
+@role_required("admin")
+def update_shift_request():
+    request_id = request.form.get("request_id")
+    request_status = request.form.get("request_status")
+
+    if not request_id or request_status not in ["accepted", "declined"]:
+        flash("Invalid shift request update.")
+        return redirect(url_for("shift_management"))
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    cur.execute("""
+        UPDATE shift_requests
+        SET request_status = %s
+        WHERE request_id = %s
+    """, (request_status, request_id))
+
+    mysql.connection.commit()
+    cur.close()
+
+    flash(f"Shift request {request_status}.")
+    return redirect(url_for("shift_management"))
 
 # =========================
 # ADD SHIFT
@@ -1726,18 +1757,27 @@ def add_shift():
     start_time = request.form.get("start_time")
     end_time = request.form.get("end_time")
     selected_staff_id = request.form.get("selected_staff_id") or user_id
+    week_start_raw = request.form.get("week_start")
 
     if not user_id or not role or not shift_day or not start_time or not end_time:
         flash("Missing shift info")
         return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
     valid_days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+
     if shift_day not in valid_days:
         flash("Invalid day selected")
         return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
     try:
-        shift_date = next_date_for_day(shift_day)
+        if week_start_raw:
+            week_start_date = datetime.strptime(week_start_raw, "%Y-%m-%d").date()
+        else:
+            today = date.today()
+            week_start_date = today - timedelta(days=today.weekday())
+
+        shift_date = date_for_day_in_week(week_start_date, shift_day)
+
     except Exception as e:
         print("DAY ERROR:", e)
         flash("Problem finding the selected day")
@@ -1749,14 +1789,23 @@ def add_shift():
 
         start_hour = start_dt.hour + start_dt.minute / 60
         end_hour = end_dt.hour + end_dt.minute / 60
+
     except Exception as e:
         print("TIME ERROR:", e)
         flash("Invalid time format")
-        return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
+        return redirect(url_for(
+            "shift_management",
+            selected_staff_id=selected_staff_id,
+            week_start=week_start_date.strftime("%Y-%m-%d")
+        ))
 
     if end_hour <= start_hour:
         flash("End time must be after start time")
-        return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
+        return redirect(url_for(
+            "shift_management",
+            selected_staff_id=selected_staff_id,
+            week_start=week_start_date.strftime("%Y-%m-%d")
+        ))
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
@@ -1769,8 +1818,12 @@ def add_shift():
     cur.close()
 
     flash("Shift added successfully")
-    return redirect(url_for("shift_management", selected_staff_id=selected_staff_id))
 
+    return redirect(url_for(
+        "shift_management",
+        selected_staff_id=selected_staff_id,
+        week_start=week_start_date.strftime("%Y-%m-%d")
+    ))
 
 # =========================
 # DELETE SHIFT
@@ -1779,76 +1832,26 @@ def add_shift():
 @role_required("admin")
 def delete_shift():
     shift_id = request.form.get("shift_id")
+    selected_staff_id = request.form.get("selected_staff_id")
+    week_start = request.form.get("week_start")
 
     if not shift_id:
         flash("Missing shift ID")
         return redirect(url_for("shift_management"))
 
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cur = mysql.connection.cursor()
+
     cur.execute("DELETE FROM schedule WHERE id = %s", (shift_id,))
     mysql.connection.commit()
     cur.close()
 
-    flash("Shift deleted")
-    return redirect(url_for("shift_management"))
+    flash("Shift deleted successfully")
 
-
-# =========================
-# UPDATE REQUEST (OPTIONAL)
-# =========================
-@app.route("/update-shift-request", methods=["POST"])
-@role_required("admin")
-def update_shift_request():
-    request_id = request.form.get("request_id")
-    request_status = request.form.get("request_status")
-
-    if not request_id:
-        return redirect(url_for("shift_management"))
-
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-
-    cur.execute("""
-        SELECT sr.request_id, sr.request_type, sr.shift_id, sr.request_note
-        FROM shift_requests sr
-        WHERE sr.request_id = %s
-    """, (request_id,))
-    req = cur.fetchone()
-
-    if req and request_status == "accepted":
-        if req["request_type"] == "drop":
-            cur.execute("DELETE FROM schedule WHERE id = %s", (req["shift_id"],))
-
-        elif req["request_type"] == "time":
-            new_date = request.form.get("new_date")
-            new_start = request.form.get("new_start")
-            new_end = request.form.get("new_end")
-            if new_date and new_start and new_end:
-                start_dt = datetime.strptime(new_start, "%H:%M")
-                end_dt = datetime.strptime(new_end, "%H:%M")
-                start_hour = start_dt.hour + start_dt.minute / 60
-                end_hour = end_dt.hour + end_dt.minute / 60
-                cur.execute("""
-                    UPDATE schedule
-                    SET date = %s, start_hour = %s, end_hour = %s
-                    WHERE id = %s
-                """, (new_date, start_hour, end_hour, req["shift_id"]))
-
-        elif req["request_type"] == "role":
-            new_role = request.form.get("new_role")
-            if new_role:
-                cur.execute("""
-                    UPDATE schedule SET role = %s WHERE id = %s
-                """, (new_role, req["shift_id"]))
-
-    cur.execute("""
-        UPDATE shift_requests SET request_status = %s WHERE request_id = %s
-    """, (request_status, request_id))
-
-    mysql.connection.commit()
-    cur.close()
-
-    return redirect(url_for("shift_management"))
-
+    return redirect(url_for(
+        "shift_management",
+        selected_staff_id=selected_staff_id,
+        week_start=week_start
+    ))
 
 # =========================
 # STAFF SCHEDULING ADMIN
@@ -1893,6 +1896,7 @@ def staff_scheduling_admin():
         staff_members=staff_members,
         schedule_events=schedule_events
     )
+
 
 @app.route("/event-details-admin")
 @role_required("admin")
