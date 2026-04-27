@@ -299,7 +299,6 @@ def submit_order():
 def event_inquiry():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    # Pull only approved dates, since approved inquiries now act as booked events
     cur.execute("""
         SELECT DATE(preferred_datetime) AS booked_date
         FROM event_inquiries
@@ -328,13 +327,13 @@ def event_inquiry():
             event_description,
             catering_package
         ]):
-        cur.close()
-        return render_template(
-            "event_inquiry.html",
-            user_role=session.get("user_role"),
-            booked_dates=booked_dates,
-            message="Please fill out all required fields."
-        )
+            cur.close()
+            return render_template(
+                "event_inquiry.html",
+                user_role=session.get("user_role"),
+                booked_dates=booked_dates,
+                message="Please fill out all required fields."
+            )
 
         requested_date = preferred_datetime.split("T")[0] if preferred_datetime else None
 
@@ -362,6 +361,7 @@ def event_inquiry():
             catering_package,
             "pending"
         ))
+
         mysql.connection.commit()
         cur.close()
 
@@ -379,7 +379,7 @@ def event_inquiry():
         booked_dates=booked_dates,
         message=None
     )
-
+    
 
 @app.route("/become-a-member", methods=["GET", "POST"])
 def become_a_member():
