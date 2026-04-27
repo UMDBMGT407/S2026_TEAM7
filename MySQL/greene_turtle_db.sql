@@ -17,12 +17,6 @@
 SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
 SET @@SESSION.SQL_LOG_BIN= 0;
 
---
--- GTID state at the beginning of the backup 
---
-
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '9f5dd0cc-2926-11f1-b373-9020ee489e3f:1-82,
-d6505e96-296d-11f1-9398-2777e1047024:1-89';
 
 --
 -- Table structure for table `booked_events`
@@ -81,7 +75,7 @@ CREATE TABLE `event_inquiries` (
 
 LOCK TABLES `event_inquiries` WRITE;
 /*!40000 ALTER TABLE `event_inquiries` DISABLE KEYS */;
-INSERT INTO `event_inquiries` VALUES (1,'Sarah Mitchell','UMD Marketing Club',60,'sarah.mitchell@example.com','301-555-1122','2026-05-20 17:30:00','End of semester celebration with appetizers and drinks','Gold','pending','2026-04-08 18:01:45'),(2,'James Rodriguez','Rodriguez Family',25,'jrodriguez@example.com','240-555-3344','2026-06-05 13:00:00','Family birthday party with lunch service','Silver','pending','2026-04-08 18:01:45'),(3,'Olivia Chen','Tech Startup Meetup',80,'olivia.chen@example.com','202-555-7788','2026-07-12 18:00:00','Networking event with light catering and presentations','Platinum','pending','2026-04-08 18:01:45'),(4,'Emily Johnson','UMD Alumni Association',75,'emily.johnson@example.com','301-555-1234','2026-05-15 18:30:00','Graduation celebration with buffet and drinks','Gold','pending','2026-04-08 18:01:45'),(5,'Michael Carter','Carter Consulting Group',40,'mcarter@example.com','240-555-5678','2026-06-10 12:00:00','Corporate luncheon and networking event','Silver','pending','2026-04-08 18:01:45'),(6,'John Smith','ABC Corp',25,'john@example.com','555-1234','2026-05-10 18:00:00','Company dinner event','Gold','pending','2026-04-08 18:01:45'),(7,'Sarah Johnson',NULL,10,'sarah@example.com','555-5678','2026-05-15 12:00:00','Birthday party','Silver','pending','2026-04-08 18:01:45'),(8,'Mike Brown','Local Club',40,'mike@example.com','555-9999','2026-06-01 19:30:00','Fundraising event','Platinum','approved','2026-04-08 18:01:45');
+INSERT INTO `event_inquiries` VALUES (1,'Sarah Mitchell','UMD Marketing Club',60,'sarah.mitchell@gmail.com','301-555-1122','2026-05-20 17:30:00','End of semester celebration with appetizers and drinks','Gold','pending','2026-04-08 18:01:45'),(2,'James Rodriguez','Rodriguez Family',25,'jrodriguez@gmail.com','240-555-3344','2026-06-05 13:00:00','Family birthday party with lunch service','Silver','pending','2026-04-08 18:01:45'),(3,'Olivia Chen','Tech Startup Meetup',80,'olivia.chen@gmail.com','202-555-7788','2026-07-12 18:00:00','Networking event with light catering and presentations','Platinum','pending','2026-04-08 18:01:45'),(4,'Emily Johnson','UMD Alumni Association',75,'emily.johnson@gmail.com','301-555-1234','2026-05-15 18:30:00','Graduation celebration with buffet and drinks','Gold','pending','2026-04-08 18:01:45'),(5,'Michael Carter','Carter Consulting Group',40,'mcarter@gmail.com','240-555-5678','2026-06-10 12:00:00','Corporate luncheon and networking event','Silver','pending','2026-04-08 18:01:45'),(6,'John Smith','ABC Corp',25,'john@gmail.com','555-1234','2026-05-10 18:00:00','Company dinner event','Gold','pending','2026-04-08 18:01:45'),(7,'Sarah Johnson',NULL,10,'sarah@gmail.com','555-5678','2026-05-15 12:00:00','Birthday party','Silver','pending','2026-04-08 18:01:45'),(8,'Mike Brown','Local Club',40,'mike@gmail.com','555-9999','2026-06-01 19:30:00','Fundraising event','Platinum','approved','2026-04-08 18:01:45');
 /*!40000 ALTER TABLE `event_inquiries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -372,7 +366,7 @@ CREATE TABLE `members` (
 
 LOCK TABLES `members` WRITE;
 /*!40000 ALTER TABLE `members` DISABLE KEYS */;
-INSERT INTO `members` VALUES (1,'Hannah','Lee','2003-04-12','hannah.lee@email.com','301-555-1111','Email','hannahlee1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',1,'2025-01-15 10:00:00'),(2,'Marcus','Brown','2001-09-23','marcus.brown@email.com','240-555-2222','SMS','marcusbrown1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',1,'2025-06-02 14:30:00'),(3,'Sofia','Nguyen','2002-12-05','sofia.nguyen@email.com','443-555-3333','Email','sofian1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',0,'2026-02-10 09:15:00');
+INSERT INTO `members` VALUES (1,'Hannah','Lee','2003-04-12','hannah.lee@gmail.com','301-555-1111','Email','hannahlee1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',1,'2025-01-15 10:00:00'),(2,'Marcus','Brown','2001-09-23','marcus.brown@gmail.com','240-555-2222','SMS','marcusbrown1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',1,'2025-06-02 14:30:00'),(3,'Sofia','Nguyen','2002-12-05','sofia.nguyen@gmail.com','443-555-3333','Email','sofian1','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93',0,'2026-02-10 09:15:00');
 /*!40000 ALTER TABLE `members` ENABLE KEYS */;
 UNLOCK TABLES;
 
