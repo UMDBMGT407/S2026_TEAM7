@@ -18,7 +18,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -1952,21 +1952,35 @@ def staff_scheduling_admin():
 @app.route("/event-details-admin")
 @role_required("admin")
 def event_details_admin():
+    status_filter = request.args.get("status", "active").strip().lower()
+
+    if status_filter not in ["active", "past"]:
+        status_filter = "active"
+
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    cur.execute("""
-        SELECT *
-        FROM event_inquiries
-        WHERE inquiry_status = 'approved'
-        ORDER BY preferred_datetime ASC
-    """)
-    events = cur.fetchall()
+    if status_filter == "past":
+        cur.execute("""
+            SELECT *
+            FROM event_inquiries
+            WHERE inquiry_status = 'completed'
+            ORDER BY preferred_datetime DESC
+        """)
+    else:
+        cur.execute("""
+            SELECT *
+            FROM event_inquiries
+            WHERE inquiry_status = 'approved'
+            ORDER BY preferred_datetime ASC
+        """)
 
+    events = cur.fetchall()
     cur.close()
 
     return render_template(
         "event_details_admin.html",
         events=events,
+        status_filter=status_filter,
         user_role=session.get("user_role")
     )
 
