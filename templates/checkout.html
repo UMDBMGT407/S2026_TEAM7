@@ -93,19 +93,19 @@
               <div class="form-row two-col">
                 <div class="form-group">
                   <label class="checkout-label" for="firstName">FIRST NAME</label>
-                  <input class="checkout-input" id="firstName" type="text" name="firstName" />
+                  <input class="checkout-input letters-only" id="firstName" type="text" name="firstName" pattern="[A-Za-z\s]+" title="Only letters are allowed" />
                 </div>
 
                 <div class="form-group">
                   <label class="checkout-label" for="lastName">LAST NAME</label>
-                  <input class="checkout-input" id="lastName" type="text" name="lastName" />
+                  <input class="checkout-input letters-only" id="lastName" type="text" name="lastName" pattern="[A-Za-z\s]+" title="Only letters are allowed" />
                 </div>
               </div>
 
               <div class="form-row card-row">
                 <div class="form-group card-number-group">
                   <label class="checkout-label" for="cardNumber">CREDIT CARD NUMBER</label>
-                  <input class="checkout-input" id="cardNumber" type="text" name="cardNumber" />
+                  <input class="checkout-input numbers-only" id="cardNumber" type="text" name="cardNumber" inputmode="numeric" pattern="[0-9]{16}" maxlength="16" title="Enter a 16 digit card number" />
                 </div>
 
                 <div class="form-group exp-group">
@@ -122,7 +122,7 @@
 
                 <div class="form-group cvc-group">
                   <label class="checkout-label" for="cvc">CVC</label>
-                  <input class="checkout-input" id="cvc" type="text" name="cvc" />
+                  <input class="checkout-input numbers-only" id="cvc" type="text" name="cvc" inputmode="numeric" pattern="[0-9]{3}" maxlength="3" title="Enter a 3 digit CVC" />
                 </div>
               </div>
 
@@ -134,12 +134,12 @@
 
                 <div class="form-group state-group">
                   <label class="checkout-label" for="state">STATE</label>
-                  <input class="checkout-input" id="state" type="text" name="state" />
+                  <input class="checkout-input letters-only" id="state" type="text" name="state" pattern="[A-Za-z]{2}" maxlength="2" title="Enter 2 letter state abbreviation" />
                 </div>
 
                 <div class="form-group zip-group">
                   <label class="checkout-label" for="zipCode">ZIP CODE</label>
-                  <input class="checkout-input" id="zipCode" type="text" name="zipCode" />
+                  <input class="checkout-input numbers-only" id="zipCode" type="text" name="zipCode" inputmode="numeric" pattern="[0-9]{5}" maxlength="5" title="Enter a 5 digit ZIP code" />
                 </div>
               </div>
 
@@ -167,11 +167,21 @@
               <span>TOTAL</span>
               <span id="checkoutTotal">$0.00</span>
             </div>
+
+            <!-- PayPal Panel -->
+            <div class="api-settings" id="paypalPanel">
+              <h6 class="mb-1 font-weight-bold">💳 Pay with PayPal</h6>
+              <p class="small text-muted mb-2">Complete your Greene Turtle order securely with PayPal.</p>
+              <div id="paypal-button-container"></div>
+              <p id="paypal-status" class="small mt-2"></p>
+            </div>
           </aside>
         </div>
       </div>
     </main>
   </div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
 
   <script>
     const subtotalEl = document.getElementById("checkoutSubtotal");
@@ -210,6 +220,18 @@
   const addressInput = document.getElementById("address");
   const stateInput = document.getElementById("state");
   const zipCodeInput = document.getElementById("zipCode");
+
+      document.querySelectorAll(".letters-only").forEach(input => {
+      input.addEventListener("input", function () {
+        this.value = this.value.replace(/[^A-Za-z\s]/g, "");
+      });
+    });
+
+    document.querySelectorAll(".numbers-only").forEach(input => {
+      input.addEventListener("input", function () {
+        this.value = this.value.replace(/[^0-9]/g, "");
+      });
+    });
 
   expInput.addEventListener("input", function () {
     let value = this.value.replace(/\D/g, "");
@@ -289,8 +311,71 @@
     }
   });
 </script>
+<script>
+  document.querySelectorAll(".letters-only").forEach(input => {
+    input.addEventListener("input", function () {
+      this.value = this.value.replace(/[^A-Za-z\s]/g, "");
+    });
+  });
 
+  document.querySelectorAll(".numbers-only").forEach(input => {
+    input.addEventListener("input", function () {
+      this.value = this.value.replace(/[^0-9]/g, "");
+    });
+  });
+</script>
   
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      const total = subtotal + tax;
+
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: total.toFixed(2)
+          }
+        }]
+      });
+    },
+
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(async function(details) {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        if (cart.length === 0) {
+          alert("Your cart is empty.");
+          return;
+        }
+
+        const response = await fetch("/submit-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            cart: cart,
+            payment_method: "PayPal"
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          alert(result.message || "There was a problem placing your order.");
+          return;
+        }
+
+        localStorage.removeItem("cart");
+        clearCheckoutForm();
+        alert(`PayPal payment successful! Order #${result.order_id}`);
+        window.location.href = "/";
+      });
+    }
+  }).render("#paypal-button-container");
+</script>
+
 </body>
 </html>
