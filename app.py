@@ -2011,8 +2011,9 @@ def event_complete(inquiry_id):
         WHERE inquiry_id = %s
     """, (inquiry_id,))
     mysql.connection.commit()
-    print("updated rows:", cur.rowcount)
     cur.close()
+
+    flash("Event was completed successfully", "success")
     return redirect(url_for("event_details_admin"))
 
 # =========================
