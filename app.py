@@ -2017,6 +2017,7 @@ def event_complete(inquiry_id):
 @app.route("/add-new-user", methods=["GET", "POST"])
 @role_required("admin")
 def add_new_user():
+
     if request.method == "POST":
         first_name = request.form.get("first_name", "").strip()
         last_name = request.form.get("last_name", "").strip()
@@ -2026,19 +2027,14 @@ def add_new_user():
             flash("Please enter first name, last name, and a valid role.", "danger")
             return redirect(url_for("add_new_user"))
 
-        # Full name
         full_name = f"{first_name} {last_name}"
-
-        # Domain
         domain = "gtstaff.com" if role == "staff" else "gtadmin.com"
 
-        # Lowercase versions
         first = first_name.lower()
         last = last_name.lower()
 
         cursor = mysql.connection.cursor()
 
-        # --- FIRST TRY: firstname ---
         username = f"{first}@{domain}"
         email = username
         temp_password = f"{first}123"
@@ -2049,7 +2045,6 @@ def add_new_user():
         )
         existing_user = cursor.fetchone()
 
-        # --- IF DUPLICATE: use firstnamelastname ---
         if existing_user:
             username = f"{first}{last}@{domain}"
             email = username
@@ -2061,16 +2056,13 @@ def add_new_user():
             )
             existing_user = cursor.fetchone()
 
-            # If STILL duplicate (rare), stop it
             if existing_user:
                 flash("User already exists with this name. Try a different name.", "danger")
                 cursor.close()
                 return redirect(url_for("add_new_user"))
 
-        # Hash password
         hashed_password = generate_password_hash(temp_password)
 
-        # Insert
         cursor.execute("""
             INSERT INTO users (
                 first_name,
@@ -2104,23 +2096,49 @@ def add_new_user():
 
         return redirect(url_for("add_new_user"))
 
-    cursor = mysql.connection.cursor()
+    status_filter = request.args.get("status", "active").strip().lower()
+
+    if status_filter not in ["active", "inactive", "all"]:
+        status_filter = "active"
+
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cursor.execute("""
         SELECT username, name
         FROM users
         WHERE active_status = 'active'
+          AND role IN ('staff', 'admin')
         ORDER BY name
     """)
-
     users = cursor.fetchall()
+
+    if status_filter == "all":
+        cursor.execute("""
+            SELECT id, first_name, last_name, role, active_status
+            FROM users
+            WHERE role IN ('staff', 'admin')
+            ORDER BY active_status, last_name, first_name
+        """)
+    else:
+        cursor.execute("""
+            SELECT id, first_name, last_name, role, active_status
+            FROM users
+            WHERE active_status = %s
+              AND role IN ('staff', 'admin')
+            ORDER BY last_name, first_name
+        """, (status_filter,))
+
+    filtered_users = cursor.fetchall()
     cursor.close()
 
     return render_template(
         "add_new_user.html",
         user_role=session.get("user_role"),
-        users=users
+        users=users,
+        filtered_users=filtered_users,
+        status_filter=status_filter
     )
+
 
 # =========================
 # MARK USER INACTIVE
@@ -2131,16 +2149,21 @@ def delete_user():
     username = request.form.get("username", "").strip()
 
     if not username:
-        flash("Please enter a username.", "danger")
+        flash("Please select a user.", "danger")
         return redirect(url_for("add_new_user"))
 
     cursor = mysql.connection.cursor()
 
-    cursor.execute("SELECT id FROM users WHERE username = %s", (username,))
+    cursor.execute("""
+        SELECT id
+        FROM users
+        WHERE username = %s
+          AND active_status = 'active'
+    """, (username,))
     existing_user = cursor.fetchone()
 
     if not existing_user:
-        flash("User not found.", "danger")
+        flash("User not found or already inactive.", "danger")
         cursor.close()
         return redirect(url_for("add_new_user"))
 
@@ -2155,6 +2178,3 @@ def delete_user():
 
     flash(f"User '{username}' marked as inactive.", "success")
     return redirect(url_for("add_new_user"))
-
-if __name__ == "__main__":
-    app.run(debug=True)
