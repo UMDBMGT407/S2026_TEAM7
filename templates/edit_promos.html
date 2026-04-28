@@ -13,7 +13,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Passion+One:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
-
 <style>
   a, button, input, select, h1, h2, h3, h4, h5, * {
     box-sizing: border-box;
@@ -21,20 +20,34 @@
     padding: 0;
     -webkit-font-smoothing: antialiased;
   }
+
   menu, ol, ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
   }
+
+  .flash-popup {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 20px;
+    z-index: 9999;
+    font-family: "Passion One", sans-serif;
+  }
 </style>
 
-
 </head>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <title>Insert Promotion</title>
+
 <body>
 
- <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
   <div class="container-fluid px-4">
     
     <!-- LOGO -->
@@ -75,7 +88,7 @@
         </li>
 
         <!-- EVENTS -->
-            <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Events</a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="{{ url_for('events') }}">Event Requests</a></li>
@@ -96,15 +109,15 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Staff</a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff 
-Schedule</a></li>
+            <li><a class="dropdown-item" href="{{ url_for('staff_scheduling_admin') }}">Staff Schedule</a></li>
             <li><a class="dropdown-item" href="{{ url_for('shift_management') }}">Shift Management</a></li>
           </ul>
         </li>
+
         <!-- ===== NEW USER ===== -->
-<li class="nav-item">
-  <a class="nav-link" href="{{ url_for('add_new_user') }}">New User</a>
-</li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('add_new_user') }}">New User</a>
+        </li>
       </ul>
 
       <!-- SIGN OUT -->
@@ -118,6 +131,16 @@ Schedule</a></li>
   </div>
 </nav>
 
+<!-- PROMOTION SUCCESS POPUP -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-popup">
+      {% for category, message in messages %}
+        <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
   
 <div class="edit-promos container">
   <div class="insert-promotion-title-spacer"></div>
@@ -132,22 +155,22 @@ Schedule</a></li>
 
   <div class="form-row">
     <label for="promotion_name">Promotion Name:</label>
-    <input type="text" id="promotion_name" name="promotion_name" required>
+    <input type="text" id="promotion_name" name="promotion_name" required maxlength="50">
   </div>
 
   <div class="form-row">
     <label for="promotion_type">Promotion Type:</label>
-    <input type="text" id="promotion_type" name="promotion_type" placeholder="e.g. Happy Hour, BOGO, Discount">
+    <input type="text" id="promotion_type" name="promotion_type" placeholder="e.g. Happy Hour, BOGO, Discount" maxlength="30">
   </div>
 
   <div class="form-row">
     <label for="description">Promotion Description:</label>
-    <textarea id="description" name="description" rows="4" placeholder="Enter promotion details"></textarea>
+    <textarea id="description" name="description" rows="4" placeholder="Enter promotion details" maxlength="255"></textarea>
   </div>
 
   <div class="form-row">
     <label for="discount">Discount Applied:</label>
-    <input type="number" step="0.01" min="0" id="discount" name="discount" placeholder="e.g. 20.00">
+    <input type="number" step="0.01" min="0" max="100" id="discount" name="discount" placeholder="e.g. 20.00">
   </div>
 
   <!-- swapped: start date now comes before recurring -->
@@ -206,6 +229,13 @@ Schedule</a></li>
 
 </form>
 </div>
+
+<script>
+  setTimeout(() => {
+    const popup = document.querySelector('.flash-popup');
+    if (popup) popup.style.display = 'none';
+  }, 3000);
+</script>
 
 </body>
 </html>
