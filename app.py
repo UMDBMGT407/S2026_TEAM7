@@ -1396,7 +1396,8 @@ def add_promotion():
     finally:
         cur.close()
 
-    return redirect(url_for("view_promos"))
+    flash("Promotion successfully created", "success")
+    return redirect(url_for("edit_promos"))
 
 
 @app.route("/view-promos")
