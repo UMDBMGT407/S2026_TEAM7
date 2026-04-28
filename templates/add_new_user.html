@@ -181,7 +181,7 @@
           <select class="form-select" name="username" required>
             <option value="">Select a user</option>
             {% for user in users %}
-              <option value="{{ user[0] }}">{{ user[1] }}</option>
+              <option value="{{ user.username }}">{{ user.name }}</option>
             {% endfor %}
           </select>
         </div>
@@ -192,6 +192,53 @@
 
       </form>
 
+      <hr class="my-4">
+
+      <h4 style="color: #204631; font-weight: 700;">
+        View Users
+      </h4>
+
+      <form method="GET" action="{{ url_for('add_new_user') }}" class="mb-3">
+        <label class="form-label">Filter Users</label>
+        <select class="form-select" name="status" onchange="this.form.submit()">
+          <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active Users</option>
+          <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactive Users</option>
+          <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Users</option>
+        </select>
+      </form>
+
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Employee ID</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Role</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for user in filtered_users %}
+              <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.role|capitalize }}</td>
+                <td>{{ user.active_status|capitalize }}</td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center text-muted">
+                  No users found.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 
@@ -201,5 +248,3 @@
 
 </body>
 </html>
-
-
