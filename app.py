@@ -2178,3 +2178,6 @@ def delete_user():
 
     flash(f"User '{username}' marked as inactive.", "success")
     return redirect(url_for("add_new_user"))
+
+if __name__ == "__main__":
+    app.run(debug=True)
