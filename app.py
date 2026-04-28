@@ -7,6 +7,10 @@ import calendar
 from flask import jsonify
 from werkzeug.security import generate_password_hash
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "replace-this-with-a-real-secret-key"
@@ -243,7 +247,11 @@ def cart():
 
 @app.route("/checkout")
 def checkout():
-    return render_template("checkout.html", user_role=session.get("user_role"))
+    return render_template(
+        "checkout.html",
+        user_role=session.get("user_role"),
+        paypal_client_id=os.getenv("PAYPAL_CLIENT_ID")
+    )
 
 @app.route("/submit-order", methods=["POST"])
 def submit_order():
