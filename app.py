@@ -18,7 +18,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -1981,6 +1981,8 @@ def approve_event(inquiry_id):
     """, (inquiry_id,))
     mysql.connection.commit()
     cur.close()
+
+    flash("Event was successfully accepted", "success")
     return redirect(url_for("events"))
 
 
@@ -1995,6 +1997,8 @@ def reject_event(inquiry_id):
     """, (inquiry_id,))
     mysql.connection.commit()
     cur.close()
+
+    flash("Event was successfully rejected", "danger")
     return redirect(url_for("events"))
 
 @app.route("/event-complete/<int:inquiry_id>", methods=["POST"])
