@@ -41,6 +41,8 @@
 
   <title>view_promos</title>
 </head>
+</body>
+</html>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: #204631;">
   <div class="container-fluid px-4">
@@ -301,6 +303,24 @@ Schedule</a></li>
       });
   }
 </script>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="
+      position: fixed;
+      top: 70px;              /* moved higher */
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 20px;
+      z-index: 99999;         /* above navbar */
+      font-family: 'Passion One', sans-serif;
+      pointer-events: none;
+    ">
+      {% for category, message in messages %}
+        <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
 </body>
 </html>
