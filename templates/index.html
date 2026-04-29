@@ -119,11 +119,11 @@
                 <p class="promo-discount">{{ promo.discount }}% off</p>
               {% endif %}
 
-              {% if promo.start_time and promo.end_time %}
-                <p class="promo-time">
-                  Available today from {{ promo.start_time.strftime("%I:%M %p") }} to {{ promo.end_time.strftime("%I:%M %p") }}
-                </p>
-              {% endif %}
+               {% if promo.start_time and promo.end_time %}
+                  <p class="promo-time">
+                    Available today from {{ promo.start_time }} to {{ promo.end_time }}
+                  </p>
+                {% endif %}
 
               {% if promo.promo_items %}
                 <p class="promo-items">
