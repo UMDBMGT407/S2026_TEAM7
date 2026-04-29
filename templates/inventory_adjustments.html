@@ -154,23 +154,8 @@
   </div>
 
   <script>
-    const defaultInventoryItems = [
-      { name: "Kaiser Roll", stock: 20, unitPrice: 0.10 },
-      { name: "Onions", stock: 5, unitPrice: 0.08 },
-      { name: "Pasta", stock: 21, unitPrice: 0.50 },
-      { name: "Tomatoes", stock: 60, unitPrice: 0.05 },
-      { name: "Salad Mix", stock: 44, unitPrice: 0.30 },
-      { name: "Frozen French Fries", stock: 18, unitPrice: 0.45 },
-      { name: "Chicken Breast", stock: 90, unitPrice: 2.25 },
-      { name: "Beef Patty", stock: 63, unitPrice: 1.75 },
-      { name: "American Cheese", stock: 23, unitPrice: 0.40 }
-    ];
-
-    if (!localStorage.getItem("inventoryItems")) {
-      localStorage.setItem("inventoryItems", JSON.stringify(defaultInventoryItems));
-    }
-
-    let inventoryItems = JSON.parse(localStorage.getItem("inventoryItems")) || defaultInventoryItems;
+    // LIVE SQL DATA PASSED FROM APP.PY
+    const inventoryItems = {{ inventory_items | default([]) | tojson }};
 
     const inventoryList = document.getElementById("inventoryList");
     const orderRows = document.getElementById("orderRows");
@@ -182,13 +167,24 @@
     function renderInventoryList() {
       inventoryList.innerHTML = "";
 
+      if (inventoryItems.length === 0) {
+        inventoryList.innerHTML = `<div class="inventory-row"><div class="inventory-name">No active inventory items found.</div></div>`;
+        return;
+      }
+
       inventoryItems.forEach((item) => {
         const row = document.createElement("div");
         row.className = "inventory-row";
 
+        const stock = Number(item.stock || 0);
+        const reorderQuantity = Number(item.reorder_quantity || 0);
+        const unit = item.unit || "units";
+
         row.innerHTML = `
-          <div class="inventory-name">${item.name} --- ${item.stock}</div>
-          <button class="reorder-btn" data-name="${item.name}">Reorder</button>
+          <div class="inventory-name">
+            ${item.name} --- Current Stock: ${stock} ${unit} | Reorder Qty: ${reorderQuantity} ${unit}
+          </div>
+          <button class="reorder-btn" data-id="${item.id}">Reorder</button>
         `;
 
         inventoryList.appendChild(row);
@@ -197,23 +193,24 @@
       const reorderButtons = document.querySelectorAll(".reorder-btn");
       reorderButtons.forEach((button) => {
         button.addEventListener("click", function () {
-          const itemName = this.dataset.name;
-          addToOrder(itemName);
+          const inventoryID = Number(this.dataset.id);
+          addToOrder(inventoryID);
         });
       });
     }
 
-    function addToOrder(itemName) {
-      const item = inventoryItems.find((inventoryItem) => inventoryItem.name === itemName);
+    function addToOrder(inventoryID) {
+      const item = inventoryItems.find((inventoryItem) => inventoryItem.id === inventoryID);
       if (!item) return;
 
-      const existing = currentOrder.find((orderItem) => orderItem.name === itemName);
+      const existing = currentOrder.find((orderItem) => orderItem.id === inventoryID);
 
       if (!existing) {
         currentOrder.push({
+          id: item.id,
           name: item.name,
-          unitPrice: item.unitPrice,
-          quantity: 0
+          unitPrice: Number(item.unit_price || 0),
+          quantity: Number(item.reorder_quantity || 1)
         });
       }
 
@@ -289,10 +286,37 @@
     }
 
     submitOrderButton.addEventListener("click", function () {
-      currentOrder = [];
-      renderOrderRows();
-      totalBox.textContent = "$0.00";
-      alert("Order submitted to vendor.");
+      const validOrderItems = currentOrder.filter((item) => item.quantity > 0);
+
+      if (validOrderItems.length === 0) {
+        alert("Please add at least one item with a quantity greater than 0.");
+        return;
+      }
+
+      fetch("{{ url_for('submit_inventory_order') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          order_items: validOrderItems.map((item) => ({
+            inventory_id: item.id,
+            quantity: item.quantity
+          }))
+        })
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        alert(data.message);
+
+        if (data.success) {
+          window.location.reload();
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("Something went wrong submitting the inventory order.");
+      });
     });
 
     renderInventoryList();
