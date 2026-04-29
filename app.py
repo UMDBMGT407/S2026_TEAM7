@@ -18,7 +18,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -676,7 +676,122 @@ def submit_shift_request():
 @app.route("/dashboard")
 @role_required("admin")
 def dashboard():
-    return render_template("dashboard.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    today = date.today()
+
+    # ── Sales This Week vs Last Week ──────────────────────────────────────
+    days_since_monday = today.weekday()
+    week_start = today - timedelta(days=days_since_monday)
+    week_end   = week_start + timedelta(days=6)
+    last_week_start = week_start - timedelta(days=7)
+    last_week_end   = week_end   - timedelta(days=7)
+
+    cur.execute("""
+        SELECT TransactionDate, COALESCE(SUM(OrderPrice), 0) AS daily_total
+        FROM orders
+        WHERE TransactionDate BETWEEN %s AND %s
+        GROUP BY TransactionDate
+        ORDER BY TransactionDate
+    """, (week_start, week_end))
+    this_week_rows = {str(r["TransactionDate"]): float(r["daily_total"]) for r in cur.fetchall()}
+
+    cur.execute("""
+        SELECT TransactionDate, COALESCE(SUM(OrderPrice), 0) AS daily_total
+        FROM orders
+        WHERE TransactionDate BETWEEN %s AND %s
+        GROUP BY TransactionDate
+        ORDER BY TransactionDate
+    """, (last_week_start, last_week_end))
+    last_week_rows = {str(r["TransactionDate"]): float(r["daily_total"]) for r in cur.fetchall()}
+
+    day_labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    sales_this_week = []
+    sales_last_week = []
+    for i in range(7):
+        d_this = str(week_start + timedelta(days=i))
+        d_last = str(last_week_start + timedelta(days=i))
+        sales_this_week.append(this_week_rows.get(d_this, 0))
+        sales_last_week.append(last_week_rows.get(d_last, 0))
+
+    # ── Active Promotions ─────────────────────────────────────────────────
+    cur.execute("""
+        SELECT promotion_id, promotion_name, description, start_date, end_date
+        FROM promotions
+        WHERE start_date <= %s AND end_date >= %s
+        ORDER BY end_date ASC
+        LIMIT 5
+    """, (today, today))
+    active_promotions = cur.fetchall()
+    for p in active_promotions:
+        days_left = (p["end_date"] - today).days
+        p["badge"] = "Ending Soon" if days_left <= 7 else "Active"
+
+    # ── Upcoming Events ───────────────────────────────────────────────────
+    cur.execute("""
+        SELECT inquiry_id, full_name, preferred_datetime
+        FROM event_inquiries
+        WHERE inquiry_status = 'approved'
+          AND DATE(preferred_datetime) >= %s
+        ORDER BY preferred_datetime ASC
+        LIMIT 10
+    """, (today,))
+    upcoming_events = cur.fetchall()
+    event_days = [{"day": e["preferred_datetime"].day, "month": e["preferred_datetime"].month - 1} for e in upcoming_events]
+
+    # ── Shifts Needing Coverage ───────────────────────────────────────────
+    cur.execute("""
+        SELECT s.id, s.date, s.role, s.start_hour, s.end_hour,
+               u.name AS staff_name
+        FROM schedule s
+        LEFT JOIN users u ON s.user_id = u.id
+        WHERE s.date BETWEEN %s AND %s
+        ORDER BY s.date, s.start_hour
+    """, (today, today + timedelta(days=7)))
+    shifts_raw = cur.fetchall()
+
+    shifts = []
+    for s in shifts_raw:
+        start = float(s["start_hour"])
+        end = float(s["end_hour"])
+        shifts.append({
+            "role":       s["role"],
+            "date_label": s["date"].strftime("%a %-m/%-d"),
+            "time_range": f"{format_time_12hr(start)}–{format_time_12hr(end)}",
+            "staff_name": s["staff_name"],
+            "covered":    s["staff_name"] is not None,
+        })
+
+    # ── Low Stock Items ───────────────────────────────────────────────────
+    cur.execute("""
+        SELECT InventoryName,
+               CurrentStock,
+               ReorderQuantity,
+               ROUND(CurrentStock / ReorderQuantity * 100) AS pct
+        FROM inventory
+        WHERE status = 'active'
+          AND ReorderQuantity > 0
+          AND CurrentStock <= ReorderQuantity * 1.5
+        ORDER BY pct ASC
+        LIMIT 5
+    """)
+    low_stock = cur.fetchall()
+    for item in low_stock:
+        item["pct"] = int(item["pct"])
+
+    cur.close()
+
+    return render_template(
+        "dashboard.html",
+        user_role=session.get("user_role"),
+        day_labels=day_labels,
+        sales_this_week=sales_this_week,
+        sales_last_week=sales_last_week,
+        active_promotions=active_promotions,
+        upcoming_events=upcoming_events,
+        event_days=event_days,
+        shifts=shifts,
+        low_stock=low_stock,
+    )
 
 
 # Menu
