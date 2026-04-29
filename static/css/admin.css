@@ -4092,3 +4092,21 @@ body {
   margin-bottom: 20px;
   text-align: center;
 }
+
+.aov-chart-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 25px;
+  margin: 30px auto;
+  width: 85%;
+  max-width: 900px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.aov-chart-title {
+  font-family: "Passion One", sans-serif;
+  color: #204631;
+  font-size: 38px;
+  margin-bottom: 20px;
+  text-align: center;
+}
