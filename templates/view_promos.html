@@ -129,6 +129,23 @@ Schedule</a></li>
 </nav>
 
 <div class="view-promos-page">
+  <div style="display:flex; gap:14px; margin-bottom:20px; padding:20px;">
+
+  <a
+    href="{{ url_for('view_promos', status='active', month=month, year=year) }}"
+    class="btn {% if status_filter == 'active' %}btn-light{% else %}btn-outline-light{% endif %}"
+    style="font-family:'Passion One', sans-serif; font-size:20px; border-radius:12px;">
+    Active Promotions
+  </a>
+
+  <a
+    href="{{ url_for('view_promos', status='inactive', month=month, year=year) }}"
+    class="btn {% if status_filter == 'inactive' %}btn-light{% else %}btn-outline-light{% endif %}"
+    style="font-family:'Passion One', sans-serif; font-size:20px; border-radius:12px;">
+    Past Promotions
+  </a>
+
+</div>
 
   <div class="promo-toolbar">
     <div class="promo-toolbar-card">
@@ -183,19 +200,19 @@ Schedule</a></li>
 
   <div class="calendar-shell">
     <div class="calendar-month-header">
-      <a class="month-toggle"
-         href="{{ url_for('view_promos', month=prev_month, year=prev_year) }}">
-        &#10094;
-      </a>
+   <a class="month-toggle"
+   href="{{ url_for('view_promos', status=status_filter, month=prev_month, year=prev_year) }}">
+  &#10094;
+</a>
 
-      <div class="month-title-wrap">
-        <h2 class="month-title">{{ month_names[month - 1] }} {{ year }}</h2>
-      </div>
+<div class="month-title-wrap">
+  <h2 class="month-title">{{ month_names[month - 1] }} {{ year }}</h2>
+</div>
 
-      <a class="month-toggle"
-         href="{{ url_for('view_promos', month=next_month, year=next_year) }}">
-        &#10095;
-      </a>
+<a class="month-toggle"
+   href="{{ url_for('view_promos', status=status_filter, month=next_month, year=next_year) }}">
+  &#10095;
+</a>
     </div>
 
     <div class="calendar-board">
