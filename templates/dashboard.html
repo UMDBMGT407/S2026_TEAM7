@@ -126,26 +126,23 @@
         <canvas id="salesChart" height="160"></canvas>
       </div>
 
-      <div class="card">
-        <div class="card-title">LOYALTY SIGNUPS THIS WEEK</div>
-        <canvas id="loyaltyChart" height="160"></canvas>
-      </div>
 
       <div class="card">
         <div class="card-title">ACTIVE PROMOTIONS</div>
-        <div class="promo-item">
-          <div class="promo-name">BOGO BURGERS</div>
-          <div class="promo-detail">Valid: Feb 1 – Mar 7 &nbsp;|&nbsp; Redemptions: 142</div>
-          <div class="promo-detail">Revenue Generated: $3,480</div>
-          <span class="promo-status status-active">Active</span>
-        </div>
-        <div class="promo-item">
-          <div class="promo-name">HAPPY HOUR 2-FOR-1</div>
-          <div class="promo-detail">Valid: Mar 1 – Mar 15 &nbsp;|&nbsp; Redemptions: 67</div>
-          <div class="promo-detail">Revenue Generated: $1,240</div>
-          <span class="promo-status status-ending">Ending Soon</span>
-        </div>
+        {% for p in active_promotions %}
+        <a href="{{ url_for('view_promos') }}" style="text-decoration:none; color:inherit;">
+          <div class="promo-item">
+            <div class="promo-name">{{ p.promotion_name | upper }}</div>
+            <div class="promo-detail">Valid: {{ p.start_date.strftime('%b %-d') }} – {{ p.end_date.strftime('%b %-d') }}</div>
+            <div class="promo-detail">{{ p.description }}</div>
+            <span class="promo-status {{ 'status-ending' if p.badge == 'Ending Soon' else 'status-active' }}">{{ p.badge }}</span>
+          </div>
+        </a>
+        {% else %}
+        <p style="color:#888; font-size:14px;">No active promotions today.</p>
+        {% endfor %}
       </div>
+
 
       <div class="card">
         <div class="card-title">UPCOMING EVENTS</div>
@@ -161,46 +158,37 @@
 
       <div class="card">
         <div class="card-title">SHIFTS NEEDING COVERAGE</div>
+        {% for s in shifts %}
         <div class="shift-item">
-          <div class="shift-dot"></div>
+          <div class="shift-dot {{ 'covered' if s.covered else '' }}"></div>
           <div class="shift-info">
-            <div class="shift-name">Server — Fri 6–10 PM</div>
-            <div class="shift-time">1 staff needed</div>
+            <div class="shift-name">{{ s.role }} — {{ s.date_label }}, {{ s.time_range }}</div>
+            <div class="shift-time">{{ s.staff_name if s.covered else '1 staff needed' }}</div>
           </div>
         </div>
-        <div class="shift-item">
-          <div class="shift-dot"></div>
-          <div class="shift-info">
-            <div class="shift-name">Host — Sat 4–8 PM</div>
-            <div class="shift-time">1 staff needed</div>
-          </div>
-        </div>
-        <div class="shift-item">
-          <div class="shift-dot covered"></div>
-          <div class="shift-info">
-            <div class="shift-name">Bartender — Sun 11–3 PM</div>
-            <div class="shift-time">Covered</div>
-          </div>
-        </div>
+        {% else %}
+        <p style="color:#888; font-size:14px; margin-top:8px;">No shifts in the next 7 days.</p>
+        {% endfor %}
         <button class="assign-btn" onclick="window.location.href='{{ url_for('shift_management') }}'">ASSIGN STAFF</button>
       </div>
 
       <div class="card">
         <div class="card-title">LOW STOCK ITEMS</div>
+        {% for item in low_stock %}
         <div class="stock-item">
-          <div class="stock-header"><span>GROUND BEEF</span><span>30%</span></div>
-          <div class="stock-bar-bg"><div class="stock-bar bar-red" style="width:30%"></div></div>
+          <div class="stock-header">
+            <span>{{ item.InventoryName | upper }}</span>
+            <span>{{ item.pct }}%</span>
+          </div>
+          <div class="stock-bar-bg">
+            <div class="stock-bar {% if item.pct < 40 %}bar-red{% elif item.pct < 70 %}bar-orange{% else %}bar-yellow{% endif %}"
+                 style="width:{{ item.pct }}%"></div>
+          </div>
         </div>
-        <div class="stock-item">
-          <div class="stock-header"><span>BURGER BUNS</span><span>40%</span></div>
-          <div class="stock-bar-bg"><div class="stock-bar bar-orange" style="width:40%"></div></div>
-        </div>
-        <div class="stock-item">
-          <div class="stock-header"><span>BACON</span><span>60%</span></div>
-          <div class="stock-bar-bg"><div class="stock-bar bar-yellow" style="width:60%"></div></div>
-        </div>
+        {% else %}
+        <p style="color:#888; font-size:14px; margin-top:8px;">All items sufficiently stocked.</p>
+        {% endfor %}
       </div>
-    </div>
 
     <div class="kpi-toggle" onclick="toggleKPI()">KPI GOALS</div>
     <div class="overlay" id="overlay" onclick="toggleKPI()"></div>
@@ -220,20 +208,7 @@
         </div>
         <div class="kpi-bar-bg"><div class="kpi-bar yellow" id="revenueBar" style="width:70%"></div></div>
       </div>
-      <hr class="kpi-divider">
-
-      <div class="kpi-goal">
-        <div class="kpi-goal-label">LOYALTY SIGNUPS TARGET</div>
-        <div class="kpi-input-row">
-          <input class="kpi-input" id="loyaltyGoal" type="number" placeholder="e.g. 50" value="50">
-          <button class="kpi-save-btn" onclick="updateKPI()">Set</button>
-        </div>
-        <div class="kpi-progress-row">
-          <span id="loyaltyLabel">32 / 50</span>
-          <span id="loyaltyPct">64%</span>
-        </div>
-        <div class="kpi-bar-bg"><div class="kpi-bar yellow" id="loyaltyBar" style="width:64%"></div></div>
-      </div>
+      
       <hr class="kpi-divider">
 
       <div class="kpi-goal">
@@ -267,14 +242,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    const eventDays = [
-      { day: 7, month: 4 },
-      { day: 4, month: 5 },
-      { day: 6, month: 5 }
-    ];
+    const eventDays = {{ event_days | tojson }};
 
-    let currentMonth = 4;
-    let currentYear = 2026;
+    const now = new Date();
+    let currentMonth = now.getMonth();
+    let currentYear = now.getFullYear();
     const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
     const MONTH_NAMES = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
 
@@ -335,18 +307,18 @@
     new Chart(document.getElementById('salesChart'), {
       type: 'line',
       data: {
-        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        labels: {{ day_labels | tojson }},
         datasets: [
           {
             label: 'This Week',
-            data: [820,940,780,1100,1350,1580,910],
+            data: {{ sales_this_week | tojson }},
             borderColor: '#36845a',
             tension: 0.4,
             fill: false
           },
           {
             label: 'Last Week',
-            data: [700,880,820,950,1200,1400,850],
+            data: {{ sales_last_week | tojson }},
             borderColor: '#204631',
             tension: 0.4,
             fill: false,
@@ -357,40 +329,15 @@
       options: {
         plugins: {
           legend: {
-            labels: {
-              font: { size: 11 }
-            }
+            labels: { font: { size: 11 } }
           }
         },
         scales: {
-          y: {
-            beginAtZero: false
-          }
+          y: { beginAtZero: false }
         }
       }
     });
-
-    new Chart(document.getElementById('loyaltyChart'), {
-      type: 'bar',
-      data: {
-        labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
-        datasets: [
-          {
-            label: 'Signups',
-            data: [4,7,3,6,5,9,4],
-            backgroundColor: '#36845a'
-          }
-        ]
-      },
-      options: {
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
+  
 
     function toggleKPI() {
       document.getElementById('kpiPanel').classList.toggle('open');
@@ -399,7 +346,6 @@
 
     const kpiData = {
       revenue: { current: 3480, goal: 5000 },
-      loyalty: { current: 32, goal: 50 },
       events:  { current: 4, goal: 10 },
       shifts:  { current: 80, goal: 95 }
     };
@@ -412,7 +358,6 @@
 
     function updateKPI() {
       kpiData.revenue.goal = +document.getElementById('revenueGoal').value || 5000;
-      kpiData.loyalty.goal = +document.getElementById('loyaltyGoal').value || 50;
       kpiData.events.goal  = +document.getElementById('eventsGoal').value || 10;
       kpiData.shifts.goal  = +document.getElementById('shiftsGoal').value || 95;
 
