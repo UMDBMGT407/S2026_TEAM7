@@ -1389,8 +1389,6 @@ def add_promotion():
         description = (request.form.get("description") or "").strip() or None
 
         discount_raw = (request.form.get("discount") or "").strip()
-        discount = float(discount_raw) if discount_raw else None
-
         start_date_raw = request.form.get("start_date") or None
         end_date_raw = request.form.get("end_date") or None
         start_time = request.form.get("start_time") or None
@@ -1403,8 +1401,28 @@ def add_promotion():
             if one_item:
                 menu_item_ids = [one_item]
 
+        missing_fields = []
+
         if not promotion_name:
+            missing_fields.append("Promotion Name")
+        if not discount_raw:
+            missing_fields.append("Discount")
+        if not start_date_raw:
+            missing_fields.append("Promotion Start Date")
+        if not end_date_raw:
+            missing_fields.append("Promotion End Date")
+        if not start_time:
+            missing_fields.append("Promotion Time Start")
+        if not end_time:
+            missing_fields.append("Promotion Time End")
+        if not menu_item_ids:
+            missing_fields.append("Applicable Menu Item")
+
+        if missing_fields:
+            flash("Failed to create promotion. Did not enter: " + ", ".join(missing_fields), "danger")
             return redirect(url_for("edit_promos"))
+
+        discount = float(discount_raw)
 
         cur.execute("""
             INSERT INTO promotions
@@ -1431,49 +1449,38 @@ def add_promotion():
                 VALUES (%s, %s)
             """, (promotion_id, item_id))
 
-        # Auto-add to calendar if date range exists.
-        # Rule:
-        # - no recurring day -> every day in range
-        # - recurring day selected -> only matching weekday(s) in range
-        if start_date_raw and end_date_raw:
-            start_date = datetime.strptime(start_date_raw, "%Y-%m-%d").date()
-            end_date = datetime.strptime(end_date_raw, "%Y-%m-%d").date()
+        start_date = datetime.strptime(start_date_raw, "%Y-%m-%d").date()
+        end_date = datetime.strptime(end_date_raw, "%Y-%m-%d").date()
 
-            if end_date >= start_date:
-                weekday_map = {
-                    "Monday": 0,
-                    "Tuesday": 1,
-                    "Wednesday": 2,
-                    "Thursday": 3,
-                    "Friday": 4,
-                    "Saturday": 5,
-                    "Sunday": 6,
-                }
+        if end_date >= start_date:
+            weekday_map = {
+                "Monday": 0,
+                "Tuesday": 1,
+                "Wednesday": 2,
+                "Thursday": 3,
+                "Friday": 4,
+                "Saturday": 5,
+                "Sunday": 6,
+            }
 
-                recurring_weekday = weekday_map.get(recurring) if recurring else None
-                current_date = start_date
+            recurring_weekday = weekday_map.get(recurring) if recurring else None
+            current_date = start_date
 
-                while current_date <= end_date:
-                    should_add = False
+            while current_date <= end_date:
+                if recurring_weekday is None or current_date.weekday() == recurring_weekday:
+                    cur.execute("""
+                        INSERT IGNORE INTO promotion_calendar (promotion_id, date)
+                        VALUES (%s, %s)
+                    """, (promotion_id, current_date))
 
-                    if recurring_weekday is None:
-                        should_add = True
-                    elif current_date.weekday() == recurring_weekday:
-                        should_add = True
-
-                    if should_add:
-                        cur.execute("""
-                            INSERT IGNORE INTO promotion_calendar (promotion_id, date)
-                            VALUES (%s, %s)
-                        """, (promotion_id, current_date))
-
-                    current_date += timedelta(days=1)
+                current_date += timedelta(days=1)
 
         mysql.connection.commit()
 
     except Exception as e:
         mysql.connection.rollback()
         print("ERROR ADDING PROMO:", e)
+        flash("Failed to create promotion.", "danger")
         return redirect(url_for("edit_promos"))
 
     finally:
