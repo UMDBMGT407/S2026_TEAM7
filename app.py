@@ -1257,8 +1257,58 @@ def submit_supplier_availability():
 @app.route("/inventory-adjustments")
 @role_required("admin")
 def inventory_adjustments():
-    return render_template("inventory_adjustments.html", user_role=session.get("user_role"))
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
+    cur.execute("""
+        SELECT
+            InventoryID AS id,
+            InventoryName AS name,
+            CurrentStock AS stock,
+            ReorderQuantity AS reorder_quantity,
+            UnitsOfMeasure AS unit,
+            COALESCE(UnitsPerPackage, 0) AS unit_price
+        FROM inventory
+        WHERE status = 'active'
+        ORDER BY InventoryName
+    """)
+
+    inventory_items = cur.fetchall()
+
+    for item in inventory_items:
+        item["stock"] = float(item["stock"] or 0)
+        item["reorder_quantity"] = float(item["reorder_quantity"] or 0)
+        item["unit_price"] = float(item["unit_price"] or 0)
+
+    cur.close()
+
+    return render_template(
+        "inventory_adjustments.html",
+        user_role=session.get("user_role"),
+        inventory_items=inventory_items
+    )
+@app.route("/submit-inventory-order", methods=["POST"])
+@role_required("admin")
+def submit_inventory_order():
+    data = request.get_json()
+    order_items = data.get("order_items", [])
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    for item in order_items:
+        cur.execute("""
+            UPDATE inventory
+            SET CurrentStock = CurrentStock + %s,
+                ReorderDate = CURDATE()
+            WHERE InventoryID = %s
+        """, (item["quantity"], item["inventory_id"]))
+
+    mysql.connection.commit()
+    cur.close()
+
+    return jsonify({
+        "success": True,
+        "message": "Inventory order submitted and stock updated."
+    })
 
 # Events (admin inquiry management)
 @app.route("/events")
