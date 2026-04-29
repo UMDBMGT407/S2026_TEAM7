@@ -364,6 +364,7 @@ DROP TABLE IF EXISTS `promotion_calendar`;
 CREATE TABLE `promotion_calendar` (
   `promotion_id` int NOT NULL,
   `date` date NOT NULL,
+  `calendar_status` VARCHAR(20) NOT NULL DEFAULT 'active',
   PRIMARY KEY (`promotion_id`,`date`),
   CONSTRAINT `promotion_calendar_ibfk_1` FOREIGN KEY (`promotion_id`) REFERENCES `promotions` (`promotion_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
