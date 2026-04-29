@@ -946,7 +946,20 @@ def reactivate_menu_item(menu_item_id):
 @role_required("admin")
 def orders_and_sales():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    day_labels = []
+    day_values = []
+    cur.execute("""
+        SELECT 
+            DAYNAME(TransactionDate) AS order_day,
+            COUNT(*) AS order_count
+        FROM orders
+        GROUP BY DAYOFWEEK(TransactionDate), DAYNAME(TransactionDate)
+        ORDER BY DAYOFWEEK(TransactionDate)
+    """)
+    day_rows = cur.fetchall()
 
+    day_labels = [row["order_day"] for row in day_rows]
+    day_values = [row["order_count"] for row in day_rows]
     # latest week in orders table
     cur.execute("""
         SELECT YEARWEEK(MAX(TransactionDate), 1) AS latest_week
@@ -967,19 +980,6 @@ def orders_and_sales():
     latest_month = latest_month_result["latest_month"]
 
     if latest_week is None or latest_year is None or latest_month is None:
-        # Bar chart: order frequency by day of week
-    cur.execute("""
-        SELECT 
-            DAYNAME(TransactionDate) AS order_day,
-            COUNT(*) AS order_count
-        FROM orders
-        GROUP BY DAYOFWEEK(TransactionDate), DAYNAME(TransactionDate)
-        ORDER BY DAYOFWEEK(TransactionDate)
-    """)
-    day_rows = cur.fetchall()
-
-    day_labels = [row["order_day"] for row in day_rows]
-    day_values = [row["order_count"] for row in day_rows]
         cur.close()
         return render_template(
             "orders_and_sales.html",
@@ -992,7 +992,7 @@ def orders_and_sales():
             weekly_sales_difference=0,
             monthly_sales=0,
             last_month_sales=0,
-            monthly_sales_difference=0
+            monthly_sales_difference=0,
             day_labels=day_labels,
             day_values=day_values
         )
@@ -1085,10 +1085,11 @@ def orders_and_sales():
         weekly_sales_difference=weekly_sales_difference,
         monthly_sales=monthly_sales,
         last_month_sales=last_month_sales,
-        monthly_sales_difference=monthly_sales_difference
+        monthly_sales_difference=monthly_sales_difference,
         aov_labels=aov_labels,
         aov_values=aov_values
     )
+
 
 
 
