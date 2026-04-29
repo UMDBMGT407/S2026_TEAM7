@@ -967,6 +967,19 @@ def orders_and_sales():
     latest_month = latest_month_result["latest_month"]
 
     if latest_week is None or latest_year is None or latest_month is None:
+        # Bar chart: order frequency by day of week
+    cur.execute("""
+        SELECT 
+            DAYNAME(TransactionDate) AS order_day,
+            COUNT(*) AS order_count
+        FROM orders
+        GROUP BY DAYOFWEEK(TransactionDate), DAYNAME(TransactionDate)
+        ORDER BY DAYOFWEEK(TransactionDate)
+    """)
+    day_rows = cur.fetchall()
+
+    day_labels = [row["order_day"] for row in day_rows]
+    day_values = [row["order_count"] for row in day_rows]
         cur.close()
         return render_template(
             "orders_and_sales.html",
@@ -980,6 +993,8 @@ def orders_and_sales():
             monthly_sales=0,
             last_month_sales=0,
             monthly_sales_difference=0
+            day_labels=day_labels,
+            day_values=day_values
         )
 
     # weekly orders
@@ -1043,6 +1058,20 @@ def orders_and_sales():
 
     monthly_sales_difference = monthly_sales - last_month_sales
 
+    # Average Order Value over time
+    cur.execute("""
+        SELECT 
+            TransactionDate,
+            AVG(OrderPrice) AS avg_order_value
+        FROM orders
+        GROUP BY TransactionDate
+        ORDER BY TransactionDate
+    """)
+    
+    aov_rows = cur.fetchall()
+    
+    aov_labels = [str(row["TransactionDate"]) for row in aov_rows]
+    aov_values = [float(row["avg_order_value"]) for row in aov_rows]
     cur.close()
 
     return render_template(
@@ -1057,6 +1086,8 @@ def orders_and_sales():
         monthly_sales=monthly_sales,
         last_month_sales=last_month_sales,
         monthly_sales_difference=monthly_sales_difference
+        aov_labels=aov_labels,
+        aov_values=aov_values
     )
 
 
