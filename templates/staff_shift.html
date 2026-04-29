@@ -61,7 +61,7 @@
   </nav>
 
   <div class="page-wrapper">
-    <div class="page-title">My Availability</div>
+    <div class="page-title">{{ session.get('name', 'My') }}'s Availability</div>
     <div class="page-subtitle">Click time blocks to mark when you're available. Green = available. Dark = scheduled shift.</div>
 
     <!-- Availability Card -->
