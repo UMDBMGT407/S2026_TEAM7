@@ -235,5 +235,58 @@ Schedule</a></li>
     }
   });
 </script>
+      <div class="aov-chart-card">
+  <h2 class="aov-chart-title">Average Order Value Over Time</h2>
+  <canvas id="aovChart"></canvas>
+</div>
+
+<script>
+  const aovLabels = {{ aov_labels | tojson }};
+  const aovValues = {{ aov_values | tojson }};
+
+  const ctxAOV = document.getElementById("aovChart");
+
+  new Chart(ctxAOV, {
+    type: "line",
+    data: {
+      labels: aovLabels,
+      datasets: [{
+        label: "Avg Order Value ($)",
+        data: aovValues,
+        borderColor: "#204631",
+        backgroundColor: "rgba(32, 70, 49, 0.1)",
+        tension: 0.3,
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return "$" + context.raw.toFixed(2);
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return "$" + value;
+            }
+          }
+        }
+      }
+    }
+  });
+</script>
 </body>
 </html>
