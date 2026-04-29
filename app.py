@@ -1403,6 +1403,11 @@ def add_promotion():
 @app.route("/view-promos")
 @role_required("admin")
 def view_promos():
+    status_filter = request.args.get("status", "active").strip().lower()
+
+    if status_filter not in ["active", "inactive"]:
+        status_filter = "active"
+
     month = request.args.get("month", type=int)
     year = request.args.get("year", type=int)
 
@@ -1434,27 +1439,55 @@ def view_promos():
 
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
-    cur.execute("""
-        SELECT
-            pc.date,
-            p.promotion_id,
-            p.promotion_name
-        FROM promotion_calendar pc
-        JOIN promotions p
-            ON pc.promotion_id = p.promotion_id
-        WHERE MONTH(pc.date) = %s
-          AND YEAR(pc.date) = %s
-        ORDER BY pc.date, p.promotion_name
-    """, (month, year))
+    # ✅ FIXED: calendar query WITH filter
+    if status_filter == "inactive":
+        cur.execute("""
+            SELECT
+                pc.date,
+                p.promotion_id,
+                p.promotion_name
+            FROM promotion_calendar pc
+            JOIN promotions p
+                ON pc.promotion_id = p.promotion_id
+            WHERE MONTH(pc.date) = %s
+              AND YEAR(pc.date) = %s
+              AND p.end_date < CURDATE()
+            ORDER BY pc.date, p.promotion_name
+        """, (month, year))
+    else:
+        cur.execute("""
+            SELECT
+                pc.date,
+                p.promotion_id,
+                p.promotion_name
+            FROM promotion_calendar pc
+            JOIN promotions p
+                ON pc.promotion_id = p.promotion_id
+            WHERE MONTH(pc.date) = %s
+              AND YEAR(pc.date) = %s
+              AND (p.end_date IS NULL OR p.end_date >= CURDATE())
+            ORDER BY pc.date, p.promotion_name
+        """, (month, year))
+
     rows = cur.fetchall()
 
-    cur.execute("""
-        SELECT promotion_id, promotion_name
-        FROM promotions
-        ORDER BY promotion_name
-    """)
-    promotions = cur.fetchall()
+    # ✅ FIXED: dropdown promotions WITH filter
+    if status_filter == "inactive":
+        cur.execute("""
+            SELECT promotion_id, promotion_name
+            FROM promotions
+            WHERE end_date < CURDATE()
+            ORDER BY promotion_name
+        """)
+    else:
+        cur.execute("""
+            SELECT promotion_id, promotion_name
+            FROM promotions
+            WHERE end_date IS NULL OR end_date >= CURDATE()
+            ORDER BY promotion_name
+        """)
 
+    promotions = cur.fetchall()
     cur.close()
 
     calendar_data = {}
@@ -1482,9 +1515,9 @@ def view_promos():
         next_month=next_month,
         next_year=next_year,
         month_names=month_names,
+        status_filter=status_filter,
         user_role=session.get("user_role")
     )
-
 
 @app.route("/promo/<int:promo_id>")
 @role_required("admin")
@@ -1615,7 +1648,8 @@ def add_promo_to_calendar():
 
         mysql.connection.commit()
 
-        # redirect to the month where the promotion starts
+        flash("Promotion successfully added to calendar", "success")
+
         return redirect(url_for(
             "view_promos",
             month=start_date.month,
