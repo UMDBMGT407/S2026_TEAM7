@@ -18,7 +18,7 @@ app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
 app.config['MYSQL_DB'] = 'greene_turtle_db'
 mysql = MySQL(app)
 
@@ -1773,6 +1773,8 @@ def delete_promo(promo_id):
 
     mysql.connection.commit()
     cur.close()
+
+    flash("Promotion was successfully deleted from calendar", "success")
 
     return redirect(url_for("view_promos", status="active", month=month, year=year))
 
