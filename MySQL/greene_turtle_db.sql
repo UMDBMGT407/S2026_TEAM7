@@ -14,8 +14,6 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
-SET @@SESSION.SQL_LOG_BIN= 0;
 
 --
 
@@ -355,7 +353,7 @@ INSERT INTO `orders` VALUES (1,'2026-04-01','12:15:22','Credit Card',24.50),(2,'
 UNLOCK TABLES;
 
 --
--- Table structure for table `promotion_calendar`
+-- Table structure for table ``
 --
 
 DROP TABLE IF EXISTS `promotion_calendar`;
@@ -376,8 +374,27 @@ CREATE TABLE `promotion_calendar` (
 
 LOCK TABLES `promotion_calendar` WRITE;
 /*!40000 ALTER TABLE `promotion_calendar` DISABLE KEYS */;
-INSERT INTO `promotion_calendar` VALUES (1,'2026-04-07'),(1,'2026-04-08'),(1,'2026-04-09'),(1,'2026-04-10'),(5,'2026-05-01'),(6,'2026-05-01'),(7,'2026-05-05'),(8,'2026-05-06'),(9,'2026-05-07'),(10,'2026-05-05'),(11,'2026-05-06'),(12,'2026-06-01'),(12,'2026-06-02'),(13,'2026-08-20'),(14,'2026-05-07'),(15,'2026-05-10'),(16,'2026-05-11'),(17,'2026-05-13'),(18,'2026-09-06'),(19,'2026-12-15');
-/*!40000 ALTER TABLE `promotion_calendar` ENABLE KEYS */;
+INSERT INTO `promotion_calendar` (`promotion_id`, `date`, `calendar_status`) VALUES
+(1,'2026-04-07','active'),
+(1,'2026-04-08','active'),
+(1,'2026-04-09','inactive'),
+(1,'2026-04-10','inactive'),
+(5,'2026-05-01','inactive'),
+(6,'2026-05-01','inactive'),
+(7,'2026-05-05','inactive'),
+(8,'2026-05-06','inactive'),
+(9,'2026-05-07','inactive'),
+(10,'2026-05-05','inactive'),
+(11,'2026-05-06','inactive'),
+(12,'2026-06-01','inactive'),
+(12,'2026-06-02','inactive'),
+(13,'2026-08-20','inactive'),
+(14,'2026-05-07','inactive'),
+(15,'2026-05-10','inactive'),
+(16,'2026-05-11','inactive'),
+(17,'2026-05-13','inactive'),
+(18,'2026-09-06','inactive'),
+(19,'2026-12-15','inactive');/*!40000 ALTER TABLE `promotion_calendar` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -629,7 +646,7 @@ LOCK TABLES `users` WRITE;
 INSERT INTO `users` VALUES (1,'Alyssa','Chen','Alyssa Chen','alyssa@gtstaff.com','alyssa','scrypt:32768:8:1$MoLNO95gyRYonVPi$8edf71167f06b56d58255cf3b16c68826128012a0c15e1f929414118178a9ad946bb0d8baab70364b2446ffd0c139ec9545144431102b4ef4a197d5ef31cad93','staff',NULL,NULL,NULL,0,'2026-04-08 18:01:45',0,'active'),(2,'Matt','Johnson','Matt Johnson','matt@gtstaff.com','matt','scrypt:32768:8:1$eI77fgy54DPo59IQ$e47b007f761834f0890af8da64481f8cefa7e3e82d27c60eb809dfce044749d4e4ea0556b4f29eea43487c7cd3efd170d8baa1adb01b58afb9251a4301e51d55','staff',NULL,NULL,NULL,0,'2026-04-08 18:01:45',0,'active'),(3,'John','Smith','John Smith','john@gtadmin.com','john','scrypt:32768:8:1$2Rx40woPxKqij6T8$badc808adecbfe07fa0cef347b8398da42d8d1a5856936b8c14f8580d32bb68e67704d48628fed9657506246311dbcd58281f69689863229975b32a41dd613bd','admin',NULL,NULL,NULL,0,'2026-04-08 18:15:56',0,'active'),(4,'Grace','Pat','Grace Pat','grace@gtadmin.com','grace','scrypt:32768:8:1$OFEdlCiznMM6K0Wg$4facf7e71b59953813fd32ea881d77d1a2dfc8b71d96aaea0fa7bcad075cd13294a4ad8eb7aaf25cd5459d0584c659f0810969adb84e6d52a6d1146566910dfc','admin',NULL,NULL,NULL,0,'2026-04-08 18:15:56',0,'active');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
-SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
