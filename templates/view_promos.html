@@ -318,18 +318,22 @@ Schedule</a></li>
       });
   }
 </script>
+
+<!-- KEEP EVERYTHING ABOVE THE SAME -->
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-    <div style="
+    <div id="flash-message" style="
       position: fixed;
-      top: 70px;              /* moved higher */
+      top: 70px;
       left: 50%;
       transform: translateX(-50%);
       color: white;
       font-size: 20px;
-      z-index: 99999;         /* above navbar */
+      z-index: 99999;
       font-family: 'Passion One', sans-serif;
       pointer-events: none;
+      opacity: 1;
     ">
       {% for category, message in messages %}
         <div>{{ message }}</div>
@@ -337,5 +341,21 @@ Schedule</a></li>
     </div>
   {% endif %}
 {% endwith %}
+
+<!-- ADD THIS SCRIPT RIGHT BEFORE </body> -->
+<script>
+  // Auto-hide flash message after 3 seconds
+  setTimeout(() => {
+    const flash = document.getElementById("flash-message");
+    if (flash) {
+      flash.style.transition = "opacity 0.5s ease";
+      flash.style.opacity = "0";
+
+      setTimeout(() => {
+        flash.remove();
+      }, 500);
+    }
+  }, 3000);
+</script>
 </body>
 </html>
