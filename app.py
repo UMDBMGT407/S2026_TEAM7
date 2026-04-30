@@ -17,9 +17,9 @@ app.secret_key = "replace-this-with-a-real-secret-key"
 app.config["SESSION_PERMANENT"] = False
 
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Brilextj$7890'
-app.config['MYSQL_DB'] = 'greene_turtle_db'
+app.config['MYSQL_USER'] = 'bmgts101t07'
+app.config['MYSQL_PASSWORD'] = 'BO]Xvv9979843'
+app.config['MYSQL_DB'] = 'username_greene_turtle'
 mysql = MySQL(app)
 
 
