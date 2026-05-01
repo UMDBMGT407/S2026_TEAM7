@@ -19,7 +19,7 @@ app.config["SESSION_PERMANENT"] = False
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'bmgts101t07'
 app.config['MYSQL_PASSWORD'] = 'BO]Xvv9979843'
-app.config['MYSQL_DB'] = 'username_greene_turtle'
+app.config['MYSQL_DB'] = 'bmgts101t07_greene_turtle'
 mysql = MySQL(app)
 
 
