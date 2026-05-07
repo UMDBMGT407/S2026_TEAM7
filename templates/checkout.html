@@ -181,7 +181,7 @@
     </main>
   </div>
 
-  <script src="https://www.paypal.com/sdk/js?client-id=AaTwU9zkrBtq0kKYBOfUaXdE03NSjJzY5qpciGCrY1yTnz-jbc-ju1ubgJ3L6o4TKlYCAYj579gMmPro&currency=USD"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_client_id }}&currency=USD"></script>
 
   <script>
     const subtotalEl = document.getElementById("checkoutSubtotal");
@@ -330,58 +330,53 @@
 <script src="https://www.paypal.com/sdk/js?client-id=AaTwU9zkrBtq0kKYBOfUaXdE03NSjJzY5qpciGCrY1yTnz-jbc-ju1ubgJ3L6o4TKlYCAYj579gMmPro&currency=USD"></script>
 
 <script>
-  if (typeof paypal === "undefined") {
-    document.getElementById("paypal-status").textContent =
-      "PayPal could not load. Please check the client ID or browser console.";
-  } else {
-    paypal.Buttons({
-      createOrder: function(data, actions) {
-        const total = subtotal + tax;
+  paypal.Buttons({
+    createOrder: function(data, actions) {
+      const total = subtotal + tax;
 
-        return actions.order.create({
-          purchase_units: [{
-            amount: {
-              value: total.toFixed(2)
-            }
-          }]
-        });
-      },
-
-      onApprove: function(data, actions) {
-        return actions.order.capture().then(async function(details) {
-          const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-          if (cart.length === 0) {
-            alert("Your cart is empty.");
-            return;
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            value: total.toFixed(2)
           }
+        }]
+      });
+    },
 
-          const response = await fetch("/submit-order", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              cart: cart,
-              payment_method: "PayPal"
-            })
-          });
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(async function(details) {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-          const result = await response.json();
+        if (cart.length === 0) {
+          alert("Your cart is empty.");
+          return;
+        }
 
-          if (!response.ok || !result.success) {
-            alert(result.message || "There was a problem placing your order.");
-            return;
-          }
-
-          localStorage.removeItem("cart");
-          clearCheckoutForm();
-          alert(`PayPal payment successful! Order #${result.order_id}`);
-          window.location.href = "/";
+        const response = await fetch("/submit-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            cart: cart,
+            payment_method: "PayPal"
+          })
         });
-      }
-    }).render("#paypal-button-container");
-  }
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          alert(result.message || "There was a problem placing your order.");
+          return;
+        }
+
+        localStorage.removeItem("cart");
+        clearCheckoutForm();
+        alert(`PayPal payment successful! Order #${result.order_id}`);
+        window.location.href = "/";
+      });
+    }
+  }).render("#paypal-button-container");
 </script>
 
 </body>
